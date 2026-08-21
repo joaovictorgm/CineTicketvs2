@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+// link swaager http://localhost:8080/swagger-ui.html
+
 @Entity
 @Data
 @NoArgsConstructor
