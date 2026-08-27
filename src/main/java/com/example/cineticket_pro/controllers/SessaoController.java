@@ -11,20 +11,20 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sessoes")
-@Tag(name="",description = "")
+@Tag(name="Sessões",description = "Métodos responsáveis pelo cadastro e consulta das sessões de exibição dos filmes")
 public class SessaoController {
 
     @Autowired
     private SessaoRepository sessaoRepository;
 
     @GetMapping
-    @Operation(summary = "",description = "")
+    @Operation(summary = "Método de consulta de lista de sessões",description = "Método responsável pela consulta de todas as sessões cadastradas")
     public ResponseEntity<?>listarTodos(){
         return ResponseEntity.ok(sessaoRepository.findAll());
     }
 
     @PostMapping
-    @Operation(summary = "",description = "")
+    @Operation(summary = "Método de criação de sessões",description = "Método responsável por cadastrar uma nova sessão de exibição")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Sessao>criar(@RequestBody Sessao sessao){
         var sessaoBanco = sessaoRepository.save(sessao);

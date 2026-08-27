@@ -11,23 +11,23 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/ingressos")
-@Tag(name="",description = "")
+@Tag(name="Ingressos",description = "Métodos responsáveis pela emissão e consulta de ingressos das sessões")
 public class IngressoController {
 
     @Autowired
     private IngressoRepository ingressoRepository;
 
     @GetMapping
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Método de consulta de lista de ingressos", description = "Método responsável pela consulta de todos os ingressos emitidos")
     public ResponseEntity<?> listarTodos(){
         return ResponseEntity.ok(ingressoRepository.findAll());
     }
 
     @PostMapping
-    @Operation(summary = "",description = "")
+    @Operation(summary = "Método de criação de ingressos",description = "Método responsável por registrar a emissão de um novo ingresso")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Ingresso>criar(@RequestBody Ingresso ingresso){
         var ingressoBanco = ingressoRepository.save(ingresso);
-        return ResponseEntity.ok(ingresso);
+        return ResponseEntity.ok(ingressoBanco);
     }
 }
