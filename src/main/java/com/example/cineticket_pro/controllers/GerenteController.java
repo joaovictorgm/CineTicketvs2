@@ -1,7 +1,7 @@
 package com.example.cineticket_pro.controllers;
 
-import com.example.cineticket_pro.entities.Sessao;
-import com.example.cineticket_pro.repository.SessaoRepository;
+import com.example.cineticket_pro.entities.Gerente;
+import com.example.cineticket_pro.repository.GerenteRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,26 +10,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/sessoes")
+@RequestMapping("/gerente")
 @Tag(name="",description = "")
-public class SessaoController {
+public class GerenteController {
 
     @Autowired
-    private SessaoRepository sessaoRepository;
+    private GerenteRepository gerenteRepository;
 
     @GetMapping
     @Operation(summary = "",description = "")
     public ResponseEntity<?>listarTodos(){
-        return ResponseEntity.ok(sessaoRepository.findAll());
+        return ResponseEntity.ok(gerenteRepository.findAll());
     }
 
     @PostMapping
     @Operation(summary = "",description = "")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Sessao>criar(@RequestBody Sessao sessao){
-        var sessaoBanco = sessaoRepository.save(sessao);
-        return ResponseEntity.ok(sessaoBanco);
-
+    public ResponseEntity<Gerente>criar(@RequestBody Gerente gerente){
+        var gerenteBanco =  gerenteRepository.save(gerente);
+        return ResponseEntity.ok(gerenteBanco);
     }
-
 }

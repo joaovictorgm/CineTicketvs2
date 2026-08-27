@@ -18,7 +18,7 @@ public class Sessao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    public String filme;
+    public String filme;//fk
     public LocalDate data;
     public String sala;
     public EnumTipoExibicao status = EnumTipoExibicao._2D;

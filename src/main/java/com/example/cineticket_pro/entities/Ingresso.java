@@ -19,7 +19,8 @@ public class Ingresso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    public String sessao;
+    public String sessao;//fk
+    public String filme;//fk
     public int assento;
     public double valorPago;
     public EnumTipoIngresso status=EnumTipoIngresso.Inteira ;

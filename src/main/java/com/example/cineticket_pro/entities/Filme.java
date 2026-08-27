@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-// link swaager http://localhost:8080/swagger-ui.html
+
 
 @Entity
 @Data
@@ -23,7 +23,7 @@ public class Filme {
     public Long id;
     public String titulo;
     public int duracaoMinutos;
-    public int classificaoEtaria;
+    public int classificacaoEtaria;
     public LocalDate dataEstreia;
 
 }
