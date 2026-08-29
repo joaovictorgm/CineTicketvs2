@@ -24,5 +24,6 @@ public class Usuario {
     public String filme; //fk
     public String sessao;//fk
     public String ingresso;//fk
+    private EnumStatusUsuario status;
 }
 

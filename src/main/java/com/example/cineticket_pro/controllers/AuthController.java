@@ -1,6 +1,8 @@
 package com.example.cineticket_pro.controllers;
 
 import com.example.cineticket_pro.DTOs.LoginRequest;
+import com.example.cineticket_pro.DTOs.LoginResponse;
+import com.example.cineticket_pro.repository.UsuarioRepository;
 import com.example.cineticket_pro.service.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,13 +21,18 @@ import java.net.HttpURLConnection;
 public class AuthController {
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
     @PostMapping("/login")
     @Operation(description = "Método de login", summary = "Autenticação de Gerentes")
     public ResponseEntity <?> login(@RequestBody LoginRequest loginRequest){
-        if(loginRequest.email().equals("string") && loginRequest.senha().equals("string")){
+
+
+        if(usuarioRepository.existsUsuarioByEmailAndSenha(loginRequest.email(),loginRequest.senha())){
 
             var token = tokenService.gerarToken(loginRequest.email());
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(new LoginResponse(token));
         }
         return ResponseEntity.status(HttpURLConnection.HTTP_UNAUTHORIZED).build();
 

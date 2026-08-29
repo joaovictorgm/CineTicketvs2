@@ -21,7 +21,7 @@ public class Sessao {
     public String filme;//fk
     public LocalDate data;
     public String sala;
-    public EnumTipoExibicao status = EnumTipoExibicao._2D;
+    public EnumTipoExibicao status = EnumTipoExibicao.EXIBIÇÃO_2D;
     public double preco;
     public int assentosDisponiveis;
 }

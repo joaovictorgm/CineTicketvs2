@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired //Injeção de dependencia
@@ -30,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if(authHeader != null && authHeader.startsWith("Bearer ")){
-            String token = authHeader.replace("Bearer","");
+            String token = authHeader.replace("Bearer ","");
 
             try{
 
@@ -42,6 +43,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
 
             }
+        }else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         filterChain.doFilter(request,response);
