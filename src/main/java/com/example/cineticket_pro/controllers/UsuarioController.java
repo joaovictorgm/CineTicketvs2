@@ -27,13 +27,13 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id){
-        Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
+    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id){//@PathVariable é uma anotação do Spring que extrai valores diretamente da URL da requisição e injeta como parâmetro no método do controller.
+        Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);//.orElse(null) é um método do Optional que resolve o valor de dentro dele — retornando o valor real se ele existir, ou um valor padrão (nesse caso null) se estiver vazio.
         if(usuarioBanco != null){
 
             return ResponseEntity.ok(usuarioBanco);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build();//.build() é o método final de um builder pattern (padrão de projeto) — ele finaliza a construção do objeto ResponseEntity e retorna a instância pronta pra uso.
     }
 
     @PostMapping

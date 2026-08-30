@@ -1,5 +1,7 @@
 package com.example.cineticket_pro.controllers;
 
+import com.example.cineticket_pro.DTOs.AtualizarStatusIngressoRequest;
+import com.example.cineticket_pro.entities.EnumTipoIngresso;
 import com.example.cineticket_pro.entities.Ingresso;
 import com.example.cineticket_pro.repository.IngressoRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,15 +21,71 @@ public class IngressoController {
 
     @GetMapping
     @Operation(summary = "Método de consulta de lista de ingressos", description = "Método responsável pela consulta de todos os ingressos emitidos")
-    public ResponseEntity<?> listarTodos(){
+    public ResponseEntity<?> listarTodos() {
         return ResponseEntity.ok(ingressoRepository.findAll());
     }
 
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Ingresso> buscarPorId(@PathVariable Long id) {
+        Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
+        if (ingressoBanco != null) {
+            return ResponseEntity.ok(ingressoBanco);
+        }
+        return ResponseEntity.notFound().build();
+
+    }
+
     @PostMapping
-    @Operation(summary = "Método de criação de ingressos",description = "Método responsável por registrar a emissão de um novo ingresso")
+    @Operation(summary = "Método de criação de ingressos", description = "Método responsável por registrar a emissão de um novo ingresso")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Ingresso>criar(@RequestBody Ingresso ingresso){
+    public ResponseEntity<Ingresso> criar(@RequestBody Ingresso ingresso) {
         var ingressoBanco = ingressoRepository.save(ingresso);
         return ResponseEntity.ok(ingressoBanco);
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusIngressoRequest statusIngressoRequest) {
+        Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
+        if (ingressoBanco != null) {
+            ingressoBanco.setStatus(statusIngressoRequest.statusIngressoRequest());
+            ingressoRepository.save(ingressoBanco);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+
+    }
+
+    public ResponseEntity<Ingresso> atualizar(@PathVariable Long id, @RequestBody Ingresso ingresso){
+        try{
+            Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
+            if(ingressoBanco != null){
+                ingressoBanco.setStatus(ingresso.getStatus());
+                ingressoBanco.setSessao(ingresso.getSessao());
+                ingressoBanco.setFilme(ingresso.getFilme());
+                ingressoBanco.setAssento(ingresso.getAssento());
+                ingressoBanco.setDataCompra(ingresso.getDataCompra());
+                ingressoBanco.setValorPago(ingresso.getValorPago());
+                ingressoRepository.save(ingressoBanco);
+                return ResponseEntity.ok().build();
+            }
+            return ResponseEntity.notFound().build();
+        }catch (RuntimeException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResponseEntity<Void> excluir(@PathVariable Long id){
+        Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
+        if(ingressoBanco != null){
+            //ingressoBanco.setSituacao(EnumStatusIngresso.PAGO);
+            ingressoRepository.save(ingressoBanco);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
+
+
+
+

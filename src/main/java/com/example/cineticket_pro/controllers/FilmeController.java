@@ -24,12 +24,49 @@ public class FilmeController {
         return ResponseEntity.ok(filmeRepository.findAll());
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<Filme>buscaPorId(@PathVariable Long id){
+        Filme filmeBanco = filmeRepository.findById(id).orElse(null);
+        if(filmeBanco != null){
+            return ResponseEntity.ok(filmeBanco);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @PostMapping
     @Operation(summary = "Método de criação de filmes!", description = "Método responsavel de criar filmes sem filtro!")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Filme>criar(@RequestBody Filme filme){
         var filmeBanco = filmeRepository.save(filme);
         return ResponseEntity.ok(filmeBanco);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Filme> atualizar(@PathVariable Long id, @RequestBody Filme filme){
+        try {
+            Filme filmeBanco = filmeRepository.findById(id).orElse(null);
+            if(filmeBanco != null){
+                filmeBanco.setTitulo(filme.getTitulo());
+                filmeBanco.setDataEstreia(filme.getDataEstreia());
+                filmeBanco.setClassificacaoEtaria(filme.getClassificacaoEtaria());
+                filmeBanco.setDuracaoMinutos(filme.getDuracaoMinutos());
+                filmeRepository.save(filmeBanco);
+                return ResponseEntity.ok().build();
+            }
+            return ResponseEntity.notFound().build();
+        } catch (RuntimeException e){
+            throw new RuntimeException();
+        }
+    }
+
+    public ResponseEntity<Void> excluir(@PathVariable Long id){
+        Filme filmeBanco = filmeRepository.findById(id).orElse(null);
+        if(filmeBanco != null){
+            //filmeBanco.setStatus(EnumStatusFilme.DESATIVADO);
+            filmeRepository.save(filmeBanco);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
 

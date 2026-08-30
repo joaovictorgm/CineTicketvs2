@@ -24,4 +24,6 @@ public class Gerente {
     public String email;
 
     public String senha;
+
+    private EnumStatusGerente status;
 }
