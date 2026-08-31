@@ -29,7 +29,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 || uri.startsWith("swagger-resources")
                 || uri.startsWith("webjars")
                 || uri.startsWith("/auth/login")
-                || uri.startsWith("/senha/esqueci-senha")){
+                || uri.startsWith("/senha/esqueci-senha")
+                || uri.startsWith("/senha/redefinir-senha")){
             filterChain.doFilter(request,response);
             return;
         }
