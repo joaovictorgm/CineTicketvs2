@@ -25,8 +25,8 @@ public class GerenteController {
         return ResponseEntity.ok(gerenteRepository.findAll());
     }
 
-    @GetMapping("/{id})")
-    @Operation(summary = "",description = "")
+    @GetMapping("/{id}")
+    @Operation(summary = "Método de busca de gerente por ID",description = "Método responsável por buscar um gerente específico através do seu identificador")
     public ResponseEntity<Gerente> buscarPorId(@PathVariable Long id) {
         Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
         if (gerenteBanco != null) {
@@ -45,6 +45,7 @@ public ResponseEntity<Gerente>criar(@RequestBody Gerente gerente){
 }
 
     @PatchMapping("/{id}/status")
+    @Operation(summary = "Método de atualização de status do gerente", description = "Método responsável por atualizar apenas o status de um gerente já cadastrado")
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusGerenteRequest statusGerenteRequest){
         Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
         if (gerenteBanco != null) {
@@ -56,6 +57,7 @@ public ResponseEntity<Gerente>criar(@RequestBody Gerente gerente){
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Método de atualização de gerente", description = "Método responsável por atualizar os dados completos de um gerente já cadastrado")
     public ResponseEntity<Gerente> atualizar(@PathVariable Long id, @RequestBody Gerente gerente){
         try{
             Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
@@ -73,6 +75,7 @@ public ResponseEntity<Gerente>criar(@RequestBody Gerente gerente){
         }
     }
     @DeleteMapping("/{id}/excluir")
+    @Operation(summary = "Método de exclusão de gerente", description = "Método responsável por desativar (soft delete) um gerente cadastrado")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
         Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
         if(gerenteBanco != null){

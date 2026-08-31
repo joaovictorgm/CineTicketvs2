@@ -25,6 +25,7 @@ public class FilmeController {
     }
 
     @GetMapping("{id}")
+    @Operation(summary = "Método de busca de filme por ID", description = "Método responsável por buscar um filme específico através do seu identificador")
     public ResponseEntity<Filme>buscaPorId(@PathVariable Long id){
         Filme filmeBanco = filmeRepository.findById(id).orElse(null);
         if(filmeBanco != null){
@@ -42,6 +43,7 @@ public class FilmeController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Método de atualização de filme", description = "Método responsável por atualizar os dados de um filme já cadastrado")
     public ResponseEntity<Filme> atualizar(@PathVariable Long id, @RequestBody Filme filme){
         try {
             Filme filmeBanco = filmeRepository.findById(id).orElse(null);
@@ -58,7 +60,8 @@ public class FilmeController {
             throw new RuntimeException();
         }
     }
-
+@DeleteMapping("/{id}")
+@Operation(summary = "Método de exclusão de filme", description = "Método responsável por remover (ou desativar) um filme cadastrado")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
         Filme filmeBanco = filmeRepository.findById(id).orElse(null);
         if(filmeBanco != null){

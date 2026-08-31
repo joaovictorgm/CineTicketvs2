@@ -25,6 +25,7 @@ public class SessaoController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Método de busca de sessão por ID", description = "Método responsável por buscar uma sessão específica através do seu identificador")
     public ResponseEntity<Sessao>buscarPorId(@PathVariable Long id){
         Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
         if(sessaoBanco != null){
@@ -42,6 +43,7 @@ public class SessaoController {
     }
 
     @PatchMapping("/{id}/status")
+    @Operation(summary = "Método de atualização de status da sessão", description = "Método responsável por atualizar apenas o status de exibição de uma sessão já cadastrada")
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarSessaoRequest sessaoRequest){
         Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
         if(sessaoBanco != null){
@@ -53,13 +55,13 @@ public class SessaoController {
     }
 
     @PutMapping("{id}")
+    @Operation(summary = "Método de atualização de sessão", description = "Método responsável por atualizar os dados completos de uma sessão já cadastrada")
     public ResponseEntity<Sessao>atualizar(@PathVariable Long id, @RequestBody Sessao sessao){
         try {
             Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
             if(sessaoBanco!=null){
                 sessaoBanco.setStatus(sessao.getStatus());
                 sessaoBanco.setData(sessao.getData());
-                sessaoBanco.setPreco(sessao.getPreco());
                 sessaoBanco.setFilme(sessao.getFilme());
                 sessaoBanco.setSala(sessao.getSala());
                 sessaoBanco.setPreco(sessao.getPreco());
@@ -73,9 +75,9 @@ public class SessaoController {
             throw new RuntimeException(e);
         }
     }
-
+    @DeleteMapping("/{id}/excluir")
+    @Operation(summary = "Método de exclusão de sessão", description = "Método responsável por desativar (soft delete) uma sessão cadastrada")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
-
         Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
         if(sessaoBanco!=null){
             // sessaoBanco.setSituacao(EnumStatusSessao.DESATIVADO);

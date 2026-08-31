@@ -27,6 +27,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Método de busca de usuário por ID", description = "Método responsável por buscar um usuário específico através do seu identificador")
     public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id){//@PathVariable é uma anotação do Spring que extrai valores diretamente da URL da requisição e injeta como parâmetro no método do controller.
         Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);//.orElse(null) é um método do Optional que resolve o valor de dentro dele — retornando o valor real se ele existir, ou um valor padrão (nesse caso null) se estiver vazio.
         if(usuarioBanco != null){
@@ -45,6 +46,7 @@ public class UsuarioController {
     }
 
     @PatchMapping("/{id}/status")
+    @Operation(summary = "Método de atualização de status do usuário", description = "Método responsável por atualizar apenas o status de um usuário já cadastrado")
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusRequest statusRequest){
         Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
         if(usuarioBanco != null){
@@ -56,6 +58,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Método de atualização de usuário", description = "Método responsável por atualizar os dados completos de um usuário já cadastrado")
     public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @RequestBody Usuario usuario){
         try{
             Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
@@ -76,6 +79,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}/excluir")
+    @Operation(summary = "Método de exclusão de usuário", description = "Método responsável por desativar (soft delete) um usuário cadastrado")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
 
         Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);

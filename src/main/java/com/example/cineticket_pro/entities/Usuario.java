@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -25,5 +27,8 @@ public class Usuario {
     public String sessao;//fk
     public String ingresso;//fk
     private EnumStatusUsuario status;
+
+    public String resetToken;
+    public LocalDateTime resetTokenExpiracao;
 }
 

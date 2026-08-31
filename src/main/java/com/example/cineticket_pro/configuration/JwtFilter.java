@@ -23,7 +23,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        if(uri.startsWith("/swagger-ui") || uri.startsWith("/v2/api-docs") || uri.startsWith("/v3/api-docs") || uri.startsWith("swagger-resources") || uri.startsWith("webjars") || uri.startsWith("/auth/login")){
+        if(uri.startsWith("/swagger-ui")
+                || uri.startsWith("/v2/api-docs")
+                || uri.startsWith("/v3/api-docs")
+                || uri.startsWith("swagger-resources")
+                || uri.startsWith("webjars")
+                || uri.startsWith("/auth/login")
+                || uri.startsWith("/senha/esqueci-senha")){
             filterChain.doFilter(request,response);
             return;
         }
