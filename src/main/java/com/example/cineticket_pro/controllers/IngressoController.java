@@ -1,6 +1,7 @@
 package com.example.cineticket_pro.controllers;
 
 import com.example.cineticket_pro.DTOs.AtualizarStatusIngressoRequest;
+import com.example.cineticket_pro.entities.EnumStatusIngresso;
 import com.example.cineticket_pro.entities.EnumTipoIngresso;
 import com.example.cineticket_pro.entities.Ingresso;
 import com.example.cineticket_pro.repository.IngressoRepository;
@@ -82,7 +83,7 @@ public class IngressoController {
     public ResponseEntity<Void> excluir(@PathVariable Long id){
         Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
         if(ingressoBanco != null){
-            //ingressoBanco.setSituacao(EnumStatusIngresso.PAGO);
+            ingressoBanco.setStatusIngresso(EnumStatusIngresso.PAGO);
             ingressoRepository.save(ingressoBanco);
             return ResponseEntity.ok().build();
         }

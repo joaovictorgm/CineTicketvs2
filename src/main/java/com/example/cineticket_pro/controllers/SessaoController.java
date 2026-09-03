@@ -1,6 +1,7 @@
 package com.example.cineticket_pro.controllers;
 
 import com.example.cineticket_pro.DTOs.AtualizarSessaoRequest;
+import com.example.cineticket_pro.entities.EnumStatusSessao;
 import com.example.cineticket_pro.entities.Sessao;
 import com.example.cineticket_pro.repository.SessaoRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -80,7 +81,7 @@ public class SessaoController {
     public ResponseEntity<Void> excluir(@PathVariable Long id){
         Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
         if(sessaoBanco!=null){
-            // sessaoBanco.setSituacao(EnumStatusSessao.DESATIVADO);
+            sessaoBanco.setStatusSessao(EnumStatusSessao.DESATIVADO);
             sessaoRepository.save(sessaoBanco);
             return ResponseEntity.ok().build();
 

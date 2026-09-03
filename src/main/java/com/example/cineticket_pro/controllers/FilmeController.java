@@ -1,5 +1,6 @@
 package com.example.cineticket_pro.controllers;
 
+import com.example.cineticket_pro.entities.EnumStatusFilme;
 import com.example.cineticket_pro.entities.Filme;
 import com.example.cineticket_pro.repository.FilmeRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,7 +66,7 @@ public class FilmeController {
     public ResponseEntity<Void> excluir(@PathVariable Long id){
         Filme filmeBanco = filmeRepository.findById(id).orElse(null);
         if(filmeBanco != null){
-            //filmeBanco.setStatus(EnumStatusFilme.DESATIVADO);
+            filmeBanco.setStatusFilme(EnumStatusFilme.DESATIVADO);
             filmeRepository.save(filmeBanco);
             return ResponseEntity.ok().build();
         }

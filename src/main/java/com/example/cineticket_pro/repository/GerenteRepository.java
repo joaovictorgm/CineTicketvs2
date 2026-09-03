@@ -1,5 +1,6 @@
 package com.example.cineticket_pro.repository;
 
+import com.example.cineticket_pro.entities.EnumStatusGerente;
 import com.example.cineticket_pro.entities.EnumStatusUsuario;
 import com.example.cineticket_pro.entities.Gerente;
 import com.example.cineticket_pro.entities.Usuario;

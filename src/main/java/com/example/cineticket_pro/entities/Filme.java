@@ -26,4 +26,6 @@ public class Filme {
     public int classificacaoEtaria;
     public LocalDate dataEstreia;
 
+    public EnumStatusFilme statusFilme = EnumStatusFilme.ATIVO;
+
 }

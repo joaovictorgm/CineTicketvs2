@@ -23,7 +23,8 @@ public class Ingresso {
     public String filme;//fk
     public int assento;
     public double valorPago;
-    public EnumTipoIngresso status=EnumTipoIngresso.INTEIRA ;
+    public EnumTipoIngresso status = EnumTipoIngresso.INTEIRA ;
+    public EnumStatusIngresso statusIngresso = EnumStatusIngresso.DISPONIVEL;
     public LocalDate dataCompra;
 
 }

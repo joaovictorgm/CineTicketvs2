@@ -22,6 +22,7 @@ public class Sessao {
     public LocalDate data;
     public String sala;
     public EnumTipoExibicao status = EnumTipoExibicao.EXIBIÇÃO_2D;
+    public EnumStatusSessao statusSessao = EnumStatusSessao.ATIVO;
     public double preco;
     public int assentosDisponiveis;
 }
