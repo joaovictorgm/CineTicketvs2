@@ -1,8 +1,12 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 export default function Home() {
+
+  const router = useRouter();
+
   return (
     <>
       <style>{`
@@ -30,7 +34,6 @@ export default function Home() {
           line-height: 1.6;
         }
 
-        /* Header & Navigation */
         header {
           position: fixed;
           top: 0;
@@ -109,7 +112,6 @@ export default function Home() {
           box-shadow: 0 0 15px rgba(2, 132, 199, 0.4);
         }
 
-        /* Hero Section */
         .hero {
           height: 100vh;
           display: flex;
@@ -166,7 +168,6 @@ export default function Home() {
           color: rgba(56, 189, 248, 0.05);
         }
 
-        /* About / Story Section */
         .story {
           padding: 8rem 5%;
           background-color: #0f172a;
@@ -198,7 +199,6 @@ export default function Home() {
           line-height: 1.8;
         }
 
-        /* Filmes em Destaque */
         .movies {
           padding: 6rem 5%;
         }
@@ -276,7 +276,6 @@ export default function Home() {
           color: var(--dark-blue);
         }
 
-        /* Footer */
         footer {
           text-align: center;
           padding: 3rem 5%;
@@ -319,7 +318,7 @@ export default function Home() {
             <li><a href="#filmes">Filmes</a></li>
           </ul>
         </nav>
-        <button className="btn-login" onClick={() => alert('Modal de Login em breve!')}>
+        <button className="btn-login" onClick={() => router.push('/login')}>
           👤 Login
         </button>
       </header>
