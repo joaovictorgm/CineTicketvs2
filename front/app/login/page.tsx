@@ -6,10 +6,11 @@ export default function Login() {
    
         const router = useRouter();
 
-        router.push("/home")
+      
 
         const handleLogin = async (formData: FormData) => {
-
+ 
+              router.push("/home")
     }
 
 
