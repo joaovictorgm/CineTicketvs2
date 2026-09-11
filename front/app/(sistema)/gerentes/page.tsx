@@ -1,7 +1,28 @@
+'use client'
+
 import Link from "@/node_modules/next/link";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Gerente } from "../types/gerente";
 
 
 export default function Gerentes() {
+
+    const [gerentes, setGerente] = useState<Gerente[]>([]);
+
+    useEffect(()=>{
+        carregarDados();
+    }, [])
+
+    const carregarDados = async () => {
+        try{
+            const dados = axios.get<Gerente[]>("http://localhost:8080/gerentes");
+            console.log("Resposta da API:", (await dados).data);
+            setGerente((await dados).data);
+        } catch (error) {
+            alert("Erro ao carregar dados")
+        }
+    }
 
     return (
         <div className="min-h-screen bg-blue-50 p-8">
@@ -17,15 +38,38 @@ export default function Gerentes() {
                     <table className="w-full text-left">
                         <thead className="bg-blue-600 text-white">
                             <tr>
+                                <th className="px-4 py-3 font-semibold">Codigo</th>
                                 <th className="px-4 py-3 font-semibold">Nome</th>
+                                <th className="px-4 py-3 font-semibold">Email</th>
+                                <th className="px-4 py-3 font-semibold">Senha</th>
+                                <th className="px-4 py-3 font-semibold">Status</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-100">
-                        <tr className="hover:bg-blue-50">
+                        {gerentes.map((gerente)=>(
+                        <tr key={gerente.id} className="hover:bg-blue-50">
                             <td className="px-4 py-3 text-blue-900">
-                                JoãoVictor
+                               {gerente.id}
                             </td>
+                            <td className="px-4 py-3 text-blue-900">
+                               {gerente.nome}
+                            </td>
+                            <td className="px-4 py-3 text-blue-900">
+                                {gerente.email}
+                            </td>
+                           
+                            <td className="px-4 py-3 text-blue-900">
+                                {gerente.status}
+                            </td>
+                        </tr>
+                        ))}
+                          { gerentes.length ===0 &&(
+                            <tr>
+                                <td colSpan={5} className="px-6 py-12 text-center text">
+                                    Nenhum gerente encontrado
+                                </td>
                             </tr>
+                        )}
                         </tbody>
                     </table>
                 </div>
