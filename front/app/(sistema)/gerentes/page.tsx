@@ -17,15 +17,31 @@ export default function Gerentes() {
                     <table className="w-full text-left">
                         <thead className="bg-blue-600 text-white">
                             <tr>
+                                <th className="px-4 py-3 font-semibold">Codigo</th>
                                 <th className="px-4 py-3 font-semibold">Nome</th>
+                                <th className="px-4 py-3 font-semibold">Email</th>
+                                <th className="px-4 py-3 font-semibold">Senha</th>
+                                <th className="px-4 py-3 font-semibold">Status</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-100">
-                        <tr className="hover:bg-blue-50">
+                        {gerentes.map((gerentes)=>(
+                        <tr key={usuario.id} className="hover:bg-blue-50">
                             <td className="px-4 py-3 text-blue-900">
-                                JoãoVictor
+                               {usuario.id}
                             </td>
-                            </tr>
+                            <td className="px-4 py-3 text-blue-900">
+                               {usuario.nome}
+                            </td>
+                            <td className="px-4 py-3 text-blue-900">
+                                {usuario.email}
+                            </td>
+                           
+                            <td className="px-4 py-3 text-blue-900">
+                                {usuario.status}
+                            </td>
+                        </tr>
+                        ))}
                         </tbody>
                     </table>
                 </div>
