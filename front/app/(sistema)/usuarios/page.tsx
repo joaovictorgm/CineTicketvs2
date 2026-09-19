@@ -26,7 +26,7 @@ export default function Usuarios(){
     }
 
     return (
-    <div className="min-h-screen bg-blue-50 p-8">
+    <div className=" bg-blue-50 p-8">
         <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold text-blue-900">
                Gestao de usuarios
@@ -43,8 +43,11 @@ export default function Usuarios(){
                             <th className="px-4 py-3 font-semibold">Nome</th>
 
                             <th className="px-4 py-3 font-semibold">E-mail</th>
+
                         
                             <th className="px-4 py-3 font-semibold">Status</th>
+
+                            <th className="px-4 py-3 font-semibold">Ações</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-blue-100">
@@ -62,6 +65,9 @@ export default function Usuarios(){
                            
                             <td className="px-4 py-3 text-blue-900">
                                 {usuario.status}
+                            </td>
+                            <td className="px-4 py-3 text-blue-900">
+                               <Link href={`/usuarios/${usuario.id}/editar`}>Editar</Link>
                             </td>
                         </tr>
                         ))}

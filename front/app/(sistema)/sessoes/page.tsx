@@ -23,7 +23,7 @@ const carregarDados = async () =>{
 }
 
     return (
-        <div className="min-h-screen bg-blue-50 p-8">
+        <div className="bg-blue-50 p-8">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-blue-900">
                     Gestao de Sessões

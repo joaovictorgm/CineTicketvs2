@@ -24,7 +24,7 @@ export default function Ingressos() {
     }
 
     return (
-        <div className="min-h-screen bg-blue-50 p-8">
+        <div className="bg-blue-50 p-8">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-blue-900">
                     Gestao de Ingressos
@@ -49,7 +49,7 @@ export default function Ingressos() {
                         </thead>
                         <tbody className="divide-y divide-blue-100">
                             {ingressos.map((ingresso)=>(
-                        <tr className="hover:bg-blue-50">
+                        <tr key={ingresso.id} className="hover:bg-blue-50">
                             <td className="px-4 py-3 text-blue-900">
                                {ingresso.id}
                             </td>
