@@ -50,6 +50,8 @@ const carregarDados = async () =>{
                             <th className="px-4 py-3 font-semibold">Preço</th>
                         
                             <th className="px-4 py-3 font-semibold">Assentos Disponiveis</th>
+
+                            <th className="px-4 py-3 font-semibold">Ações</th>
                         </tr> 
                         </thead>
                         <tbody className="divide-y divide-blue-100">
@@ -78,6 +80,9 @@ const carregarDados = async () =>{
                             </td>
                             <td className="px-4 py-3 text-blue-900">
                                 {sessao.assentosDisponiveis}
+                            </td>
+                             <td className="px-4 py-3 text-blue-900">
+                               <Link href={`/sessoes/${sessao.id}/editar`}>Editar</Link>
                             </td>
                         </tr>
                         ))} 

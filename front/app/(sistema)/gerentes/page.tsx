@@ -43,6 +43,9 @@ export default function Gerentes() {
                                 <th className="px-4 py-3 font-semibold">Email</th>
                                 <th className="px-4 py-3 font-semibold">Senha</th>
                                 <th className="px-4 py-3 font-semibold">Status</th>
+                                <th className="px-4 py-3 font-semibold">Ações</th>
+                                
+
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-100">
@@ -60,6 +63,9 @@ export default function Gerentes() {
                            
                             <td className="px-4 py-3 text-blue-900">
                                 {gerente.status}
+                            </td>
+                            <td className="px-4 py-3 text-blue-900">
+                               <Link href={`/gerentes/${gerente.id}/editar`}>Editar</Link>
                             </td>
                         </tr>
                         ))}

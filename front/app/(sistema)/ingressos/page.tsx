@@ -45,6 +45,7 @@ export default function Ingressos() {
                                 <th className="px-4 py-3 font-semibold">Status</th>
                                 <th className="px-4 py-3 font-semibold">Status Ingresso</th>
                                 <th className="px-4 py-3 font-semibold">Data Compra</th>
+                                <th className="px-4 py-3 font-semibold">Ações</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-100">
@@ -73,6 +74,9 @@ export default function Ingressos() {
                             </td>
                             <td className="px-4 py-3 text-blue-900">
                                {ingresso.dataCompra}
+                            </td>
+                            <td className="px-4 py-3 text-blue-900">
+                               <Link href={`/ingressos/${ingresso.id}/editar`}>Editar</Link>
                             </td>
                             </tr>
                             ))}

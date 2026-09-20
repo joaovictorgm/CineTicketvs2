@@ -20,7 +20,7 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     public String nome;
-    public int telefone;
+    public String telefone;
     public String email;
     public String senha;
     public String filme; //fk
