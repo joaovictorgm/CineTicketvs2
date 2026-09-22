@@ -12,6 +12,7 @@ export default function Sidebar(){
             <Link href="/ingressos" className="text-blue-100 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">Ingressos</Link>
             <Link href="/sessoes" className="text-blue-100 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">Sessões</Link>
             <Link href="/gerentes" className="text-blue-100 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">Gerentes</Link>
+            <Link href="/filmes" className="text-blue-100 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">Filmes</Link>
         </nav>
     </aside>);
 }
