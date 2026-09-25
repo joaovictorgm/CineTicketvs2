@@ -12,17 +12,50 @@ export default function Usuarios(){
 
     useEffect(() =>{
         carregarDados();
-    },[])
+    },[]);
 
     const carregarDados = async ()=> {
         try {
         const dados =  axios.get<Usuario[]>("http://localhost:8080/usuarios");
-        console.log("Resposta da API:", (await dados).data);
+       
         setUsuario((await dados).data);
 
     } catch (error) {
         alert("Erro ao carregar dados")
     }
+    }
+
+    const handlerDeletarUsuario = async(usuario:Usuario) =>{
+        var dadosRetorno = await axios.delete('http://localhost:8080/usuarios/'+usuario.id+'/excluir');
+
+        if(dadosRetorno.status == 200){
+            alert("Excluido com sucesso!");
+        } else {
+            alert(dadosRetorno.data);
+            return;
+        }
+
+        carregarDados();
+    }
+
+    const handleAlterarStatusUsuario = async(usuario:Usuario)=>{
+        var novoStatus = {};
+        if(usuario.status==="ATIVO"){
+            novoStatus = {status:"BLOQUEADO"}
+        } else{
+            novoStatus = {status:"ATIVO"}
+        }
+
+        var dadosRetorno = await axios.patch('http://localhost:8080/usuarios/'+usuario.id+'/status',novoStatus);
+        if(dadosRetorno.status===200){
+            alert("Atualizado status com sucesso!")
+        }else{
+            alert(dadosRetorno.data);
+
+            return;
+        }
+
+        carregarDados();
     }
 
     return (
@@ -67,8 +100,25 @@ export default function Usuarios(){
                                 {usuario.status}
                             </td>
                             <td className="px-4 py-3 text-blue-900">
-                               <Link href={`/usuarios/${usuario.id}/editar`}>Editar</Link>
-                            </td>
+    <div className="flex flex-col gap-1 items-start">
+        <Link href={`/usuarios/${usuario.id}/editar`} className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+            EDITAR
+        </Link>
+        <button onClick={() => handlerDeletarUsuario(usuario)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
+            DELETAR
+        </button>
+        <button
+            onClick={() => handleAlterarStatusUsuario(usuario)}
+            className={`font-medium transition-colors text-left ${
+                usuario.status === 'BLOQUEADO'
+                    ? 'text-orange-600 hover:text-orange-800'
+                    : 'text-green-600 hover:text-green-800'
+            }`}
+        >
+            {usuario.status}
+        </button>
+    </div>
+</td>
                         </tr>
                         ))}
 

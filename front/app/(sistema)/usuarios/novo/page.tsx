@@ -19,7 +19,7 @@ export default function CadastroUsuario(){
 
         </div>
         <div>
-            <UsuarioForm/>
+            <UsuarioForm />
         </div>
         </div>
         </div>
