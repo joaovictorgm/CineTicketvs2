@@ -7,7 +7,7 @@ export default function CadastroGerente(){
         <div className="min-h-screen bg-blue-100 p-8">
           <div className="max-w-4xl mx-auto">
             <div>
-                <Link href="/usuarios" className="text-sm text-blue-700 hover:underline">
+                <Link href="/gerentes" className="text-sm text-blue-700 hover:underline">
                     ← Voltar para listagem
                 </Link>
             <div className="flex items-center justify-between mt-3 mb-6 border-b border-blue-200 pb-4">

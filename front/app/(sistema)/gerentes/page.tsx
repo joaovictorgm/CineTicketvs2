@@ -1,6 +1,6 @@
 'use client'
 
-import Link from "@/node_modules/next/link";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Gerente } from "../types/gerente";
@@ -17,12 +17,47 @@ export default function Gerentes() {
     const carregarDados = async () => {
         try{
             const dados = axios.get<Gerente[]>("http://localhost:8080/gerentes");
-            console.log("Resposta da API:", (await dados).data);
             setGerente((await dados).data);
         } catch (error) {
             alert("Erro ao carregar dados")
         }
     }
+
+    const handlerDeletarGerente = async(gerente:Gerente) =>{
+        var dadosRetorno = await axios.delete('http://localhost:8080/gerentes/'+gerente.id+'/excluir')
+
+        if(dadosRetorno.status ==200){
+            alert("Excluido como sucesso!");
+        } else {
+            alert(dadosRetorno.data);
+            return;
+        }
+
+        carregarDados();
+    }
+
+    const handlerAlterarStatusGerente = async(gerente:Gerente)=>{
+        var novoStatus = {};
+        if(gerente.status==="ATIVO"){
+            novoStatus = {status:"EXCLUIDO"}
+        }else{
+            novoStatus = {status:"ATIVO"}
+        }
+
+        var dadosRetorno = await axios.patch('http://localhost:8080/usuarios/'+gerente.id+'/status',novoStatus);
+        if(dadosRetorno.status===200){
+            alert("Atualizado status como sucesso!")
+        }else{
+            alert(dadosRetorno.data);
+
+            return;
+        }
+
+        carregarDados();
+    
+    }
+
+
 
     return (
         <div className="bg-blue-50 p-8">
@@ -30,7 +65,7 @@ export default function Gerentes() {
                 <h1 className="text-2xl font-bold text-blue-900">
                     Gestao de gerentes
                 </h1>
-                <Link href="/gerentes/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"></Link>
+                <Link href="/gerentes/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Cadastrar novo gerente</Link>
             </div>
 
             <div>
@@ -64,9 +99,20 @@ export default function Gerentes() {
                             <td className="px-4 py-3 text-blue-900">
                                 {gerente.status}
                             </td>
-                            <td className="px-4 py-3 text-blue-900">
-                               <Link href={`/gerentes/${gerente.id}/editar`}>Editar</Link>
-                            </td>
+                            <div className="flex flex-col gap-1 items-start">
+                            <Link href={`/gerentes/${gerente.id}/editar`}>EDITAR</Link>
+                            <button onClick={() => handlerDeletarGerente(gerente)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
+                                DELETAR
+                            </button>
+                            <button onClick={()=>handlerAlterarStatusGerente(gerente)} className={`font-medium transition-colors text-left ${
+                gerente.status === 'EXCLUIDO'
+                    ? 'text-orange-600 hover:text-orange-800'
+                    : 'text-green-600 hover:text-green-800'
+            }`}
+        >
+            {gerente.status}</button>
+                            </div>
+                            
                         </tr>
                         ))}
                           { gerentes.length ===0 &&(

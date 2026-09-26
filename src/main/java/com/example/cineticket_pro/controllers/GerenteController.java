@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/gerente")
+@RequestMapping("/gerentes")
 @Tag(name="Gerentes",description = "Métodos responsáveis pelo cadastro e consulta de gerentes do sistema")
 public class GerenteController {
 

@@ -2,13 +2,34 @@
 
 import Link from "next/link";
 import GerenteForm from "../../components/GerenteForm";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Gerente } from "@/app/(sistema)/types/gerente";
+import axios from "axios";
 
 export default function EditarGerente(){
 
     const parametro = useParams();
 
+
     const codigo = Number(parametro.codigo);
+    const [gerente, setGerente] = useState<Gerente | null>(null)
+    const router = useRouter();
+
+    useEffect(()=>{
+        buscarDados();
+    },[]);
+
+    const buscarDados = async()=>{
+        const valorGerenteBack = await axios.get<Gerente>('http://localhost:8080/gerentes/'+codigo)
+
+        if(valorGerenteBack.status===200){
+            setGerente(valorGerenteBack.data);
+        }else{
+            router.push("/gerentes")
+        }
+    } 
+    if(!gerente) return(<div className="p-2">Carregando Dados</div>)
     return(
         <div>
           <div>
@@ -25,7 +46,7 @@ export default function EditarGerente(){
 
         </div>
         <div>
-            <GerenteForm/>
+            <GerenteForm gerenteExistente={gerente}/>
         </div>
         </div>
         </div>

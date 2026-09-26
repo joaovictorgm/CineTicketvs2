@@ -31,7 +31,7 @@ const carregarDados = async()=>{
                 <h1 className="text-2xl font-bold text-blue-900">
                     Gestão de Filmes
                 </h1>
-                <Link href="/filmes/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"></Link>
+                <Link href="/filmes/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Cadastrar novo filme</Link>
             </div>
             <div>
                 <div className="bg-white rounded-xl shadow-md overflow-hidden">

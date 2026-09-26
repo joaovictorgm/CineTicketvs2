@@ -64,7 +64,7 @@ export default function Usuarios(){
             <h1 className="text-2xl font-bold text-blue-900">
                Gestao de usuarios
             </h1>
-            <Link href="/usuarios/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"></Link>
+            <Link href="/usuarios/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Novo Usuario</Link>
         </div>
         <div>
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -101,7 +101,7 @@ export default function Usuarios(){
                             </td>
                             <td className="px-4 py-3 text-blue-900">
     <div className="flex flex-col gap-1 items-start">
-        <Link href={`/usuarios/${usuario.id}/editar`} className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+   <Link href={`/usuarios/${usuario.id}/editar`} className="text-blue-600 hover:underline">
             EDITAR
         </Link>
         <button onClick={() => handlerDeletarUsuario(usuario)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">

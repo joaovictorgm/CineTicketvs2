@@ -1,5 +1,3 @@
-
-
 export default function Header(){
 
     return(
@@ -7,9 +5,9 @@ export default function Header(){
     <div className="flex items-center justify-between px-8 py-4">
         <div className="flex items-center gap-2">
             <div className="bg-blue-100 text-blue-600 rounded-full p-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
-                    <path d=" 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                    <circle/>                  
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
                 </svg>
             </div>
             <span className="text-blue-900 font-medium"> Usuário Teste</span>

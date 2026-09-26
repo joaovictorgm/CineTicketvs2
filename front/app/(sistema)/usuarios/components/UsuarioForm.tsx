@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Usuario, UsuarioFormProps } from "../../types/usuario";
 import axios from "axios";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function UsuarioForm({usuarioExistente}:UsuarioFormProps) {
 

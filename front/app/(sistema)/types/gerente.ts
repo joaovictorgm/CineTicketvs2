@@ -3,7 +3,12 @@ export class Gerente{
         public id: number| null,
         public nome: string,
         public email: string,
+        public senha: string,
         public status: string,
 
     ){}
+
+    }
+    export interface GerenteFormProps{
+        gerenteExistente?:Gerente
 }

@@ -29,14 +29,15 @@ export default function EditarUsuario(){
      if(valorUsuarioBack.status==200){
         setUsuario(valorUsuarioBack.data);
      }else{
+        router.push("/usuarios")
         
      }
 
-     router.push("/usuarios")
+     
 
     }
 
-    if(!usuario) return(<div className="p-1">Carregar Dador</div>)
+    if(!usuario) return(<div className="p-1">Carregando Dados</div>)
     return(
         <div>
           <div>
@@ -48,12 +49,12 @@ export default function EditarUsuario(){
             <h1 className="text-xl font-semibold text-blue-900">
                 <span>Editar Usuário {codigo}</span>
             </h1>
-            <p className="text-sm text-blue-500">Prencha os dados para registrar um editar usuário</p>
+            <p className="text-sm text-blue-500">Prencha os dados para registrar  editar o  usuário</p>
           </div>
 
         </div>
         <div>
-            <UsuarioForm/>
+            <UsuarioForm usuarioExistente={usuario}/>
         </div>
         </div>
         </div>
