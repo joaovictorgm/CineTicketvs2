@@ -8,20 +8,61 @@ import axios from "axios";
 
 export default function Ingressos() {
 
-    const [ingressos , setIngresso] = useState<Ingresso[]>([]);
+    const [ingressos, setIngresso] = useState<Ingresso[]>([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         carregarDados();
-    },[])
+    }, [])
 
     const carregarDados = async () => {
-        try{
+        try {
             const dados = axios.get<Ingresso[]>("http://localhost:8080/ingressos");
             setIngresso((await dados).data);
 
-        } catch(error){
-            alert("Erro ao carregar dados")}
+        } catch (error) {
+            alert("Erro ao carregar dados")
+        }
     }
+
+    const handlerDeletarIngresso = async (ingresso: Ingresso) => {
+        var dadosRetorno = await axios.delete('http://localhost:8080/ingressos/' + ingresso.id + '/excluir')
+
+        if (dadosRetorno.status == 200) {
+            alert("Excluido com sucesso!");
+        } else {
+            alert(dadosRetorno.data);
+            return;
+        }
+
+        carregarDados();
+
+
+    }
+
+    const handlerAlterarStatusIngresso = async (ingresso: Ingresso) => {
+        var novoStatus = {};
+        if (ingresso.status == "ATIVO") {
+            novoStatus = { status: "BLOQUEADO" }
+        } else {
+            novoStatus = { status: "ATIVO" }
+        }
+
+        var dadosRetorno = await axios.patch('http://localhost:8080/ingressos/' + ingresso.id + '/status', novoStatus)
+        if (dadosRetorno.status == 200) {
+            alert("Atualizado status com sucesso!")
+
+        } else {
+            alert(dadosRetorno.data);
+            return;
+        }
+
+        carregarDados();
+
+    }
+
+
+
+
 
     return (
         <div className="bg-blue-50 p-8">
@@ -29,7 +70,7 @@ export default function Ingressos() {
                 <h1 className="text-2xl font-bold text-blue-900">
                     Gestao de Ingressos
                 </h1>
-                <Link href="/ingressos/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"></Link>
+                <Link href="/ingressos/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Cadastrar novo ingresso</Link>
             </div>
 
             <div>
@@ -49,49 +90,66 @@ export default function Ingressos() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-100">
-                            {ingressos.map((ingresso)=>(
-                        <tr key={ingresso.id} className="hover:bg-blue-50">
-                            <td className="px-4 py-3 text-blue-900">
-                               {ingresso.id}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                                {ingresso.sessao}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                                {ingresso.filme}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                                {ingresso.assento}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                                {ingresso.valorPago}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                                {ingresso.status}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                                {ingresso.statusIngresso}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                               {ingresso.dataCompra}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                               <Link href={`/ingressos/${ingresso.id}/editar`}>Editar</Link>
-                            </td>
-                            </tr>
-                            ))}
-                            {ingressos.length == 0 && (
+                            {ingressos.map((ingresso) => (
+                                <tr key={ingresso.id} className="hover:bg-blue-50">
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {ingresso.id}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {ingresso.sessao}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {ingresso.filme}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {ingresso.assento}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {ingresso.valorPago}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {ingresso.status}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {ingresso.statusIngresso}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {ingresso.dataCompra}
+                                    </td>
+                                    <div className="flex flex-col gap-1 items-start">
+                                        <Link href={`/ingressos/${ingresso.id}/editar`} className="text-blue-600 hover:underline">
+                                            EDITAR
+                                        </Link>
+                                        <button onClick={() => handlerDeletarIngresso(ingresso)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
+                                            DELETAR
+                                        </button>
+                                        <button
+                                            onClick={() => handlerAlterarStatusIngresso(ingresso)}
+                                            className={`font-medium transition-colors text-left ${ingresso.status === 'BLOQUEADO'
+                                                    ? 'text-orange-600 hover:text-orange-800'
+                                                    : 'text-green-600 hover:text-green-800'
+                                                }`}
+                                        >
+                                            {ingresso.status}
+                                        </button>
+                                    </div>
+                                </tr>
+
+                        
+                        ))}
+
+                        {ingressos.length === 0 && (
                             <tr>
-                                <td colSpan={8} className="px-6 py-12 text-center text">
-                                    Nenhum ingresso encontrado
+                                <td colSpan={4} className="px-6 py-12 text-center text">
+                                    Nenhum ingresso Encontrado
                                 </td>
                             </tr>
-                        ) }
-                        </tbody>
-                    </table>
-                </div>
+                        )}
+                    </tbody>
+                </table>
             </div>
+        </div>
             
 
-           </div> )
+           </div > )
 }

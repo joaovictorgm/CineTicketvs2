@@ -2,13 +2,17 @@ export class Filme{
     constructor(
         public id :number | null,
         public titulo: string,
-        public duracaoMinutos: number,
-        public classificacaoEtaria:number,
-        public dataEstreia: String
+        public duracaoMinutos: string,
+        public classificacaoEtaria:string,
+        public dataEstreia: string
 
 
 
     ){}
 
    
+}
+
+export interface FilmeFormProps{
+    filmeExistente?:Filme
 }

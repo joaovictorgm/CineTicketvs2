@@ -1,56 +1,103 @@
-import Link from "next/link";
+'use client'
 
-export default function SessaoForm() {
+
+import Link from "next/link";
+import { Sessao, SessaoFormProps } from "../../types/sessao";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import axios from "axios";
+
+export default function SessaoForm({ sessaoExistente }: SessaoFormProps) {
+
+    const router = useRouter();
+
+    const [sessao, setSessao] = useState<Sessao>(sessaoExistente || new Sessao(null, "", "", "", "ATIVO", "ATIVO", "", 0))
+
+
+    const handlerChange = (campo: 'filme' | 'data' | 'sala' | 'status' | 'statusSessao' | 'preco' | 'assentosDisponiveis', valor: string) => {
+        setSessao(valorAnterior =>
+            new Sessao(
+                valorAnterior.id,
+                campo === 'filme' ? valor : valorAnterior.filme,
+                campo === 'data' ? valor : valorAnterior.data,
+                campo === 'sala' ? valor : valorAnterior.sala,
+                valorAnterior.status,
+                valorAnterior.statusSessao,
+                campo === 'preco' ? valor : valorAnterior.preco,
+                campo === 'assentosDisponiveis' ? Number(valor) : valorAnterior.assentosDisponiveis,
+
+            )
+        )
+    }
+
+    const handlerSalvar = async (formData: FormData) => {
+
+        if (sessaoExistente) {
+            var dadosRetorno = await axios.put<number>('http://localhost:8080/sessoes' + sessao.id, sessao)
+
+            if (dadosRetorno.status == 200) {
+                alert("Sessão foi salva com sucesso!");
+            } else {
+                alert(dadosRetorno.data);
+                return;
+            }
+
+
+        } else {
+
+
+            var dadosRetorno = await axios.post<number>('http://localhost:8080/sessoes', sessao)
+
+            if (dadosRetorno.status == 200) {
+                alert("Sessao foi salva com sucesso!");
+            } else {
+                alert(dadosRetorno.data);
+
+                return;
+            }
+
+            router.push("/sessoes")
+
+        }
+
+    }
+
     return (
-        <form className="bg-white rounded-lg border border-blue-100">
+        <form action={handlerSalvar} className="bg-white rounded-lg border border-blue-100">
             <div className="grid grid-cols-2 gap-x-6 gap-y-4 p-6">
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                    Filme
+                        Filme
                     </label>
-                    <input name="Filme" className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <input name="Filme" value={sessao.filme} onChange={(e) => handlerChange('filme', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
                     </input>
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                     Data
+                        Data
                     </label>
-                    <input name="Data" className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <input name="Data" value={sessao.data} onChange={(e) => handlerChange('data', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
                     </input>
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                      Sala
+                        Sala
                     </label>
-                    <input name="Sala" className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <input name="Sala" value={sessao.sala} onChange={(e) => handlerChange('sala', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
                     </input>
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                     Status
+                        Preço
                     </label>
-                    <input name="status" className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <input name="preco" value={sessao.preco}  onChange={(e)=> handlerChange('preco',e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
                     </input>
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                    Status Sessao
+                        Assentos disponiveis
                     </label>
-                    <input name="stusessao" className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                    </input>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                    Preço
-                    </label>
-                    <input name="preco" className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                    </input>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                    Assentos disponiveis
-                    </label>
-                    <input name="assdisponiveis" className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <input name="assdisponiveis" value={sessao.assentosDisponiveis}  onChange={(e)=> handlerChange('assentosDisponiveis',e.target.value)}className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
                     </input>
                 </div>
             </div>

@@ -29,7 +29,7 @@ export default function EditarGerente(){
             router.push("/gerentes")
         }
     } 
-    if(!gerente) return(<div className="p-2">Carregando Dados</div>)
+    if(!gerente) return(<div className="p-4">Carregando Dados</div>)
     return(
         <div>
           <div>

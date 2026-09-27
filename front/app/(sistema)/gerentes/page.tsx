@@ -39,7 +39,7 @@ export default function Gerentes() {
     const handlerAlterarStatusGerente = async(gerente:Gerente)=>{
         var novoStatus = {};
         if(gerente.status==="ATIVO"){
-            novoStatus = {status:"EXCLUIDO"}
+            novoStatus = {status:"BLOQUEADO"}
         }else{
             novoStatus = {status:"ATIVO"}
         }
@@ -95,6 +95,9 @@ export default function Gerentes() {
                             <td className="px-4 py-3 text-blue-900">
                                 {gerente.email}
                             </td>
+                            <td className="px-4 py-3 text-blue-900">
+                                {gerente.senha}
+                            </td>
                            
                             <td className="px-4 py-3 text-blue-900">
                                 {gerente.status}
@@ -117,7 +120,7 @@ export default function Gerentes() {
                         ))}
                           { gerentes.length ===0 &&(
                             <tr>
-                                <td colSpan={5} className="px-6 py-12 text-center text">
+                                <td colSpan={6} className="px-6 py-12 text-center text">
                                     Nenhum gerente encontrado
                                 </td>
                             </tr>

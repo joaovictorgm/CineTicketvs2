@@ -22,13 +22,40 @@ const carregarDados = async () =>{
     }
 }
 
+const handlerDeletarSessao = async(sessao:Sessao)=>{
+    var dadosRetorno = await axios.delete('http://localhost:8080/sessoes/'+sessao.id+'/excluir')
+    
+    if(dadosRetorno.status==200){
+        alert("Excluido com sucesso!")
+    } else {
+        alert(dadosRetorno.data);
+        return;
+    }
+
+    carregarDados();
+
+}
+
+const handlerAlterarStatusSessao = async(sessao:Sessao)=>{
+    var novoStatus = {};
+    if(sessao.status=="ATIVO"){
+        novoStatus = {status:"BLOQUEADO"}
+    } else{
+        novoStatus = {status:"ATIVO"};
+
+        return;
+    }
+
+    carregarDados();
+}
+
     return (
         <div className="bg-blue-50 p-8">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-blue-900">
                     Gestao de Sessões
                 </h1>
-                <Link href="/sessoes/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"></Link>
+                <Link href="/sessoes/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Cadastrar nova Sessão</Link>
             </div>
             <div>
                 <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -81,18 +108,27 @@ const carregarDados = async () =>{
                             <td className="px-4 py-3 text-blue-900">
                                 {sessao.assentosDisponiveis}
                             </td>
-                             <td className="px-4 py-3 text-blue-900">
-                               <Link href={`/sessoes/${sessao.id}/editar`}>Editar</Link>
-                            </td>
-                        </tr>
-                        ))} 
-                        {sessoes.length == 0 && (
-                            <tr>
-                                <td colSpan={8} className="px-6 py-12 text-center text">
-                                    Nenhuma sessão encontrada
-                                </td>
-                            </tr>
-                        ) }
+                             <div className="flex flex-col gap-1 items-start">
+   <Link href={`/sessoes/${sessao.id}/editar`} className="text-blue-600 hover:underline">
+            EDITAR
+        </Link>
+        <button onClick={() => handlerDeletarSessao(sessao)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
+            DELETAR
+        </button>
+        <button
+            onClick={() => handlerAlterarStatusSessao(sessao)}
+            className={`font-medium transition-colors text-left ${
+                sessao.status === 'BLOQUEADO'
+                    ? 'text-orange-600 hover:text-orange-800'
+                    : 'text-green-600 hover:text-green-800'
+            }`}
+        >
+            {sessao.status}
+        </button>
+    </div>
+    </tr>
+                        
+                        ))}
                         </tbody>
                     </table>
                 </div>

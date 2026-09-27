@@ -25,8 +25,28 @@ const carregarDados = async()=>{
     }
     }
 
+    const handlerDeletarFilme = async (filme:Filme) =>{
+        var dadosRetorno = await axios.delete('http://localhost:8080/filmes/'+filme.id+'/excluir');
+
+        if(dadosRetorno.status ==200){
+            alert("Excluido com sucesso!")
+        } else {
+            alert(dadosRetorno.data);
+            return;
+        }
+        carregarDados();
+    }
+
+    //filme vai precisar de uma mudança de estado
+    /*const handlerAlterarStatusFilme = async(filme:Filme)=>{
+        var novoStatus = {};
+        if(filme.status==="ATIVO"){
+            novoStatus = 
+        }
+    }*/
+
     return(
-           <div className="min-h-screen bg-blue-100 p-8">
+           <div className=" bg-blue-100 p-8">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-blue-900">
                     Gestão de Filmes
@@ -46,26 +66,35 @@ const carregarDados = async()=>{
                                <th className="px-4 py-3 font-semibold">Ações</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-blue-100">
-                            {filmes.map((filme)=>(
-                                <tr key={filme.id} className="hover:bg-blue-50">
-                                     <td className="px-4 py-3 text-blue-900">{filme.id}</td>
-                                    <td className="px-4 py-3 text-blue-900">{filme.titulo}</td>
-                                    <td className="px-4 py-3 text-blue-900">{filme.duracaoMinutos}</td>
-                                    <td className="px-4 py-3 text-blue-900">{filme.classificacaoEtaria}</td>
-                                    <td className="px-4 py-3 text-blue-900">{filme.dataEstreia}</td>
-                                    <td className="px-4 py-3"><Link href={`/filmes/${filme.id}/editar`} className="text-blue-600 hover:underline">Editar</Link></td>
-                                </tr>
+                       <tbody className="divide-y divide-blue-100">
+    {filmes.map((filme) => (
+        <tr key={filme.id} className="hover:bg-blue-50">
+            <td className="px-4 py-3 text-blue-900">{filme.id}</td>
+            <td className="px-4 py-3 text-blue-900">{filme.titulo}</td>
+            <td className="px-4 py-3 text-blue-900">{filme.duracaoMinutos}</td>
+            <td className="px-4 py-3 text-blue-900">{filme.classificacaoEtaria}</td>
+            <td className="px-4 py-3 text-blue-900">{filme.dataEstreia}</td>
+            <td className="px-4 py-3 text-blue-900">
+                <div className="flex flex-col gap-1 items-start">
+                    <Link href={`/filmes/${filme.id}/editar`} className="text-blue-600 hover:underline">
+                        Editar
+                    </Link>
+                    <button onClick={() => handlerDeletarFilme(filme)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
+                        DELETAR
+                    </button>
+                </div>
+            </td>
+        </tr>
+    ))}
 
-                            ))}
-                            {filmes.length ===0 &&(
-                                <tr>
-                                    <td colSpan={5} className="px-4 py-6 text-center text-blue-500">
-                                        Nenhum filme encontrado
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
+    {filmes.length === 0 && (
+        <tr>
+            <td colSpan={6} className="px-4 py-6 text-center text-blue-500">
+                Nenhum filme encontrado
+            </td>
+        </tr>
+    )}
+</tbody>
                     </table>
                 </div>
             </div>

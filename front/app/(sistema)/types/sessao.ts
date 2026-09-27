@@ -6,7 +6,11 @@ export class Sessao{
         public sala: string,
         public status: string,
         public statusSessao:string,
-        public preco:number,
+        public preco:string,
         public assentosDisponiveis: number,
     ){}
+}
+
+export interface SessaoFormProps{
+    sessaoExistente?:Sessao
 }

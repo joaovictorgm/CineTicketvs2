@@ -1,10 +1,10 @@
 export class Ingresso{
     constructor(
         public id: number | null,
-        public sessao: String,
-        public filme: String,
-        public assento: number,
-        public valorPago:number,
+        public sessao: string,
+        public filme: string,
+        public assento: string,
+        public valorPago:string,
         public status: string,
         public statusIngresso: string,
         public dataCompra: string,
@@ -12,3 +12,7 @@ export class Ingresso{
 
     ){}
 }
+
+    export interface IngressoFormProps{
+        ingressoExistente?:Ingresso
+    }

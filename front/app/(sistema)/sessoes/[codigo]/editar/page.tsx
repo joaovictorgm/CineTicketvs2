@@ -2,18 +2,43 @@
 
 import Link from "next/link";
 import SessaoForm from "../../components/SessaoForm";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Sessao } from "@/app/(sistema)/types/sessao";
 
 export default function EditarSessao(){
 
     const parametro = useParams();
 
     const codigo = Number(parametro.codigo);
+
+    const[sessao,setSessao] = useState<Sessao | null>(null)
+
+    const router = useRouter();
+
+    useEffect(()=>{
+        buscarDados();
+    },[]);
+
+    const buscarDados = async() =>{
+
+        const valorSessaoBack = await axios.get<Sessao>('http://localhost:8080/sessoes/'+codigo)
+     
+        if(valorSessaoBack.status==200){
+            setSessao(valorSessaoBack.data);
+        }else{
+            router.push("/sessoes")
+        }
+    
+    }
+
+    if(!sessao) return(<div className="p-5">Carregando Dados</div>)
     return(
         <div>
           <div>
             <div>
-                <Link href="/usuarios" className="text-sm text-blue-600 hover:underline">
+                <Link href="/sessoes" className="text-sm text-blue-600 hover:underline">
                     ← Voltar para listagem
                 </Link>
             <div className="flex items-center justify-between mt-3 mb-6 border-b border-blue-100 pb-4">
@@ -25,7 +50,7 @@ export default function EditarSessao(){
 
         </div>
         <div>
-            <SessaoForm/>
+            <SessaoForm sessaoExistente={sessao}/>
         </div>
         </div>
         </div>
