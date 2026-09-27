@@ -28,7 +28,7 @@ export default function Ingressos() {
         var dadosRetorno = await axios.delete('http://localhost:8080/ingressos/' + ingresso.id + '/excluir')
 
         if (dadosRetorno.status == 200) {
-            alert("Excluido com sucesso!");
+            alert("A venda foi realizda com sucesso!");
         } else {
             alert(dadosRetorno.data);
             return;
@@ -41,10 +41,10 @@ export default function Ingressos() {
 
     const handlerAlterarStatusIngresso = async (ingresso: Ingresso) => {
         var novoStatus = {};
-        if (ingresso.status == "ATIVO") {
-            novoStatus = { status: "BLOQUEADO" }
+        if (ingresso.statusIngresso == "DISPONIVEL") {
+            novoStatus = { status: "PAGO" }
         } else {
-            novoStatus = { status: "ATIVO" }
+            novoStatus = { status: "DISPONIVEL" }
         }
 
         var dadosRetorno = await axios.patch('http://localhost:8080/ingressos/' + ingresso.id + '/status', novoStatus)
@@ -108,7 +108,7 @@ export default function Ingressos() {
                                         {ingresso.valorPago}
                                     </td>
                                     <td className="px-4 py-3 text-blue-900">
-                                        {ingresso.status}
+                                        {ingresso.statusTipo}
                                     </td>
                                     <td className="px-4 py-3 text-blue-900">
                                         {ingresso.statusIngresso}
@@ -116,23 +116,26 @@ export default function Ingressos() {
                                     <td className="px-4 py-3 text-blue-900">
                                         {ingresso.dataCompra}
                                     </td>
+                                     <td className="px-4 py-3 text-blue-900">
                                     <div className="flex flex-col gap-1 items-start">
                                         <Link href={`/ingressos/${ingresso.id}/editar`} className="text-blue-600 hover:underline">
                                             EDITAR
                                         </Link>
                                         <button onClick={() => handlerDeletarIngresso(ingresso)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
-                                            DELETAR
+                                            VENDER
                                         </button>
                                         <button
                                             onClick={() => handlerAlterarStatusIngresso(ingresso)}
-                                            className={`font-medium transition-colors text-left ${ingresso.status === 'BLOQUEADO'
-                                                    ? 'text-orange-600 hover:text-orange-800'
+                                            className={`font-medium transition-colors text-left ${
+                                                ingresso.statusIngresso === 'PAGO'
+                                                    ? 'text-orange-600 hover:text-blue-800'
                                                     : 'text-green-600 hover:text-green-800'
                                                 }`}
                                         >
-                                            {ingresso.status}
+                                            {ingresso.statusIngresso}
                                         </button>
                                     </div>
+                                    </td>
                                 </tr>
 
                         
@@ -140,7 +143,7 @@ export default function Ingressos() {
 
                         {ingressos.length === 0 && (
                             <tr>
-                                <td colSpan={4} className="px-6 py-12 text-center text">
+                                <td colSpan={9} className="px-6 py-12 text-center text">
                                     Nenhum ingresso Encontrado
                                 </td>
                             </tr>

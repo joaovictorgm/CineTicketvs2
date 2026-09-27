@@ -26,7 +26,7 @@ export default function GerenteForm({gerenteExistente}:GerenteFormProps) {
 
     const handlerSalvar = async (formData: FormData) =>{
         if(gerenteExistente){
-            var dadosRetorno = await axios.put<number>('http://localhost:8080/gerentes'+gerente.id,gerente)
+            var dadosRetorno = await axios.put<number>('http://localhost:8080/gerentes/'+gerente.id,gerente)
         if(dadosRetorno.status == 200){
             alert("Gerente foi salvo com sucesso!")
         } else {
@@ -73,13 +73,7 @@ export default function GerenteForm({gerenteExistente}:GerenteFormProps) {
                     <input name="Senha" value={gerente.senha} placeholder="*******"  onChange={(e)=>handlerChange('senha',e.target.value)}className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
                     </input>
                 </div>
-                <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                    Status
-                    </label>
-                    <input name="status" value={gerente.status}className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                    </input>
-                </div>
+                
                 
             </div>
             <div className="flex justify-end gap-3 border-t border-blue-100 px-6 py-4">

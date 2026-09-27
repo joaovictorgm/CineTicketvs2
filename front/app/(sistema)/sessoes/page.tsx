@@ -1,6 +1,6 @@
 'use client'
 
-import Link from "@/node_modules/next/link";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Sessao } from "../types/sessao";
 import axios from "axios";
@@ -38,11 +38,36 @@ const handlerDeletarSessao = async(sessao:Sessao)=>{
 
 const handlerAlterarStatusSessao = async(sessao:Sessao)=>{
     var novoStatus = {};
-    if(sessao.status=="ATIVO"){
-        novoStatus = {status:"BLOQUEADO"}
+    if(sessao.statusSessao==="ATIVO"){
+        novoStatus = {statusSessao:"DESATIVADO"}
     } else{
-        novoStatus = {status:"ATIVO"};
+        novoStatus = {statusSessao:"ATIVO"}
+    }
 
+    var dadosRetorno = await axios.patch('http://localhost:8080/sessoes/'+sessao.id+'/status-sessao', novoStatus);
+    if(dadosRetorno.status===200){
+        alert("Atualizado status com sucesso!")
+    }else{
+        alert(dadosRetorno.data);
+        return;
+    }
+
+    carregarDados();
+}
+
+const handlerAlterarTipoSessao = async(sessao:Sessao)=>{
+    var novoTipo = {};
+    if(sessao.status==="EXIBIÇÃO_2D"){
+        novoTipo = {statusExibicao:"EXIBICÃO_3D"}
+    } else{
+        novoTipo = {statusExibicao:"EXIBIÇÃO_2D"}
+    }
+
+    var dadosRetorno = await axios.patch('http://localhost:8080/sessoes/'+sessao.id+'/status', novoTipo);
+    if(dadosRetorno.status===200){
+        alert("Atualizado tipo com sucesso!")
+    }else{
+        alert(dadosRetorno.data);
         return;
     }
 
@@ -108,6 +133,7 @@ const handlerAlterarStatusSessao = async(sessao:Sessao)=>{
                             <td className="px-4 py-3 text-blue-900">
                                 {sessao.assentosDisponiveis}
                             </td>
+                            <td className="px-4 py-3 text-blue-900">
                              <div className="flex flex-col gap-1 items-start">
    <Link href={`/sessoes/${sessao.id}/editar`} className="text-blue-600 hover:underline">
             EDITAR
@@ -118,17 +144,35 @@ const handlerAlterarStatusSessao = async(sessao:Sessao)=>{
         <button
             onClick={() => handlerAlterarStatusSessao(sessao)}
             className={`font-medium transition-colors text-left ${
-                sessao.status === 'BLOQUEADO'
+                sessao.statusSessao === 'BLOQUEADO'
                     ? 'text-orange-600 hover:text-orange-800'
                     : 'text-green-600 hover:text-green-800'
             }`}
         >
             {sessao.status}
         </button>
+        <button
+    onClick={() => handlerAlterarTipoSessao(sessao)}
+    className={`font-medium transition-colors text-left ${
+        sessao.status === 'EXIBIÇÃO_2D'
+            ? 'text-orange-600 hover:text-blue-800'
+            : 'text-green-600 hover:text-green-800'
+    }`}
+>
+    {sessao.statusSessao}
+</button>
     </div>
-    </tr>
-                        
+    </td>
+                        </tr>
                         ))}
+                             { sessoes.length ===0 &&(
+                            <tr>
+                                <td colSpan={6} className="px-6 py-12 text-center text">
+                                    Nenhuma sessao Encontrada
+                                </td>
+                            </tr>
+                        )}
+                        
                         </tbody>
                     </table>
                 </div>

@@ -5,7 +5,7 @@ export class Ingresso{
         public filme: string,
         public assento: string,
         public valorPago:string,
-        public status: string,
+        public statusTipo: string,
         public statusIngresso: string,
         public dataCompra: string,
 

@@ -4,7 +4,8 @@ export class Filme{
         public titulo: string,
         public duracaoMinutos: string,
         public classificacaoEtaria:string,
-        public dataEstreia: string
+        public dataEstreia: string,
+        public status:string
 
 
 

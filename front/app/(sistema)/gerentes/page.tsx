@@ -44,7 +44,7 @@ export default function Gerentes() {
             novoStatus = {status:"ATIVO"}
         }
 
-        var dadosRetorno = await axios.patch('http://localhost:8080/usuarios/'+gerente.id+'/status',novoStatus);
+        var dadosRetorno = await axios.patch('http://localhost:8080/gerentes/'+gerente.id+'/status',novoStatus);
         if(dadosRetorno.status===200){
             alert("Atualizado status como sucesso!")
         }else{
@@ -102,6 +102,7 @@ export default function Gerentes() {
                             <td className="px-4 py-3 text-blue-900">
                                 {gerente.status}
                             </td>
+                            <td className="px-4 py-3 text-blue-900">
                             <div className="flex flex-col gap-1 items-start">
                             <Link href={`/gerentes/${gerente.id}/editar`}>EDITAR</Link>
                             <button onClick={() => handlerDeletarGerente(gerente)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
@@ -115,7 +116,7 @@ export default function Gerentes() {
         >
             {gerente.status}</button>
                             </div>
-                            
+                            </td>
                         </tr>
                         ))}
                           { gerentes.length ===0 &&(

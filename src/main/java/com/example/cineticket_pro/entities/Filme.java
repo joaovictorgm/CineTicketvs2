@@ -22,9 +22,9 @@ public class Filme {
 
     public Long id;
     public String titulo;
-    public int duracaoMinutos;
-    public int classificacaoEtaria;
-    public LocalDate dataEstreia;
+    public String duracaoMinutos;
+    public String classificacaoEtaria;
+    public String dataEstreia;
 
     public EnumStatusFilme statusFilme = EnumStatusFilme.ATIVO;
 

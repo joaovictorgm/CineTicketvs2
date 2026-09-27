@@ -10,7 +10,7 @@ export default function FilmeForm({filmeExistente}:FilmeFormProps) {
 
     const router = useRouter();
 
-    const [filme, setFilme] = useState<Filme>(filmeExistente || new Filme(null,"","","",""));
+    const [filme, setFilme] = useState<Filme>(filmeExistente || new Filme(null,"","","","","ATIVO"));
 
     const handlerChange = (campo: 'titulo' | 'duracaoMinutos' | 'classificacaoEtaria' | 'dataEstreia', valor:string) =>{
         setFilme(valorAnterior =>
@@ -20,13 +20,14 @@ export default function FilmeForm({filmeExistente}:FilmeFormProps) {
                 campo === 'duracaoMinutos' ? valor : valorAnterior.duracaoMinutos,
                 campo === 'classificacaoEtaria' ? valor : valorAnterior.classificacaoEtaria,
                 campo === 'dataEstreia' ? valor : valorAnterior.dataEstreia,
+                valorAnterior.status
             )
         )
     }
     const handlerSalvar = async (formData: FormData) =>{
 
         if(filmeExistente){
-            var dadosRetorno = await axios.put<number>('http://localhost:8080/filmes'+filme.id,filme)
+            var dadosRetorno = await axios.put<number>('http://localhost:8080/filmes/'+filme.id,filme)
 
         if(dadosRetorno.status == 200){
             alert("Filme foi salvo com sucesso!");

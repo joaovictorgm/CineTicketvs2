@@ -1,6 +1,7 @@
 package com.example.cineticket_pro.controllers;
 
 import com.example.cineticket_pro.DTOs.AtualizarSessaoRequest;
+import com.example.cineticket_pro.DTOs.AtualizarStatusSessaoRequest;
 import com.example.cineticket_pro.entities.EnumStatusSessao;
 import com.example.cineticket_pro.entities.Sessao;
 import com.example.cineticket_pro.repository.SessaoRepository;
@@ -54,6 +55,18 @@ public class SessaoController {
         }
         return ResponseEntity.notFound().build();
     }
+    @PatchMapping("/{id}/status-sessao")
+    @Operation(summary = "Método de atualização do status ativo/desativado da sessão", description = "Método responsável por ativar ou desativar uma sessão já cadastrada")
+    public ResponseEntity<Void> atualizarStatusSessao(@PathVariable Long id, @RequestBody AtualizarStatusSessaoRequest statusRequest){
+        Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
+        if(sessaoBanco != null){
+            sessaoBanco.setStatusSessao(statusRequest.statusSessao());
+            sessaoRepository.save(sessaoBanco);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 
     @PutMapping("{id}")
     @Operation(summary = "Método de atualização de sessão", description = "Método responsável por atualizar os dados completos de uma sessão já cadastrada")
@@ -62,6 +75,7 @@ public class SessaoController {
             Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
             if(sessaoBanco!=null){
                 sessaoBanco.setStatus(sessao.getStatus());
+                sessaoBanco.setStatusSessao(sessao.getStatusSessao());
                 sessaoBanco.setData(sessao.getData());
                 sessaoBanco.setFilme(sessao.getFilme());
                 sessaoBanco.setSala(sessao.getSala());

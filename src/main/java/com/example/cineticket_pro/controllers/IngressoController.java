@@ -51,7 +51,7 @@ public class IngressoController {
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusIngressoRequest statusIngressoRequest) {
         Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
         if (ingressoBanco != null) {
-            ingressoBanco.setStatus(statusIngressoRequest.statusIngressoRequest());
+            ingressoBanco.setStatusTipo(statusIngressoRequest.statusIngressoRequest());
             ingressoRepository.save(ingressoBanco);
             return ResponseEntity.ok().build();
         }
@@ -64,7 +64,8 @@ public class IngressoController {
         try{
             Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
             if(ingressoBanco != null){
-                ingressoBanco.setStatus(ingresso.getStatus());
+                ingressoBanco.setStatusTipo(ingresso.getStatusTipo());
+                ingressoBanco.setStatusIngresso(ingresso.getStatusIngresso());
                 ingressoBanco.setSessao(ingresso.getSessao());
                 ingressoBanco.setFilme(ingresso.getFilme());
                 ingressoBanco.setAssento(ingresso.getAssento());

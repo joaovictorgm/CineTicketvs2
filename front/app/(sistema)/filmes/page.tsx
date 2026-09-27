@@ -12,7 +12,7 @@ export default function Filmes(){
 
     useEffect(() =>{
         carregarDados();
-    },[])
+    },[]);
 
 
 const carregarDados = async()=>{
@@ -37,13 +37,25 @@ const carregarDados = async()=>{
         carregarDados();
     }
 
-    //filme vai precisar de uma mudança de estado
-    /*const handlerAlterarStatusFilme = async(filme:Filme)=>{
+     const handleAlterarStatusFilme = async(filme:Filme)=>{
         var novoStatus = {};
         if(filme.status==="ATIVO"){
-            novoStatus = 
+            novoStatus = {status:"BLOQUEADO"}
+        } else{
+            novoStatus = {status:"ATIVO"}
         }
-    }*/
+
+        var dadosRetorno = await axios.patch('http://localhost:8080/filmes/'+filme.id+'/status',novoStatus);
+        if(dadosRetorno.status===200){
+            alert("Atualizado status com sucesso!")
+        }else{
+            alert(dadosRetorno.data);
+
+            return;
+        }
+
+        carregarDados();
+     }
 
     return(
            <div className=" bg-blue-100 p-8">
@@ -77,11 +89,21 @@ const carregarDados = async()=>{
             <td className="px-4 py-3 text-blue-900">
                 <div className="flex flex-col gap-1 items-start">
                     <Link href={`/filmes/${filme.id}/editar`} className="text-blue-600 hover:underline">
-                        Editar
+                        EDITAR
                     </Link>
                     <button onClick={() => handlerDeletarFilme(filme)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
                         DELETAR
                     </button>
+                     <button
+            onClick={() => handleAlterarStatusFilme(filme)}
+            className={`font-medium transition-colors text-left ${
+                filme.status === 'BLOQUEADO'
+                    ? 'text-orange-600 hover:text-orange-800'
+                    : 'text-green-600 hover:text-green-800'
+            }`}
+        >
+            {filme.status}
+        </button>
                 </div>
             </td>
         </tr>
@@ -98,6 +120,7 @@ const carregarDados = async()=>{
                     </table>
                 </div>
             </div>
-           </div>
-    )
-}
+           </div>)
+    
+     }
+    

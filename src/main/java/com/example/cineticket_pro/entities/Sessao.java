@@ -19,10 +19,10 @@ public class Sessao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     public String filme;//fk
-    public LocalDate data;
+    public String data;
     public String sala;
     public EnumTipoExibicao status = EnumTipoExibicao.EXIBIÇÃO_2D;
-    public EnumStatusSessao statusSessao = EnumStatusSessao.ATIVO;
-    public double preco;
+    public EnumStatusSessao statusSessao= EnumStatusSessao.ATIVO;
+    public String preco;
     public int assentosDisponiveis;
 }

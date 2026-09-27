@@ -11,7 +11,7 @@ export default function SessaoForm({ sessaoExistente }: SessaoFormProps) {
 
     const router = useRouter();
 
-    const [sessao, setSessao] = useState<Sessao>(sessaoExistente || new Sessao(null, "", "", "", "ATIVO", "ATIVO", "", 0))
+    const [sessao, setSessao] = useState<Sessao>(sessaoExistente || new Sessao(null, "", "", "", "EXIBIÇÃO_2D", "ATIVO", "", 0))
 
 
     const handlerChange = (campo: 'filme' | 'data' | 'sala' | 'status' | 'statusSessao' | 'preco' | 'assentosDisponiveis', valor: string) => {
@@ -33,7 +33,7 @@ export default function SessaoForm({ sessaoExistente }: SessaoFormProps) {
     const handlerSalvar = async (formData: FormData) => {
 
         if (sessaoExistente) {
-            var dadosRetorno = await axios.put<number>('http://localhost:8080/sessoes' + sessao.id, sessao)
+            var dadosRetorno = await axios.put<number>('http://localhost:8080/sessoes/' + sessao.id, sessao)
 
             if (dadosRetorno.status == 200) {
                 alert("Sessão foi salva com sucesso!");

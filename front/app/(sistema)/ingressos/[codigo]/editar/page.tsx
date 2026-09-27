@@ -19,7 +19,7 @@ export default function EditarIngresso(){
 
     useEffect(()=>{
         buscarDados();
-    })
+    },[])
 
     const buscarDados = async() =>{
         const valorIngressoBack = await axios.get<Ingresso>('http://localhost:8080/ingressos/'+codigo)
@@ -27,7 +27,7 @@ export default function EditarIngresso(){
         if(valorIngressoBack.status==200){
             setIngresso(valorIngressoBack.data);
         }else{
-            router.push("/filmes")
+            router.push("/ingressos")
         }
     
     

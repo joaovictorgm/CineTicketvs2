@@ -22,7 +22,7 @@ export default function EditarFilme(){
     },[]);
 
     const buscarDados = async()=> {
-        const valorFilmeBack = await axios.get<Filme>('http://localhost:8080/filme/'+codigo)
+        const valorFilmeBack = await axios.get<Filme>('http://localhost:8080/filmes/'+codigo)
         
         if(valorFilmeBack.status==200){
             setFilme(valorFilmeBack.data);

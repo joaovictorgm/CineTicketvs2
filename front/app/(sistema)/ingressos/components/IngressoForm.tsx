@@ -11,9 +11,9 @@ export default function IngressoForm({ ingressoExistente }: IngressoFormProps) {
 
     const router = useRouter();
 
-    const [ingresso, setIngresso] = useState<Ingresso>(ingressoExistente || new Ingresso(null, "", "", "", "", "ATIVO", "ATIVO", ""))
+    const [ingresso, setIngresso] = useState<Ingresso>(ingressoExistente || new Ingresso(null, "", "", "", "", "INTEIRA", "DISPONIVEL", ""))
 
-    const handlerChange = (campo: 'sessao' | 'filme' | 'assento' | 'valorPago' | 'status' | 'statusIngresso' | 'dataCompra', valor: string) => {
+    const handlerChange = (campo: 'sessao' | 'filme' | 'assento' | 'valorPago' | 'statusTipo' | 'statusIngresso' | 'dataCompra', valor: string) => {
 
         setIngresso(valorAnterior =>
             new Ingresso(
@@ -22,7 +22,7 @@ export default function IngressoForm({ ingressoExistente }: IngressoFormProps) {
                 campo === 'filme' ? valor : valorAnterior.filme,
                 campo === 'assento' ? valor : valorAnterior.assento,
                 campo === 'valorPago' ? valor : valorAnterior.valorPago,
-                valorAnterior.status,
+                campo === 'statusTipo' ? valor : valorAnterior.statusTipo,
                 valorAnterior.statusIngresso,
                 campo=== 'dataCompra' ? valor : valorAnterior.dataCompra,
             )
@@ -32,7 +32,7 @@ export default function IngressoForm({ ingressoExistente }: IngressoFormProps) {
     const handlerSalvar = async (formData: FormData) =>{
 
         if(ingressoExistente){
-            var dadosRetorno = await axios.put<number>('http://localhost:8080/ingressos'+ingresso.id,ingresso)
+            var dadosRetorno = await axios.put<number>('http://localhost:8080/ingressos/'+ingresso.id,ingresso)
 
             if(dadosRetorno.status ==200){
                 alert("Ingresso foi salvo como sucesso!")
@@ -83,6 +83,20 @@ export default function IngressoForm({ ingressoExistente }: IngressoFormProps) {
                         Valor Pago
                     </label>
                     <input name="valorPago" value={ingresso.valorPago} placeholder="Informe o valor pago"  onChange={(e)=>handlerChange('valorPago',e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
+                </div>
+                 <div className="flex flex-col gap-1">
+                    <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
+                        Tipo de Ingresso
+                    </label>
+                    <select
+                        name="statusTipo"
+                        value={ingresso.statusTipo}
+                        onChange={(e) => handlerChange('statusTipo', e.target.value)}
+                        className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                    >
+                        <option value="INTEIRA">Inteira</option>
+                        <option value="MEIA">Meia</option>
+                    </select>
                 </div>
                 
                 <div className="flex flex-col gap-1">
