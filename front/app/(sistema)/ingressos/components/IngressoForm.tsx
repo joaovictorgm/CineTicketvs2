@@ -24,36 +24,38 @@ export default function IngressoForm({ ingressoExistente }: IngressoFormProps) {
                 campo === 'valorPago' ? valor : valorAnterior.valorPago,
                 campo === 'statusTipo' ? valor : valorAnterior.statusTipo,
                 valorAnterior.statusIngresso,
-                campo=== 'dataCompra' ? valor : valorAnterior.dataCompra,
+                campo === 'dataCompra' ? valor : valorAnterior.dataCompra,
             )
         )
     }
 
-    const handlerSalvar = async (formData: FormData) =>{
+    const handlerSalvar = async (formData: FormData) => {
 
-        if(ingressoExistente){
-            var dadosRetorno = await axios.put<number>('http://localhost:8080/ingressos/'+ingresso.id,ingresso)
+        if (ingressoExistente) {
+            var dadosRetorno = await axios.put<number>('http://localhost:8080/ingressos/' + ingresso.id, ingresso)
 
-            if(dadosRetorno.status ==200){
+            if (dadosRetorno.status == 200) {
                 alert("Ingresso foi salvo como sucesso!")
+                 router.push("/ingressos")
             } else {
                 alert(dadosRetorno.data);
                 return;
             }
-        } else{
-            var dadosRetorno = await axios.post<number>('http://localhost:8080/ingressos' ,ingresso)
-        
-        
-            if(dadosRetorno.status == 200){
+        } else {
+            var dadosRetorno = await axios.post<number>('http://localhost:8080/ingressos', ingresso)
+
+
+            if (dadosRetorno.status == 200) {
                 alert("Ingresso foi salvo com sucesso!")
+                 router.push("/ingressos")
             } else {
                 alert(dadosRetorno.data);
 
                 return;
             }
 
-            router.push("/ingressos")
-        
+           
+
         }
     }
 
@@ -64,27 +66,27 @@ export default function IngressoForm({ ingressoExistente }: IngressoFormProps) {
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
                         Sessao
                     </label>
-                    <input name="Sessao" value={ingresso.sessao}placeholder="Informe a sessão" onChange={(e)=> handlerChange('sessao',e.target.value)}className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
+                    <input name="Sessao" value={ingresso.sessao} placeholder="Informe a sessão" onChange={(e) => handlerChange('sessao', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
                         Filme
                     </label>
-                    <input name="filme" value={ingresso.filme} placeholder="Informe o filme" onChange={(e)=>handlerChange('filme',e.target.value)}className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
+                    <input name="filme" value={ingresso.filme} placeholder="Informe o filme" onChange={(e) => handlerChange('filme', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
                         Assento
                     </label>
-                    <input name="assento" value={ingresso.assento} placeholder="Informe o assento" onChange={(e)=>handlerChange('assento',e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
+                    <input name="assento" value={ingresso.assento} placeholder="Informe o assento" onChange={(e) => handlerChange('assento', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
                         Valor Pago
                     </label>
-                    <input name="valorPago" value={ingresso.valorPago} placeholder="Informe o valor pago"  onChange={(e)=>handlerChange('valorPago',e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
+                    <input name="valorPago" value={ingresso.valorPago} placeholder="Informe o valor pago" onChange={(e) => handlerChange('valorPago', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
                 </div>
-                 <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
                         Tipo de Ingresso
                     </label>
@@ -98,12 +100,12 @@ export default function IngressoForm({ ingressoExistente }: IngressoFormProps) {
                         <option value="MEIA">Meia</option>
                     </select>
                 </div>
-                
+
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
                         Data Compra
                     </label>
-                    <input name="dtcompra" value={ingresso.dataCompra} placeholder="/**/**/****/"  onChange={(e)=>handlerChange('dataCompra',e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
+                    <input name="dtcompra" value={ingresso.dataCompra} placeholder="/**/**/****/" onChange={(e) => handlerChange('dataCompra', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400"></input>
                 </div>
             </div>
             <div className="flex justify-end gap-3 border-t border-blue-100 px-6 py-4">

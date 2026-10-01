@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Header(){
 
     return(
@@ -12,7 +14,7 @@ export default function Header(){
             </div>
             <span className="text-blue-900 font-medium"> Usuário Teste</span>
         </div>
-        <button className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Sair</button>
+        <Link href="/home" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Sair</Link>
     </div>
     </header>
     );

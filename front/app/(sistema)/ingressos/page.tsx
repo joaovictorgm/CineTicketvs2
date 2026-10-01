@@ -68,7 +68,7 @@ export default function Ingressos() {
         <div className="bg-blue-50 p-8">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-blue-900">
-                    Gestao de Ingressos
+                    Gestão de Ingressos
                 </h1>
                 <Link href="/ingressos/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Cadastrar novo ingresso</Link>
             </div>
@@ -116,43 +116,42 @@ export default function Ingressos() {
                                     <td className="px-4 py-3 text-blue-900">
                                         {ingresso.dataCompra}
                                     </td>
-                                     <td className="px-4 py-3 text-blue-900">
-                                    <div className="flex flex-col gap-1 items-start">
-                                        <Link href={`/ingressos/${ingresso.id}/editar`} className="text-blue-600 hover:underline">
-                                            EDITAR
-                                        </Link>
-                                        <button onClick={() => handlerDeletarIngresso(ingresso)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
-                                            VENDER
-                                        </button>
-                                        <button
-                                            onClick={() => handlerAlterarStatusIngresso(ingresso)}
-                                            className={`font-medium transition-colors text-left ${
-                                                ingresso.statusIngresso === 'PAGO'
-                                                    ? 'text-orange-600 hover:text-blue-800'
-                                                    : 'text-green-600 hover:text-green-800'
-                                                }`}
-                                        >
-                                            {ingresso.statusIngresso}
-                                        </button>
-                                    </div>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        <div className="flex flex-col gap-1 items-start">
+                                            <Link href={`/ingressos/${ingresso.id}/editar`} className="text-blue-600 hover:underline">
+                                                EDITAR
+                                            </Link>
+                                            <button onClick={() => handlerDeletarIngresso(ingresso)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
+                                                VENDER
+                                            </button>
+                                            <button
+                                                onClick={() => handlerAlterarStatusIngresso(ingresso)}
+                                                className={`font-medium transition-colors text-left ${ingresso.statusIngresso === 'PAGO'
+                                                        ? 'text-orange-600 hover:text-blue-800'
+                                                        : 'text-green-600 hover:text-green-800'
+                                                    }`}
+                                            >
+                                                {ingresso.statusIngresso}
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
 
-                        
-                        ))}
 
-                        {ingressos.length === 0 && (
-                            <tr>
-                                <td colSpan={9} className="px-6 py-12 text-center text">
-                                    Nenhum ingresso Encontrado
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                            ))}
+
+                            {ingressos.length === 0 && (
+                                <tr>
+                                    <td colSpan={9} className="px-6 py-12 text-center text">
+                                        Nenhum ingresso Encontrado
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-            
 
-           </div > )
+
+        </div >)
 }

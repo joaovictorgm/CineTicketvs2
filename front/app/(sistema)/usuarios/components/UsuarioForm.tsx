@@ -36,6 +36,7 @@ export default function UsuarioForm({usuarioExistente}:UsuarioFormProps) {
 
         if(dadosRetorno.status == 200){
             alert("Usuário foi salvo com sucesso!");
+             router.push("/usuarios")
         } else {
             alert(dadosRetorno.data);
             return;
@@ -49,6 +50,7 @@ export default function UsuarioForm({usuarioExistente}:UsuarioFormProps) {
 
         if(dadosRetorno.status == 200){
             alert("Usuário foi salvo com sucesso!");
+             router.push("/usuarios")
         } else {
             alert(dadosRetorno.data);
 

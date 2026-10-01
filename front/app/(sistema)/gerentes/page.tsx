@@ -10,12 +10,12 @@ export default function Gerentes() {
 
     const [gerentes, setGerente] = useState<Gerente[]>([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         carregarDados();
     }, [])
 
     const carregarDados = async () => {
-        try{
+        try {
             const dados = axios.get<Gerente[]>("http://localhost:8080/gerentes");
             setGerente((await dados).data);
         } catch (error) {
@@ -23,10 +23,10 @@ export default function Gerentes() {
         }
     }
 
-    const handlerDeletarGerente = async(gerente:Gerente) =>{
-        var dadosRetorno = await axios.delete('http://localhost:8080/gerentes/'+gerente.id+'/excluir')
+    const handlerDeletarGerente = async (gerente: Gerente) => {
+        var dadosRetorno = await axios.delete('http://localhost:8080/gerentes/' + gerente.id + '/excluir')
 
-        if(dadosRetorno.status ==200){
+        if (dadosRetorno.status == 200) {
             alert("Excluido como sucesso!");
         } else {
             alert(dadosRetorno.data);
@@ -36,25 +36,25 @@ export default function Gerentes() {
         carregarDados();
     }
 
-    const handlerAlterarStatusGerente = async(gerente:Gerente)=>{
+    const handlerAlterarStatusGerente = async (gerente: Gerente) => {
         var novoStatus = {};
-        if(gerente.status==="ATIVO"){
-            novoStatus = {status:"BLOQUEADO"}
-        }else{
-            novoStatus = {status:"ATIVO"}
+        if (gerente.status === "ATIVO") {
+            novoStatus = { status: "BLOQUEADO" }
+        } else {
+            novoStatus = { status: "ATIVO" }
         }
 
-        var dadosRetorno = await axios.patch('http://localhost:8080/gerentes/'+gerente.id+'/status',novoStatus);
-        if(dadosRetorno.status===200){
+        var dadosRetorno = await axios.patch('http://localhost:8080/gerentes/' + gerente.id + '/status', novoStatus);
+        if (dadosRetorno.status === 200) {
             alert("Atualizado status como sucesso!")
-        }else{
+        } else {
             alert(dadosRetorno.data);
 
             return;
         }
 
         carregarDados();
-    
+
     }
 
 
@@ -63,7 +63,7 @@ export default function Gerentes() {
         <div className="bg-blue-50 p-8">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-blue-900">
-                    Gestao de gerentes
+                    Gestão de gerentes
                 </h1>
                 <Link href="/gerentes/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Cadastrar novo gerente</Link>
             </div>
@@ -79,58 +79,57 @@ export default function Gerentes() {
                                 <th className="px-4 py-3 font-semibold">Senha</th>
                                 <th className="px-4 py-3 font-semibold">Status</th>
                                 <th className="px-4 py-3 font-semibold">Ações</th>
-                                
+
 
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-100">
-                        {gerentes.map((gerente)=>(
-                        <tr key={gerente.id} className="hover:bg-blue-50">
-                            <td className="px-4 py-3 text-blue-900">
-                               {gerente.id}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                               {gerente.nome}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                                {gerente.email}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                                {gerente.senha}
-                            </td>
-                           
-                            <td className="px-4 py-3 text-blue-900">
-                                {gerente.status}
-                            </td>
-                            <td className="px-4 py-3 text-blue-900">
-                            <div className="flex flex-col gap-1 items-start">
-                            <Link href={`/gerentes/${gerente.id}/editar`}>EDITAR</Link>
-                            <button onClick={() => handlerDeletarGerente(gerente)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
-                                DELETAR
-                            </button>
-                            <button onClick={()=>handlerAlterarStatusGerente(gerente)} className={`font-medium transition-colors text-left ${
-                gerente.status === 'EXCLUIDO'
-                    ? 'text-orange-600 hover:text-orange-800'
-                    : 'text-green-600 hover:text-green-800'
-            }`}
-        >
-            {gerente.status}</button>
-                            </div>
-                            </td>
-                        </tr>
-                        ))}
-                          { gerentes.length ===0 &&(
-                            <tr>
-                                <td colSpan={6} className="px-6 py-12 text-center text">
-                                    Nenhum gerente encontrado
-                                </td>
-                            </tr>
-                        )}
+                            {gerentes.map((gerente) => (
+                                <tr key={gerente.id} className="hover:bg-blue-50">
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {gerente.id}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {gerente.nome}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {gerente.email}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {gerente.senha}
+                                    </td>
+
+                                    <td className="px-4 py-3 text-blue-900">
+                                        {gerente.status}
+                                    </td>
+                                    <td className="px-4 py-3 text-blue-900">
+                                        <div className="flex flex-col gap-1 items-start">
+                                            <Link href={`/gerentes/${gerente.id}/editar`}>EDITAR</Link>
+                                            <button onClick={() => handlerDeletarGerente(gerente)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
+                                                DELETAR
+                                            </button>
+                                            <button onClick={() => handlerAlterarStatusGerente(gerente)} className={`font-medium transition-colors text-left ${gerente.status === 'EXCLUIDO'
+                                                    ? 'text-orange-600 hover:text-orange-800'
+                                                    : 'text-green-600 hover:text-green-800'
+                                                }`}
+                                            >
+                                                {gerente.status}</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {gerentes.length === 0 && (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-12 text-center text">
+                                        Nenhum gerente encontrado
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
             </div>
-            
 
-           </div> )
+
+        </div>)
 }

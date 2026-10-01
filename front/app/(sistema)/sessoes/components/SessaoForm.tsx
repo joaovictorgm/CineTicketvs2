@@ -37,6 +37,7 @@ export default function SessaoForm({ sessaoExistente }: SessaoFormProps) {
 
             if (dadosRetorno.status == 200) {
                 alert("Sessão foi salva com sucesso!");
+                  router.push("/sessoes")
             } else {
                 alert(dadosRetorno.data);
                 return;
@@ -50,6 +51,7 @@ export default function SessaoForm({ sessaoExistente }: SessaoFormProps) {
 
             if (dadosRetorno.status == 200) {
                 alert("Sessao foi salva com sucesso!");
+                  router.push("/sessoes")
             } else {
                 alert(dadosRetorno.data);
 
@@ -90,14 +92,14 @@ export default function SessaoForm({ sessaoExistente }: SessaoFormProps) {
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
                         Preço
                     </label>
-                    <input name="preco" value={sessao.preco}  onChange={(e)=> handlerChange('preco',e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <input name="preco" value={sessao.preco} onChange={(e) => handlerChange('preco', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
                     </input>
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
                         Assentos disponiveis
                     </label>
-                    <input name="assdisponiveis" value={sessao.assentosDisponiveis}  onChange={(e)=> handlerChange('assentosDisponiveis',e.target.value)}className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <input name="assdisponiveis" value={sessao.assentosDisponiveis} onChange={(e) => handlerChange('assentosDisponiveis', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
                     </input>
                 </div>
             </div>
