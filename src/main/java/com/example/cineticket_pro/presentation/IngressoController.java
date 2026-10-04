@@ -1,6 +1,8 @@
 package com.example.cineticket_pro.presentation;
 
 import com.example.cineticket_pro.application.DTOs.AtualizarStatusIngressoRequest;
+import com.example.cineticket_pro.application.DTOs.IngressoResponse;
+import com.example.cineticket_pro.application.service.IngressoService;
 import com.example.cineticket_pro.domain.entities.EnumStatusIngresso;
 import com.example.cineticket_pro.domain.entities.Ingresso;
 import com.example.cineticket_pro.domain.repository.IngressoRepository;
@@ -11,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/ingressos")
 @Tag(name="Ingressos",description = "Métodos responsáveis pela emissão e consulta de ingressos das sessões")
@@ -19,10 +23,13 @@ public class IngressoController {
     @Autowired
     private IngressoRepository ingressoRepository;
 
+    @Autowired
+    private IngressoService ingressoService;
+
     @GetMapping
     @Operation(summary = "Método de consulta de lista de ingressos", description = "Método responsável pela consulta de todos os ingressos emitidos")
-    public ResponseEntity<?> listarTodos() {
-        return ResponseEntity.ok(ingressoRepository.findAll());
+    public ResponseEntity<List<IngressoResponse>> listarTodos() {
+        return ResponseEntity.ok(ingressoService.listarTodosIngressosTable());
     }
 
 

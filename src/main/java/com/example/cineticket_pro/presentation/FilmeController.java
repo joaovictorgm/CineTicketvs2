@@ -1,5 +1,7 @@
 package com.example.cineticket_pro.presentation;
 
+import com.example.cineticket_pro.application.DTOs.FilmeResponse;
+import com.example.cineticket_pro.application.service.FilmeService;
 import com.example.cineticket_pro.domain.entities.EnumStatusFilme;
 import com.example.cineticket_pro.domain.entities.Filme;
 import com.example.cineticket_pro.domain.repository.FilmeRepository;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/filmes")
 @Tag(name = "Filmes", description = " responsavel por controlar a criação e consulta de filmes do sistema!")
@@ -18,11 +22,14 @@ public class FilmeController {
     @Autowired
     private FilmeRepository filmeRepository;
 
+    @Autowired
+    private FilmeService filmeService;
+
     @GetMapping
     @Operation(summary = "Método de consulta de lista de filmes!", description = "Método responsavel a consulta de todos os filmes sem filtro!")
-    public ResponseEntity<?> listarTodos(){
+    public ResponseEntity<List<FilmeResponse>> listarTodos(){
 
-        return ResponseEntity.ok(filmeRepository.findAll());
+        return ResponseEntity.ok(filmeService.listarTodosFilmesTable());
     }
 
     @GetMapping("{id}")

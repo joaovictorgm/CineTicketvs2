@@ -1,6 +1,8 @@
 package com.example.cineticket_pro.presentation;
 
 import com.example.cineticket_pro.application.DTOs.AtualizarStatusGerenteRequest;
+import com.example.cineticket_pro.application.DTOs.GerenteResponse;
+import com.example.cineticket_pro.application.service.GerenteService;
 import com.example.cineticket_pro.domain.entities.EnumStatusGerente;
 import com.example.cineticket_pro.domain.entities.Gerente;
 import com.example.cineticket_pro.domain.repository.GerenteRepository;
@@ -11,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/gerentes")
 @Tag(name="Gerentes",description = "Métodos responsáveis pelo cadastro e consulta de gerentes do sistema")
@@ -19,10 +23,13 @@ public class GerenteController {
     @Autowired
     private GerenteRepository gerenteRepository;
 
+    @Autowired
+    private GerenteService gerenteService;
+
     @GetMapping
     @Operation(summary = "Método de consulta de lista de gerentes",description = "Método responsável pela consulta de todos os gerentes cadastrados")
-    public ResponseEntity<?>listarTodos(){
-        return ResponseEntity.ok(gerenteRepository.findAll());
+    public ResponseEntity<List<GerenteResponse>>listarTodos(){
+        return ResponseEntity.ok(gerenteService.listarTodosGerentesTable());
     }
 
     @GetMapping("/{id}")

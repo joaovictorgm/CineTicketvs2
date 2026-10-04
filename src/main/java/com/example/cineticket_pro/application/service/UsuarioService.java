@@ -20,12 +20,12 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired TokenService tokenService;
-    public  LoginResponse validarUsuarioAutenticadoeRetornaToken( LoginRequest loginRequest){
+    public  LoginResponse validarUsuarioAutenticadoeRetornaToken( LoginRequest request){
 
 
-        if(usuarioRepository.existsUsuarioByEmailAndSenha(loginRequest.email(),loginRequest.senha())){
+        if(usuarioRepository.existsUsuarioByEmailAndSenha(request.email(),request.senha())){
 
-            var token = tokenService.gerarToken(String.valueOf(loginRequest));
+            var token = tokenService.gerarToken(String.valueOf(request));
             return new LoginResponse(token);
         }
 

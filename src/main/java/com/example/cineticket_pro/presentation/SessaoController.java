@@ -2,6 +2,8 @@ package com.example.cineticket_pro.presentation;
 
 import com.example.cineticket_pro.application.DTOs.AtualizarSessaoRequest;
 import com.example.cineticket_pro.application.DTOs.AtualizarStatusSessaoRequest;
+import com.example.cineticket_pro.application.DTOs.SessaoResponse;
+import com.example.cineticket_pro.application.service.SessaoService;
 import com.example.cineticket_pro.domain.entities.EnumStatusSessao;
 import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.repository.SessaoRepository;
@@ -12,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/sessoes")
 @Tag(name="Sessões",description = "Métodos responsáveis pelo cadastro e consulta das sessões de exibição dos filmes")
@@ -20,10 +24,13 @@ public class SessaoController {
     @Autowired
     private SessaoRepository sessaoRepository;
 
+    @Autowired
+    private SessaoService sessaoService;
+
     @GetMapping
     @Operation(summary = "Método de consulta de lista de sessões",description = "Método responsável pela consulta de todas as sessões cadastradas")
-    public ResponseEntity<?>listarTodos(){
-        return ResponseEntity.ok(sessaoRepository.findAll());
+    public ResponseEntity<List<SessaoResponse>>listarTodos(){
+        return ResponseEntity.ok(sessaoService.listarTodasSessoesTable());
     }
 
     @GetMapping("/{id}")
