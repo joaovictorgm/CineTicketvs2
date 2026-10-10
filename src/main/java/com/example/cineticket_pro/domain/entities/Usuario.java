@@ -1,5 +1,6 @@
 package com.example.cineticket_pro.domain.entities;
 
+import com.example.cineticket_pro.application.DTOs.CriarAdminRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,9 +27,18 @@ public class Usuario {
     public String filme; //fk
     public String sessao;//fk
     public String ingresso;//fk
+    private String role = "ROLE_USER";
     private EnumStatusUsuario status;
 
     public String resetToken;
     public LocalDateTime resetTokenExpiracao;
+
+    public Usuario(CriarAdminRequest criarAdminRequest) {
+        this.setNome(criarAdminRequest.nome());
+        this.setEmail(criarAdminRequest.email());
+        this.setSenha(criarAdminRequest.senha());
+
+        this.setRole("ROLE_ADMIN");
+    }
 }
 

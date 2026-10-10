@@ -2,6 +2,8 @@ package com.example.cineticket_pro.presentation;
 
 
 import com.example.cineticket_pro.application.DTOs.AtualizarStatusRequest;
+import com.example.cineticket_pro.application.DTOs.CriarAdminRequest;
+import com.example.cineticket_pro.application.DTOs.CriarAdminResponse;
 import com.example.cineticket_pro.application.DTOs.UsuarioResponse;
 import com.example.cineticket_pro.application.service.UsuarioService;
 import com.example.cineticket_pro.domain.entities.EnumStatusUsuario;
@@ -31,6 +33,23 @@ public class UsuarioController {
     @Operation(summary="Método de consulta de lista de usuários",description="Método responsável pela consulta de todos os usuários cadastrados")
     public ResponseEntity<List<UsuarioResponse>>listarTodos(){
         return ResponseEntity.ok(usuarioService.listarTodosUsuariosTable());
+    }
+
+
+
+    @PostMapping("/admin")
+    public ResponseEntity<CriarAdminResponse>criarAdmin(@RequestBody CriarAdminRequest criarAdminRequest){
+
+        try {
+            var respostaSalvar = usuarioService.criarAdmin(criarAdminRequest);
+
+            return  ResponseEntity.ok(respostaSalvar);
+
+        } catch (RuntimeException e){
+            return ResponseEntity.badRequest().build();
+        }
+
+
     }
 
     @GetMapping("/{id}")

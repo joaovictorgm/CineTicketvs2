@@ -16,14 +16,13 @@ import java.time.ZoneOffset;
 @Service
 public class TokenService {
 
-    @Value("${spring.secret}")
+    @Value("${spring.secretkey}")
     private String secret;
 
-    @Value("${spring.expiracao}")
+    @Value("${spring.tempo_expiracao}")
     private Long expiracao;
 
-    @Value("${spring.emissor}")
-    private String emissor;
+    private String emissor = "TESTADOR";
 
     public String gerarToken(String subject) {
 

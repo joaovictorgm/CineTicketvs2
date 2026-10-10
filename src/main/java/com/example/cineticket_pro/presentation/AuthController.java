@@ -27,7 +27,7 @@ public class AuthController {
     @Operation(description = "Método de login", summary = "Autenticação de Gerentes")
     public ResponseEntity <?> login(@RequestBody LoginRequest loginRequest){
 
-        var resultadoAutenticacaoRetornoToken = usuarioService.validarUsuarioAutenticadoeRetornaToken;
+        var resultadoAutenticacaoRetornoToken = usuarioService.validarUsuarioAutenticadoeRetornaToken(loginRequest);
 
         if(resultadoAutenticacaoRetornoToken != null){
 
