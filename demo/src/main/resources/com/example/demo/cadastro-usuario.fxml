@@ -16,12 +16,12 @@
       <TextField layoutX="412.0" layoutY="125.0" />
       <TextField layoutX="412.0" layoutY="72.0" />
       <TextField layoutX="412.0" layoutY="169.0" />
-      <TextField layoutX="413.0" layoutY="214.0" />
       <Label layoutX="68.0" layoutY="116.0" text="Telefone" />
       <Label layoutX="78.0" layoutY="218.0" text="Senha" />
       <Label layoutX="370.0" layoutY="76.0" text="Filme" />
       <Label layoutX="370.0" layoutY="129.0" text="Sessao" />
       <Label layoutX="362.0" layoutY="173.0" text="Ingresso" />
       <Label layoutX="370.0" layoutY="218.0" text="Status" />
+      <ComboBox fx:id="cbStatus" layoutX="411.0" layoutY="214.0" prefWidth="150.0" />
    </children>
 </AnchorPane>

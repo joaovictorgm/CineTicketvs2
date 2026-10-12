@@ -1,11 +1,13 @@
 package com.example.demo;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -40,10 +42,21 @@ public class UsuarioController {
     private TextField txtIngresso;
 
     @FXML
-    private TextField txtStatus;
+    private ComboBox <EnumStatusUsuario> cbStatus;
+
+    @FXML
+    public void initialize(){
+        cbStatus.setItems(FXCollections.observableArrayList(EnumStatusUsuario.values()));
+        cbStatus.setValue(EnumStatusUsuario.ATIVO);
+    }
 
     @FXML
     public void salvarUsuario(ActionEvent event) throws Exception {
+        EnumStatusUsuario status = cbStatus.getValue();
+        if(status == null){
+            showMessage(Alert.AlertType.INFORMATION,"Favor escolha uma opção");
+            return;
+        }
 
 
         //Validar Dados
@@ -56,6 +69,7 @@ public class UsuarioController {
                         "  \"senha\": \"%s\",\n" +
                         "  \"sessao\": \"%s\",\n" +
                         "  \"telefone\": \"%s\"\n" +
+                        "  \"status\": \"%s\"\n" +
                         "}", txtNome.getText(),
                 txtEmail.getText(),
                 txtFilme.getText(),
@@ -64,6 +78,7 @@ public class UsuarioController {
                 txtSenha.getText(),
                 txtSessao.getText(),
                 txtTelefone.getText(),
+                status.name(),
 
                 "sakjbhaskjcdhaiubshLKVAShfbdw68asd65d");
 
