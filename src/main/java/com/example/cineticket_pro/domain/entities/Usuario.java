@@ -1,10 +1,7 @@
 package com.example.cineticket_pro.domain.entities;
 
 import com.example.cineticket_pro.application.DTOs.CriarAdminRequest;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +25,7 @@ public class Usuario {
     public String sessao;//fk
     public String ingresso;//fk
     private String role = "ROLE_USER";
+    @Enumerated(EnumType.STRING)
     private EnumStatusUsuario status;
 
     public String resetToken;
@@ -37,6 +35,8 @@ public class Usuario {
         this.setNome(criarAdminRequest.nome());
         this.setEmail(criarAdminRequest.email());
         this.setSenha(criarAdminRequest.senha());
+        this.setTelefone(criarAdminRequest.telefone());
+        this.setStatus(criarAdminRequest.status() != null ? criarAdminRequest.status() : EnumStatusUsuario.ATIVO);
 
         this.setRole("ROLE_ADMIN");
     }

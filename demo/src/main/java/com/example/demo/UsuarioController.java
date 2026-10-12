@@ -62,15 +62,16 @@ public class UsuarioController {
         //Validar Dados
 
         String jsonRequest = String.format("{\n" +
+                        "  \"nome\": \"%s\",\n" +
                         "  \"email\": \"%s\",\n" +
                         "  \"filme\": \"%s\",\n" +
                         "  \"ingresso\": \"%s\",\n" +
-                        "  \"nome\": \"%s\",\n" +
                         "  \"senha\": \"%s\",\n" +
                         "  \"sessao\": \"%s\",\n" +
-                        "  \"telefone\": \"%s\"\n" +
+                        "  \"telefone\": \"%s\",\n" +
                         "  \"status\": \"%s\"\n" +
-                        "}", txtNome.getText(),
+                        "  \"secretKey\": \"%s\"\n" +
+                        "}",
                 txtEmail.getText(),
                 txtFilme.getText(),
                 txtIngresso.getText(),
