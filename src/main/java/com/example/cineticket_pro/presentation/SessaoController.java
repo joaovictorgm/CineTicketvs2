@@ -2,6 +2,7 @@ package com.example.cineticket_pro.presentation;
 
 import com.example.cineticket_pro.application.DTOs.AtualizarSessaoRequest;
 import com.example.cineticket_pro.application.DTOs.AtualizarStatusSessaoRequest;
+import com.example.cineticket_pro.application.DTOs.AtualizarTipoExibicaoRequest;
 import com.example.cineticket_pro.application.DTOs.SessaoResponse;
 import com.example.cineticket_pro.application.service.SessaoService;
 import com.example.cineticket_pro.domain.entities.EnumStatusSessao;
@@ -72,6 +73,20 @@ public class SessaoController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/{id}/tipo-exibicao")
+    @Operation(summary = "Atualização do tipo de exibição do filme",
+            description = "Atualiza apenas o tipo de exibição (2D, 3D) de um filme cadastrado")
+    public ResponseEntity<Void> atualizarTipoExibicao(@PathVariable Long id,
+                                                      @RequestBody AtualizarTipoExibicaoRequest request) {
+        Sessao sessao = sessaoRepository.findById(id).orElse(null);
+        if (sessao == null) {
+            return ResponseEntity.notFound().build();
+        }
+        sessao.setStatus(request.tipoExibicao());
+        sessaoRepository.save(sessao);
+        return ResponseEntity.ok().build();
     }
 
 

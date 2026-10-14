@@ -23,6 +23,16 @@ public class MenuController {
     }
 
     @FXML
+    public void abrirMudancaTipo(ActionEvent event) throws IOException {
+        FXMLLoader loader =
+                new FXMLLoader(getClass().getResource("/com/example/demo/cadastro-tipo-exibicao.fxml"));
+
+        Scene scene = new Scene(loader.load());
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+    }
+
+    @FXML
     public void sair(){
         System.exit(0);
     }
