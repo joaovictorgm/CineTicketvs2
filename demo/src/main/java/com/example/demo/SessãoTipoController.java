@@ -80,7 +80,7 @@ public class SessãoTipoController {
 
     @FXML
     public void voltar(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/back/menu-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo/menu-view.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(loader.load()));
     }
