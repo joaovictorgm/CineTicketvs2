@@ -1,6 +1,7 @@
 package com.example.cineticket_pro.domain.entities;
 
 import com.example.cineticket_pro.application.DTOs.CriarAdminRequest;
+import com.example.cineticket_pro.domain.valueobject.CPF;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,8 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     public String nome;
+    @Embedded
+    private CPF cpf;
     public String telefone;
     public String email;
     public String senha;
@@ -32,6 +35,7 @@ public class Usuario {
     public LocalDateTime resetTokenExpiracao;
 
     public Usuario(CriarAdminRequest criarAdminRequest) {
+        this.setCpf(new CPF());
         this.setNome(criarAdminRequest.nome());
         this.setEmail(criarAdminRequest.email());
         this.setSenha(criarAdminRequest.senha());

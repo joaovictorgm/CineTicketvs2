@@ -49,8 +49,23 @@ public class UsuarioController {
             return ResponseEntity.badRequest().build();
         }
 
+    }
+
+    @PostMapping("/admin")
+    public ResponseEntity<CriarAdminResponse>criarAdmin(@RequestBody CriarAdminRequest criarAdminRequest){
+
+        try {
+            var respostaSalvar = usuarioService.criarAdmin(criarAdminRequest);
+
+            return  ResponseEntity.ok(respostaSalvar);
+
+        } catch (RuntimeException e){
+            return ResponseEntity.badRequest().build();
+        }
 
     }
+
+
 
     @GetMapping("/{id}")
     @Operation(summary = "Método de busca de usuário por ID", description = "Método responsável por buscar um usuário específico através do seu identificador")
