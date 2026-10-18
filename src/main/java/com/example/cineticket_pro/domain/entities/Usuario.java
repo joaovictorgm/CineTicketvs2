@@ -1,6 +1,9 @@
 package com.example.cineticket_pro.domain.entities;
 
 import com.example.cineticket_pro.application.DTOs.CriarAdminRequest;
+import com.example.cineticket_pro.application.DTOs.EnumStatusUsuario;
+import com.example.cineticket_pro.application.DTOs.FilmeRequest;
+import com.example.cineticket_pro.application.DTOs.UsuarioRequest;
 import com.example.cineticket_pro.domain.valueobject.CPF;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -44,5 +47,16 @@ public class Usuario {
 
         this.setRole("ROLE_ADMIN");
     }
+    public Usuario(UsuarioRequest usuario) {
+        this.setCpf(new CPF(usuario.cpf()));
+        this.setNome(usuario.nome());
+        this.setEmail(usuario.email());
+        this.setSenha(usuario.senha());
+        this.setTelefone(usuario.telefone());
+        this.setRole("ROLE_USER");
+    }
+
+
+
 }
 

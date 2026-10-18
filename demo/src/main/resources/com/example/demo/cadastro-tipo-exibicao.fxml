@@ -9,7 +9,7 @@
       <ComboBox fx:id="cbTipoExibicao" layoutX="211.0" layoutY="103.0" prefWidth="150.0" />
       <Label layoutX="116.0" layoutY="107.0" text="Tipo de Exibição" />
       <Button layoutX="73.0" layoutY="325.0" onAction="#voltar" mnemonicParsing="false" text="Voltar" />
-      <Button layoutX="477.0" layoutY="325.0" mnemonicParsing="false" text="Salvar" />
+      <Button layoutX="477.0" layoutY="325.0" onAction="#salvar" mnemonicParsing="false" text="Salvar" />
       <TextField fx:id="txtId" layoutX="212.0" layoutY="54.0" />
       <Label layoutX="121.0" layoutY="58.0" text="Id" />
    </children>

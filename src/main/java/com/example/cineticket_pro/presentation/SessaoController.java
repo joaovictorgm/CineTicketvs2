@@ -1,11 +1,7 @@
 package com.example.cineticket_pro.presentation;
 
-import com.example.cineticket_pro.application.DTOs.AtualizarSessaoRequest;
-import com.example.cineticket_pro.application.DTOs.AtualizarStatusSessaoRequest;
-import com.example.cineticket_pro.application.DTOs.AtualizarTipoExibicaoRequest;
-import com.example.cineticket_pro.application.DTOs.SessaoResponse;
+import com.example.cineticket_pro.application.DTOs.*;
 import com.example.cineticket_pro.application.service.SessaoService;
-import com.example.cineticket_pro.domain.entities.EnumStatusSessao;
 import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.repository.SessaoRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,11 +18,12 @@ import java.util.List;
 @Tag(name="Sessões",description = "Métodos responsáveis pelo cadastro e consulta das sessões de exibição dos filmes")
 public class SessaoController {
 
-    @Autowired
-    private SessaoRepository sessaoRepository;
 
     @Autowired
     private SessaoService sessaoService;
+
+    @Autowired
+    private SessaoRepository sessaoRepository;
 
     @GetMapping
     @Operation(summary = "Método de consulta de lista de sessões",description = "Método responsável pela consulta de todas as sessões cadastradas")
@@ -36,8 +33,8 @@ public class SessaoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Método de busca de sessão por ID", description = "Método responsável por buscar uma sessão específica através do seu identificador")
-    public ResponseEntity<Sessao>buscarPorId(@PathVariable Long id){
-        Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
+    public ResponseEntity<SessaoResponse>buscarPorId(@PathVariable Long id){
+        SessaoResponse sessaoBanco = sessaoService.buscarPorId(id);
         if(sessaoBanco != null){
             return ResponseEntity.ok(sessaoBanco);
         }
@@ -46,31 +43,32 @@ public class SessaoController {
     @PostMapping
     @Operation(summary = "Método de criação de sessões",description = "Método responsável por cadastrar uma nova sessão de exibição")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Sessao>criar(@RequestBody Sessao sessao){
-        var sessaoBanco = sessaoRepository.save(sessao);
-        return ResponseEntity.ok(sessaoBanco);
+    public ResponseEntity<?>criar(@RequestBody SessaoRequest sessao) {
+        try {
+            SessaoResponse sessaoBanco = sessaoService.salvarSessao(sessao, 0l);
+            return ResponseEntity.ok(sessaoBanco);
 
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
     }
 
     @PatchMapping("/{id}/status")
-    @Operation(summary = "Método de atualização de status da sessão", description = "Método responsável por atualizar apenas o status de exibição de uma sessão já cadastrada")
+    @Operation(summary = "Método de atualização de tipo de  sessão", description = "Método responsável por atualizar apenas o status de exibição de uma sessão já cadastrada")
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarSessaoRequest sessaoRequest){
-        Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
-        if(sessaoBanco != null){
-            sessaoBanco.setStatus(sessaoRequest.statusExibicao());
-            sessaoRepository.save(sessaoBanco);
-            return ResponseEntity.ok().build();
+        var atualizarTipoSessao = sessaoService.atualizarTipoSessao(sessaoRequest.statusExibicao(),id);
+       if(atualizarTipoSessao){
+           return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
     @PatchMapping("/{id}/status-sessao")
     @Operation(summary = "Método de atualização do status ativo/desativado da sessão", description = "Método responsável por ativar ou desativar uma sessão já cadastrada")
     public ResponseEntity<Void> atualizarStatusSessao(@PathVariable Long id, @RequestBody AtualizarStatusSessaoRequest statusRequest){
-        Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
-        if(sessaoBanco != null){
-            sessaoBanco.setStatusSessao(statusRequest.statusSessao());
-            sessaoRepository.save(sessaoBanco);
-            return ResponseEntity.ok().build();
+        var atualizarStatusSessao = sessaoService.atualizarStatusSessao(statusRequest.statusSessao(),id);
+        if(atualizarStatusSessao){
+            return  ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
@@ -92,26 +90,17 @@ public class SessaoController {
 
     @PutMapping("{id}")
     @Operation(summary = "Método de atualização de sessão", description = "Método responsável por atualizar os dados completos de uma sessão já cadastrada")
-    public ResponseEntity<Sessao>atualizar(@PathVariable Long id, @RequestBody Sessao sessao){
-        try {
-            Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
-            if(sessaoBanco!=null){
-                sessaoBanco.setStatus(sessao.getStatus());
-                sessaoBanco.setStatusSessao(sessao.getStatusSessao());
-                sessaoBanco.setData(sessao.getData());
-                sessaoBanco.setFilme(sessao.getFilme());
-                sessaoBanco.setSala(sessao.getSala());
-                sessaoBanco.setPreco(sessao.getPreco());
-                sessaoBanco.setAssentosDisponiveis(sessao.getAssentosDisponiveis());
-                sessaoRepository.save(sessaoBanco);
-                return ResponseEntity.ok().build();
-            }
+    public ResponseEntity<?>atualizar(@PathVariable Long id, @RequestBody SessaoRequest sessao){
+        try{
+            SessaoResponse sessaoBanco = sessaoService.salvarSessao(sessao, id);
+            return ResponseEntity.ok(sessaoBanco);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
 
-            return ResponseEntity.notFound().build();
-        }catch (RuntimeException e){
-            throw new RuntimeException(e);
         }
     }
+
+    // fazer a migração mais tarde
     @DeleteMapping("/{id}/excluir")
     @Operation(summary = "Método de exclusão de sessão", description = "Método responsável por desativar (soft delete) uma sessão cadastrada")
     public ResponseEntity<Void> excluir(@PathVariable Long id){

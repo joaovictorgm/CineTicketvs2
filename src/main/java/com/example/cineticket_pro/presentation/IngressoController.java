@@ -1,9 +1,7 @@
 package com.example.cineticket_pro.presentation;
 
-import com.example.cineticket_pro.application.DTOs.AtualizarStatusIngressoRequest;
-import com.example.cineticket_pro.application.DTOs.IngressoResponse;
+import com.example.cineticket_pro.application.DTOs.*;
 import com.example.cineticket_pro.application.service.IngressoService;
-import com.example.cineticket_pro.domain.entities.EnumStatusIngresso;
 import com.example.cineticket_pro.domain.entities.Ingresso;
 import com.example.cineticket_pro.domain.repository.IngressoRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,8 +18,7 @@ import java.util.List;
 @Tag(name="Ingressos",description = "Métodos responsáveis pela emissão e consulta de ingressos das sessões")
 public class IngressoController {
 
-    @Autowired
-    private IngressoRepository ingressoRepository;
+
 
     @Autowired
     private IngressoService ingressoService;
@@ -35,8 +32,8 @@ public class IngressoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Método de busca de ingresso por ID", description = "Método responsável por buscar um ingresso específico através do seu identificador")
-    public ResponseEntity<Ingresso> buscarPorId(@PathVariable Long id) {
-        Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
+    public ResponseEntity<IngressoResponse> buscarPorId(@PathVariable Long id) {
+        IngressoResponse ingressoBanco = ingressoService.buscarPorId(id);
         if (ingressoBanco != null) {
             return ResponseEntity.ok(ingressoBanco);
         }
@@ -47,56 +44,56 @@ public class IngressoController {
     @PostMapping
     @Operation(summary = "Método de criação de ingressos", description = "Método responsável por registrar a emissão de um novo ingresso")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Ingresso> criar(@RequestBody Ingresso ingresso) {
-        var ingressoBanco = ingressoRepository.save(ingresso);
-        return ResponseEntity.ok(ingressoBanco);
+    public ResponseEntity<?> criar(@RequestBody IngressoRequest ingresso) {
+        try {
+            IngressoResponse ingressoBanco = ingressoService.salvaringresso(ingresso, 0L);
+            return ResponseEntity.ok(ingressoBanco);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PatchMapping("/{id}/status")
     @Operation(summary = "Método de atualização de status do ingresso", description = "Método responsável por atualizar apenas o status de um ingresso já emitido")
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusIngressoRequest statusIngressoRequest) {
-        Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
-        if (ingressoBanco != null) {
-            ingressoBanco.setStatusTipo(statusIngressoRequest.statusIngressoRequest());
-            ingressoRepository.save(ingressoBanco);
+        var atualizarIngresso = ingressoService.atualizarStatus(statusIngressoRequest.statusIngressoRequest(),id);
+
+        if(atualizarIngresso){
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+        }
 
-    }
+
+
     @PutMapping("/{id}")
     @Operation(summary = "Método de atualização de ingresso", description = "Método responsável por atualizar os dados completos de um ingresso já emitido")
-    public ResponseEntity<Ingresso> atualizar(@PathVariable Long id, @RequestBody Ingresso ingresso){
-        try{
-            Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
-            if(ingressoBanco != null){
-                ingressoBanco.setStatusTipo(ingresso.getStatusTipo());
-                ingressoBanco.setStatusIngresso(ingresso.getStatusIngresso());
-                ingressoBanco.setSessao(ingresso.getSessao());
-                ingressoBanco.setFilme(ingresso.getFilme());
-                ingressoBanco.setAssento(ingresso.getAssento());
-                ingressoBanco.setDataCompra(ingresso.getDataCompra());
-                ingressoBanco.setValorPago(ingresso.getValorPago());
-                ingressoRepository.save(ingressoBanco);
-                return ResponseEntity.ok().build();
-            }
-            return ResponseEntity.notFound().build();
-        }catch (RuntimeException e){
-            throw new RuntimeException(e);
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody IngressoRequest ingresso){
+
+
+    try{
+            IngressoResponse ingressoBanco = ingressoService.salvaringresso(ingresso, id);
+            return ResponseEntity.ok(ingressoBanco);
+        }catch (Exception e){
+        return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    //arrumar o tipo de ingresso
     @DeleteMapping("/{id}/excluir")
     @Operation(summary = "Método de exclusão de ingresso", description = "Método responsável por cancelar (soft delete) um ingresso emitido")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
-        Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
-        if(ingressoBanco != null){
-            ingressoBanco.setStatusIngresso(EnumStatusIngresso.PAGO);
-            ingressoRepository.save(ingressoBanco);
+
+        var atualizarIngresso = ingressoService.atualizarStatus(EnumStatusIngresso.PAGO);
+
+        if(atualizarIngresso){
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.notFound().build();
+        return  ResponseEntity.notFound().build();
     }
-}
+
+    }
+
 
 
 

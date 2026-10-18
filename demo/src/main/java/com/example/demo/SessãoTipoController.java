@@ -29,8 +29,14 @@ public class SessãoTipoController {
     public void initialize() {
         cbTipoExibicao.setItems(FXCollections.observableArrayList(EnumTipoExibicao.values()));
         cbTipoExibicao.setConverter(new StringConverter<>() {
-            @Override public String toString(EnumTipoExibicao t) { return t == null ? "" : t.toString(); }
-            @Override public EnumTipoExibicao fromString(String s) { return null; }
+            @Override
+            public String toString(EnumTipoExibicao t) {
+                return t == null ? "" : t.getDescricao();
+            }
+            @Override
+            public EnumTipoExibicao fromString(String s) {
+                return null;
+            }
         });
     }
 
@@ -54,7 +60,7 @@ public class SessãoTipoController {
             String json = "{\"tipoExibicao\":\"" + tipo.name() + "\"}";
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/sessao/" + id + "/tipo-exibicao"))
+                    .uri(URI.create("http://localhost:8080/sessoes/" + id + "/tipo-exibicao"))
                     .header("Content-Type", "application/json")
                     // .header("Authorization", "Bearer " + token)
                     .method("PATCH", HttpRequest.BodyPublishers.ofString(json))

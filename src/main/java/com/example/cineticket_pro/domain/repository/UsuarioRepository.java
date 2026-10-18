@@ -1,6 +1,6 @@
 package com.example.cineticket_pro.domain.repository;
 
-import com.example.cineticket_pro.domain.entities.EnumStatusUsuario;
+import com.example.cineticket_pro.application.DTOs.EnumStatusUsuario;
 import com.example.cineticket_pro.domain.entities.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

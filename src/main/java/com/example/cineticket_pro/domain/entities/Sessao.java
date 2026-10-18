@@ -1,5 +1,8 @@
 package com.example.cineticket_pro.domain.entities;
 
+import com.example.cineticket_pro.application.DTOs.EnumStatusSessao;
+import com.example.cineticket_pro.application.DTOs.EnumTipoExibicao;
+import com.example.cineticket_pro.application.DTOs.SessaoRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +20,17 @@ public class Sessao {
     public String data;
     public String sala;
     @Enumerated(EnumType.STRING)
-    public EnumTipoExibicao status = EnumTipoExibicao.EXIBIÇÃO_2D;
+    public EnumTipoExibicao status = EnumTipoExibicao.EXIBICAO_2D;
     public EnumStatusSessao statusSessao= EnumStatusSessao.ATIVO;
     public String preco;
     public int assentosDisponiveis;
+
+    public Sessao(SessaoRequest sessao) {
+        this.setFilme(sessao.filme());
+        this.setData(sessao.data());
+        this.setSala(sessao.sala());
+        this.setPreco(sessao.preco());
+        this.setAssentosDisponiveis(sessao.assentosDisponiveis());
+
+    }
 }

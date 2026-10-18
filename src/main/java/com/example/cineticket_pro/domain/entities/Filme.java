@@ -1,5 +1,7 @@
 package com.example.cineticket_pro.domain.entities;
 
+import com.example.cineticket_pro.application.DTOs.EnumStatusFilme;
+import com.example.cineticket_pro.application.DTOs.FilmeRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,4 +25,10 @@ public class Filme {
 
     public EnumStatusFilme statusFilme = EnumStatusFilme.ATIVO;
 
+    public Filme(FilmeRequest filme) {
+        this.setTitulo(filme.titulo());
+        this.setDuracaoMinutos(filme.duracaoMinutos());
+        this.setClassificacaoEtaria(filme.classificacaoEtaria());
+        this.setDataEstreia(filme.dataEstreia());
+    }
 }

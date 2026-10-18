@@ -1,8 +1,12 @@
 package com.example.demo;
 
 public enum EnumTipoExibicao {
-    EXIBIÇÃO_2D,
-    EXIBICÃO_3D,
+    EXIBICAO_2D("2D"),
+    EXIBICAO_3D("3D");
+
+    private final String descricao;
+    EnumTipoExibicao(String descricao) { this.descricao = descricao; }
+    public String getDescricao() { return descricao; }
 
 
 

@@ -1,8 +1,9 @@
 package com.example.cineticket_pro.presentation;
 
+import com.example.cineticket_pro.application.DTOs.FilmeRequest;
 import com.example.cineticket_pro.application.DTOs.FilmeResponse;
 import com.example.cineticket_pro.application.service.FilmeService;
-import com.example.cineticket_pro.domain.entities.EnumStatusFilme;
+import com.example.cineticket_pro.application.DTOs.EnumStatusFilme;
 import com.example.cineticket_pro.domain.entities.Filme;
 import com.example.cineticket_pro.domain.repository.FilmeRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,8 +20,7 @@ import java.util.List;
 @Tag(name = "Filmes", description = " responsavel por controlar a criação e consulta de filmes do sistema!")
 public class FilmeController {
 
-    @Autowired
-    private FilmeRepository filmeRepository;
+
 
     @Autowired
     private FilmeService filmeService;
@@ -34,8 +34,8 @@ public class FilmeController {
 
     @GetMapping("{id}")
     @Operation(summary = "Método de busca de filme por ID", description = "Método responsável por buscar um filme específico através do seu identificador")
-    public ResponseEntity<Filme>buscaPorId(@PathVariable Long id){
-        Filme filmeBanco = filmeRepository.findById(id).orElse(null);
+    public ResponseEntity<FilmeResponse>buscaPorId(@PathVariable Long id){
+        FilmeResponse filmeBanco = filmeService.buscarPorId(id);
         if(filmeBanco != null){
             return ResponseEntity.ok(filmeBanco);
         }
@@ -45,38 +45,36 @@ public class FilmeController {
     @PostMapping
     @Operation(summary = "Método de criação de filmes!", description = "Método responsavel de criar filmes sem filtro!")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Filme>criar(@RequestBody Filme filme){
-        var filmeBanco = filmeRepository.save(filme);
-        return ResponseEntity.ok(filmeBanco);
+    public ResponseEntity<?>criar(@RequestBody FilmeRequest filme){
+        try{
+            FilmeResponse filmeBanco = filmeService.salvarFilme(filme, 0L);
+            return ResponseEntity.ok(filmeBanco);
+        } catch (Exception e){
+           return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Método de atualização de filme", description = "Método responsável por atualizar os dados de um filme já cadastrado")
-    public ResponseEntity<Filme> atualizar(@PathVariable Long id, @RequestBody Filme filme){
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody FilmeRequest filme){
         try {
-            Filme filmeBanco = filmeRepository.findById(id).orElse(null);
-            if(filmeBanco != null){
-                filmeBanco.setTitulo(filme.getTitulo());
-                filmeBanco.setDataEstreia(filme.getDataEstreia());
-                filmeBanco.setClassificacaoEtaria(filme.getClassificacaoEtaria());
-                filmeBanco.setDuracaoMinutos(filme.getDuracaoMinutos());
-                filmeRepository.save(filmeBanco);
-                return ResponseEntity.ok().build();
-            }
-            return ResponseEntity.notFound().build();
-        } catch (RuntimeException e){
-            throw new RuntimeException();
+           FilmeResponse filmeBanco = filmeService.salvarFilme(filme, id);
+           return ResponseEntity.ok(filmeBanco);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 @DeleteMapping("/{id}")
 @Operation(summary = "Método de exclusão de filme", description = "Método responsável por remover (ou desativar) um filme cadastrado")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
-        Filme filmeBanco = filmeRepository.findById(id).orElse(null);
-        if(filmeBanco != null){
-            filmeBanco.setStatusFilme(EnumStatusFilme.DESATIVADO);
-            filmeRepository.save(filmeBanco);
-            return ResponseEntity.ok().build();
-        }
+       var atualizarFilme = filmeService.atualizarStatus(EnumStatusFilme.DESATIVADO,id);
+
+       if(atualizarFilme){
+           return ResponseEntity.ok().build();
+
+    }
         return ResponseEntity.notFound().build();
     }
 
