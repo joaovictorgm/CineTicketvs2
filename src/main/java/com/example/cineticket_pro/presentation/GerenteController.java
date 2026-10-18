@@ -1,9 +1,10 @@
 package com.example.cineticket_pro.presentation;
 
 import com.example.cineticket_pro.application.DTOs.AtualizarStatusGerenteRequest;
+import com.example.cineticket_pro.application.DTOs.GerenteRequest;
 import com.example.cineticket_pro.application.DTOs.GerenteResponse;
 import com.example.cineticket_pro.application.service.GerenteService;
-import com.example.cineticket_pro.domain.entities.EnumStatusGerente;
+import com.example.cineticket_pro.application.DTOs.EnumStatusGerente;
 import com.example.cineticket_pro.domain.entities.Gerente;
 import com.example.cineticket_pro.domain.repository.GerenteRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,8 +21,6 @@ import java.util.List;
 @Tag(name="Gerentes",description = "Métodos responsáveis pelo cadastro e consulta de gerentes do sistema")
 public class GerenteController {
 
-    @Autowired
-    private GerenteRepository gerenteRepository;
 
     @Autowired
     private GerenteService gerenteService;
@@ -34,8 +33,8 @@ public class GerenteController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Método de busca de gerente por ID",description = "Método responsável por buscar um gerente específico através do seu identificador")
-    public ResponseEntity<Gerente> buscarPorId(@PathVariable Long id) {
-        Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
+    public ResponseEntity<GerenteResponse> buscarPorId(@PathVariable Long id) {
+        GerenteResponse gerenteBanco = gerenteService.buscarPorId(id);
         if (gerenteBanco != null) {
             return ResponseEntity.ok(gerenteBanco);
         }
@@ -46,48 +45,43 @@ public class GerenteController {
 @PostMapping
 @Operation(summary = "Método de criação de gerentes",description = "Método responsável por cadastrar um novo gerente no sistema")
 @ResponseStatus(HttpStatus.CREATED)
-public ResponseEntity<Gerente>criar(@RequestBody Gerente gerente){
-    var gerenteBanco =  gerenteRepository.save(gerente);
-    return ResponseEntity.ok(gerenteBanco);
+public ResponseEntity<?>criar(@RequestBody GerenteRequest gerente){
+    try {
+        GerenteResponse gerenteBanco = gerenteService.salvarGerente(gerente, 0L);
+        return ResponseEntity.ok(gerenteBanco);
+    }catch (Exception e){
+       return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+
 }
 
     @PatchMapping("/{id}/status")
     @Operation(summary = "Método de atualização de status do gerente", description = "Método responsável por atualizar apenas o status de um gerente já cadastrado")
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusGerenteRequest statusGerenteRequest){
-        Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
-        if (gerenteBanco != null) {
-            gerenteBanco.setStatus(statusGerenteRequest.statusGerente());
-            gerenteRepository.save(gerenteBanco);
+       var atualizarGerente = gerenteService.atualizarStatus(statusGerenteRequest.statusGerente(),id);
+        if (atualizarGerente) {
             return ResponseEntity.ok().build();
+
         }
         return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Método de atualização de gerente", description = "Método responsável por atualizar os dados completos de um gerente já cadastrado")
-    public ResponseEntity<Gerente> atualizar(@PathVariable Long id, @RequestBody Gerente gerente){
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody GerenteRequest gerente){
         try{
-            Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
-            if(gerenteBanco != null){
-                gerenteBanco.setStatus(gerente.getStatus());
-                gerenteBanco.setNome(gerente.getNome());
-                gerenteBanco.setEmail(gerente.getEmail());
-                gerenteBanco.setSenha(gerente.getSenha());
-                gerenteRepository.save(gerenteBanco);
-                return ResponseEntity.ok().build();
-            }
-            return ResponseEntity.notFound().build();
+           GerenteResponse gerenteBanco = gerenteService.salvarGerente(gerente , id);
+            return ResponseEntity.ok(gerenteBanco);
         } catch (RuntimeException e){
-            throw new RuntimeException(e);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     @DeleteMapping("/{id}/excluir")
     @Operation(summary = "Método de exclusão de gerente", description = "Método responsável por desativar (soft delete) um gerente cadastrado")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
-        Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
-        if(gerenteBanco != null){
-            gerenteBanco.setStatus(EnumStatusGerente.EXCLUIDO);
-            gerenteRepository.save(gerenteBanco);
+        var atualizarGerente = gerenteService.atualizarStatus(EnumStatusGerente.EXCLUIDO, id);
+        if(atualizarGerente){
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();

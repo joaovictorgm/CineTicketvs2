@@ -1,10 +1,8 @@
 package com.example.cineticket_pro.application.service;
 
 
-import com.example.cineticket_pro.application.DTOs.GerenteResponse;
-import com.example.cineticket_pro.application.DTOs.LoginRequest;
-import com.example.cineticket_pro.application.DTOs.LoginResponse;
-import com.example.cineticket_pro.application.DTOs.UsuarioResponse;
+import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.domain.entities.Gerente;
 import com.example.cineticket_pro.domain.repository.GerenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +28,54 @@ public class GerenteService {
 public List<GerenteResponse> listarTodosGerentesTable(){
     return gerenteRepository.findAll().stream().map(GerenteResponse::new).toList();
 }
+
+    public GerenteResponse salvarGerente(GerenteRequest gerente, Long id) {
+
+        //Novo Gerente
+        if(id == 0L) {
+            Gerente gerenteBanco = new Gerente(gerente);
+            gerenteRepository.save(gerenteBanco);
+
+            return new GerenteResponse(gerenteBanco);
+        }else {
+            //Gerente existente
+            Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
+            if(gerenteBanco!= null ){
+                gerenteBanco.setNome(gerente.nome());
+                gerenteBanco.setEmail(gerente.email());
+                gerenteBanco.setSenha(gerente.senha());
+                gerenteRepository.save(gerenteBanco);
+                return  new GerenteResponse(gerenteBanco);
+            }
+
+        }
+
+        return null;
+    }
+
+    public GerenteResponse buscarPorId(Long id) {
+
+        var gerente = gerenteRepository.findById(id).orElse(null);
+        if(gerente == null){
+            return null;
+        }
+
+        return new GerenteResponse(gerente);
+
+
+    }
+
+    public boolean atualizarStatus(EnumStatusGerente status,Long id) {
+
+        Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
+        if(gerenteBanco!= null ){
+            gerenteBanco.setStatus(status);
+            gerenteRepository.save(gerenteBanco);
+            return  true;
+        }
+        return false;
+
+    }
 }
 
 

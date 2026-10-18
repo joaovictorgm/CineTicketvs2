@@ -1,6 +1,8 @@
 package com.example.cineticket_pro.domain.entities;
 
 
+import com.example.cineticket_pro.application.DTOs.EnumStatusGerente;
+import com.example.cineticket_pro.application.DTOs.GerenteRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,4 +28,10 @@ public class Gerente {
     public String senha;
 
     private EnumStatusGerente status;
+
+    public Gerente(GerenteRequest gerente) {
+        this.setNome(gerente.nome());
+        this.setEmail(gerente.email());
+        this.setSenha(gerente.senha());
+    }
 }
