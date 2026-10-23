@@ -6,10 +6,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 
@@ -31,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 || uri.startsWith("/auth/login")
                 || uri.startsWith("/senha/esqueci-senha")
                 || uri.startsWith("/senha/redefinir-senha")
-                || uri.startsWith("/")){
+                ){
             filterChain.doFilter(request,response);
             return;
         }
@@ -43,8 +46,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
             try{
 
-                var jwtValidador = tokenService.verificarToken(token);
-                System.out.println(jwtValidador.getSubject());
+                var usuarioLogado = tokenService.verificarToken(token);
+               var user = new UsernamePasswordAuthenticationToken(
+                       usuarioLogado ,  null ,usuarioLogado.authorities()
+
+               );
+
+                SecurityContextHolder.getContext().setAuthentication(user);
             }catch (Exception e){
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().println("Token invalido");
@@ -53,6 +61,8 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().println("Token inválido");
+            return;
         }
 
         filterChain.doFilter(request,response);

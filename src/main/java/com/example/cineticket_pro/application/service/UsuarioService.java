@@ -34,7 +34,7 @@ public class UsuarioService {
 
         if(usuarioRepository.existsUsuarioByEmailAndSenha(request.email(),request.senha())){
 
-            var token = tokenService.gerarToken(String.valueOf(request));
+            var token = tokenService.gerarToken(request);
             return new LoginResponse(token);
         }
 

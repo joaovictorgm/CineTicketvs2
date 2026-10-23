@@ -4,8 +4,6 @@ import com.example.cineticket_pro.application.DTOs.FilmeRequest;
 import com.example.cineticket_pro.application.DTOs.FilmeResponse;
 import com.example.cineticket_pro.application.service.FilmeService;
 import com.example.cineticket_pro.application.DTOs.EnumStatusFilme;
-import com.example.cineticket_pro.domain.entities.Filme;
-import com.example.cineticket_pro.domain.repository.FilmeRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -57,7 +57,7 @@ public class IngressoService {
 
     }
 
-    public boolean atualizarStatus(EnumTipoIngresso status, Long id) {
+    public boolean atualizarStatus(EnumStatusIngresso status, Long id) {
 
         Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
         if(ingressoBanco!= null ){
@@ -70,6 +70,9 @@ public class IngressoService {
     }
 
 
-    public boolean atualizarStatus(EnumStatusIngresso enumStatusIngresso) {
-    }
+    /*public boolean atualizarStatus(EnumStatusIngresso enumStatusIngresso) {
+    }*/
+
+   /* public boolean atualizarStatus(EnumTipoIngresso enumTipoIngresso, Long id) {
+    }*/
 }

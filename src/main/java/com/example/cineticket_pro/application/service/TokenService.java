@@ -6,6 +6,11 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.cineticket_pro.application.DTOs.LoginRequest;
+import com.example.cineticket_pro.application.DTOs.UsuarioLogado;
+import com.example.cineticket_pro.domain.repository.TokenRepository;
+import com.example.cineticket_pro.domain.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +29,20 @@ public class TokenService {
 
     private String emissor = "TESTADOR";
 
-    public String gerarToken(String subject) {
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private TokenRepository tokenRepository;
+
+    public String gerarToken(LoginRequest loginRequest) {
 
         try {
             Algorithm algorithm =Algorithm.HMAC256(secret);
 
-            String token = com.auth0.jwt.JWT.create().withIssuer(emissor).withSubject(subject).withExpiresAt(getDataExpiracao()).sign(algorithm);
+            var usuario = usuarioRepository.findAll().stream().filter(u-> u.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
+
+            String token = com.auth0.jwt.JWT.create().withIssuer(emissor).withSubject(loginRequest.email()).withExpiresAt(getDataExpiracao()).sign(algorithm);
 
             return token;
 
@@ -40,12 +53,20 @@ public class TokenService {
 
     }
 
-    public DecodedJWT verificarToken(String token) throws JWTVerificationException {
+    public UsuarioLogado verificarToken(String token) throws JWTVerificationException {
         Algorithm algorithm =Algorithm.HMAC256(secret);
 
         JWTVerifier verificador = JWT.require(algorithm).withIssuer(emissor).build();
 
-        return verificador.verify(token);
+         verificador.verify(token);
+
+         var tokenBanco = tokenRepository.findTokeByToken(token).orElse(null);
+
+         if(tokenBanco==null){
+             throw new IllegalArgumentException("Token Invalido!");
+         }
+
+         return new IllegalArgumentException(tokenBanco.getUsuario());
     }
 
     private Instant getDataExpiracao(){

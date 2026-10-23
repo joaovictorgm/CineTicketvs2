@@ -1,23 +1,27 @@
 package com.example.cineticket_pro.domain.entities;
 
-import com.example.cineticket_pro.application.DTOs.CriarAdminRequest;
-import com.example.cineticket_pro.application.DTOs.EnumStatusUsuario;
-import com.example.cineticket_pro.application.DTOs.FilmeRequest;
-import com.example.cineticket_pro.application.DTOs.UsuarioRequest;
+import com.example.cineticket_pro.application.DTOs.*;
 import com.example.cineticket_pro.domain.valueobject.CPF;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Usuario {
+public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
@@ -56,7 +60,24 @@ public class Usuario {
         this.setRole("ROLE_USER");
     }
 
+    public UsuarioLogado getUsuarioLogado(){
+        return (UsuarioLogado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.role));
+    }
+
+    @Override
+    public @Nullable String getPassword() {
+        return "";
+    }
+
+    @Override
+    public String getUsername() {
+        return "";
+    }
 }
 
