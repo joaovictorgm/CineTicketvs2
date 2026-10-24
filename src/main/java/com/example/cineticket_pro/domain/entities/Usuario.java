@@ -14,7 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -37,6 +39,18 @@ public class Usuario implements UserDetails {
     private String role = "ROLE_USER";
     @Enumerated(EnumType.STRING)
     private EnumStatusUsuario status;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "empresa_id", referencedColumnName = "id")
+    public Empresa empresa;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "tb_matricula",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "curso_id")
+
+    )
+    private Set<Curso> cursos = new HashSet<>();
 
     public String resetToken;
     public LocalDateTime resetTokenExpiracao;

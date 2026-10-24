@@ -7,6 +7,7 @@ import com.example.cineticket_pro.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -41,10 +42,15 @@ public class UsuarioService {
         return null;
     }
 
-    public List<UsuarioResponse> listarTodosUsuariosTable(){
-        return usuarioRepository.findAll().stream().map(UsuarioResponse::new).toList();
-    }
+    public List<UsuarioResponse> listarTodosUsuariosTable() {
 
+        var usuarioLogado = getUsuarioLogado();
+
+        if (usuarioLogado.empresa_id() == null) {
+            return usuarioRepository.findAll().stream().map(UsuarioResponse::new).toList();
+        }
+        return usuarioRepository.getUsuarioByEmpresa_id(usuarioLogado.empresa_id()).stream().map(UsuarioResponse::new).toList();
+    }
     public CriarAdminResponse criarAdmin(CriarAdminRequest criarAdminRequest) {
 
         if(!criarAdminRequest.secretKey().equals(secret)){
@@ -58,6 +64,9 @@ public class UsuarioService {
         return new CriarAdminResponse(usuarioAdminSalvar.getId(),"Usuario Salvo com sucesso");
     }
 
+    public UsuarioResponse getUsuarioLogado(){
+        return (UsuarioResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
     public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) {
 
         //Novo Usuario

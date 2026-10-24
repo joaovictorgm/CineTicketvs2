@@ -37,37 +37,39 @@ public class TokenService {
 
     public String gerarToken(LoginRequest loginRequest) {
 
-        try {
-            Algorithm algorithm =Algorithm.HMAC256(secret);
 
-            var usuario = usuarioRepository.findAll().stream().filter(u-> u.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
+            Algorithm algorithm = Algorithm.HMAC256(secret);
 
-            String token = com.auth0.jwt.JWT.create().withIssuer(emissor).withSubject(loginRequest.email()).withExpiresAt(getDataExpiracao()).sign(algorithm);
+            var usuario = usuarioRepository.findAll().stream().filter(u -> u.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
 
+            String token = JWT.create()
+                    .withIssuer(emissor)
+                    .withSubject(loginRequest.email())
+                    .withExpiresAt(this.getDataExpiracao())
+                    .sign(algorithm);
             return token;
 
-
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
 
     }
 
     public UsuarioLogado verificarToken(String token) throws JWTVerificationException {
-        Algorithm algorithm =Algorithm.HMAC256(secret);
+        Algorithm algorithm = Algorithm.HMAC256(secret);
 
         JWTVerifier verificador = JWT.require(algorithm).withIssuer(emissor).build();
 
-         verificador.verify(token);
+        verificador.verify(token);
 
-         var tokenBanco = tokenRepository.findTokeByToken(token).orElse(null);
+        var tokenBanco = tokenRepository.findTokenByToken(token).orElse(null);
 
-         if(tokenBanco==null){
-             throw new IllegalArgumentException("Token Invalido!");
-         }
+        if (tokenBanco == null) {
+            throw new IllegalArgumentException("Token Invalido!");
+        }
 
-         return new IllegalArgumentException(tokenBanco.getUsuario());
+        return new UsuarioLogado(tokenBanco.getUsuario());
     }
+
+
+
 
     private Instant getDataExpiracao(){
         // pegar data atual
