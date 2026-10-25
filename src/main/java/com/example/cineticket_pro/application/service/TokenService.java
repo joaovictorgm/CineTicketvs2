@@ -8,6 +8,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.cineticket_pro.application.DTOs.LoginRequest;
 import com.example.cineticket_pro.application.DTOs.UsuarioLogado;
+import com.example.cineticket_pro.domain.entities.Token;
 import com.example.cineticket_pro.domain.repository.TokenRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,8 @@ public class TokenService {
                     .withSubject(loginRequest.email())
                     .withExpiresAt(this.getDataExpiracao())
                     .sign(algorithm);
+
+                    tokenRepository.save(new Token(token, usuario));
             return token;
 
 

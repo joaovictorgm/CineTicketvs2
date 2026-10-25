@@ -2,7 +2,9 @@ package com.example.cineticket_pro.application.service;
 
 
 import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.entities.Usuario;
+import com.example.cineticket_pro.domain.repository.SessaoRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.net.HttpURLConnection;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 
@@ -23,17 +26,20 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Autowired TokenService tokenService;
+    @Autowired
+    private SessaoRepository sessaoRepository;
+
+    @Autowired
+    TokenService tokenService;
 
     @Value("${spring.secretkey}")
     private String secret;
 
 
-    public  LoginResponse validarUsuarioAutenticadoeRetornaToken( LoginRequest request){
+    public LoginResponse validarUsuarioAutenticadoeRetornaToken(LoginRequest request) {
 
 
-
-        if(usuarioRepository.existsUsuarioByEmailAndSenha(request.email(),request.senha())){
+        if (usuarioRepository.existsUsuarioByEmailAndSenha(request.email(), request.senha())) {
 
             var token = tokenService.gerarToken(request);
             return new LoginResponse(token);
@@ -51,39 +57,48 @@ public class UsuarioService {
         }
         return usuarioRepository.getUsuarioByEmpresa_id(usuarioLogado.empresa_id()).stream().map(UsuarioResponse::new).toList();
     }
-    public CriarAdminResponse criarAdmin(CriarAdminRequest criarAdminRequest) {
 
-        if(!criarAdminRequest.secretKey().equals(secret)){
-            return new CriarAdminResponse(0L,"Usuario salvo com sucesso!");
+    public CriarAdminResponse criarAdmin(CriarAdminRequest criarAdminRequest) throws AccessDeniedException {
+
+        if (criarAdminRequest.secretKey() == null ||!criarAdminRequest.secretKey().equals(secret)) {
+           throw new AccessDeniedException( "Chave de adminstrador inválida");
         }
 
         Usuario usuarioAdminSalvar = new Usuario(criarAdminRequest);
 
         usuarioRepository.save(usuarioAdminSalvar);
 
-        return new CriarAdminResponse(usuarioAdminSalvar.getId(),"Usuario Salvo com sucesso");
+        return new CriarAdminResponse(usuarioAdminSalvar.getId(), "Usuario Salvo com sucesso");
     }
 
-    public UsuarioResponse getUsuarioLogado(){
-        return (UsuarioResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    public UsuarioLogado getUsuarioLogado() {
+        return (UsuarioLogado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
-    public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) {
+
+    public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) throws AccessDeniedException {
+
 
         //Novo Usuario
-        if(id == 0L) {
+        if (id == 0L) {
             Usuario usuarioBanco = new Usuario(usuario);
             usuarioRepository.save(usuarioBanco);
 
             return new UsuarioResponse(usuarioBanco);
-        }else {
-            //Usuario existente
+        } else {
+            //Usuario existente; só o dono ou um ADMIN altera
+            var logado = getUsuarioLogado();
+            boolean admin = logado.authorities().stream().anyMatch(a ->a.getAuthority().equals("ROLE_ADMIN"));
+            if(!admin && !logado.id().equals(id)){
+                throw new AccessDeniedException("Voce só pode alterar o seu próprio cadastro");
+            }
             Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
-            if(usuarioBanco!= null ){
+            if (usuarioBanco != null) {
                 usuarioBanco.setNome(usuario.nome());
                 usuarioBanco.setEmail(usuario.email());
                 usuarioBanco.setSenha(usuario.senha());
                 usuarioRepository.save(usuarioBanco);
-                return  new UsuarioResponse(usuarioBanco);
+                return new UsuarioResponse(usuarioBanco);
             }
 
         }
@@ -94,7 +109,7 @@ public class UsuarioService {
     public UsuarioResponse buscarPorId(Long id) {
 
         var usuario = usuarioRepository.findById(id).orElse(null);
-        if(usuario == null){
+        if (usuario == null) {
             return null;
         }
 
@@ -103,15 +118,38 @@ public class UsuarioService {
 
     }
 
-    public boolean atualizarStatus(EnumStatusUsuario status,Long id) {
+    public boolean atualizarStatus(EnumStatusUsuario status, Long id) {
 
         Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
-        if(usuarioBanco!= null ){
+        if (usuarioBanco != null) {
             usuarioBanco.setStatus(status);
             usuarioRepository.save(usuarioBanco);
-            return  true;
+            return true;
         }
         return false;
 
     }
+
+    public boolean entrarsessao(Long id, EntrarSessaoRequest entrarSessaoRequest) {
+        Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
+        Sessao sessaoBanco = sessaoRepository.findById(entrarSessaoRequest.sessao_id()).orElse(null);
+        if (usuarioBanco != null && sessaoBanco != null) {
+
+            var sessao = usuarioBanco.getSessoes().stream().anyMatch(u -> u.getId().equals(sessaoBanco.getId()));
+
+            if (sessao) {
+                return true;
+
+            } else {
+                usuarioBanco.getSessoes().add(sessaoBanco);
+                usuarioRepository.save(usuarioBanco);
+
+                return true;
+            }
+
+        }
+        return false;
+
+    }
+
 }

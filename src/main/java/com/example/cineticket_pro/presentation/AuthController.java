@@ -32,7 +32,7 @@ public class AuthController {
         if(resultadoAutenticacaoRetornoToken != null){
 
 
-            return ResponseEntity.ok(loginRequest);
+            return ResponseEntity.ok((resultadoAutenticacaoRetornoToken));
         }
         return ResponseEntity.status(HttpURLConnection.HTTP_UNAUTHORIZED).build();
 

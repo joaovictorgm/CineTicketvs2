@@ -14,7 +14,7 @@ public class MenuController {
     @FXML
     public void abrirCadastro(ActionEvent event) throws IOException {
         FXMLLoader loader =
-                new FXMLLoader(getClass().getResource("/com/example/demo/cadastro-usuario.fxml"));
+                new FXMLLoader(getClass().getResource("/com/example/demo/cadastro-gerente.fxml"));
 
         Scene scene = new Scene(loader.load());
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

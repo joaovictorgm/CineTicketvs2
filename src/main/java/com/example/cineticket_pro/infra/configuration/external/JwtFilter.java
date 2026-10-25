@@ -26,7 +26,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        if(uri.startsWith("/swagger-ui")
+        if(request.getMethod().equals("OPTIONS")
+                || uri.startsWith("/swagger-ui")
                 || uri.startsWith("/v2/api-docs")
                 || uri.startsWith("/v3/api-docs")
                 || uri.startsWith("swagger-resources")
@@ -34,6 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 || uri.startsWith("/auth/login")
                 || uri.startsWith("/senha/esqueci-senha")
                 || uri.startsWith("/senha/redefinir-senha")
+                || uri.equals("/usuarios") && request.getMethod().equals("POST")
                 ){
             filterChain.doFilter(request,response);
             return;

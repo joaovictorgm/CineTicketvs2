@@ -103,6 +103,17 @@ public class UsuarioController {
         return ResponseEntity.notFound().build();
     }
 
+    @PatchMapping("/{id}/entrarsessao")
+    public ResponseEntity<?> entrarsessao(@PathVariable Long id , @RequestBody EntrarSessaoRequest entrarSessaoRequest){
+
+        boolean retornoEntrarSessao = usuarioService.entrarsessao(id, entrarSessaoRequest);
+
+        if(retornoEntrarSessao){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 
             }
 

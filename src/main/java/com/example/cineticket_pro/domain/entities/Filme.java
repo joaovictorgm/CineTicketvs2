@@ -5,13 +5,18 @@ import com.example.cineticket_pro.application.DTOs.FilmeRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Filme {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +29,9 @@ public class Filme {
 
 
     public EnumStatusFilme statusFilme = EnumStatusFilme.ATIVO;
+
+    @ManyToMany(mappedBy = "filmes")
+    private Set<Sessao> filmes = new HashSet<>();
 
     public Filme(FilmeRequest filme) {
         this.setTitulo(filme.titulo());

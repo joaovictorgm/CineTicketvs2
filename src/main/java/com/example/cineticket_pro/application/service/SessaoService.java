@@ -2,8 +2,10 @@ package com.example.cineticket_pro.application.service;
 
 
 import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.domain.entities.Filme;
 import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.entities.Usuario;
+import com.example.cineticket_pro.domain.repository.FilmeRepository;
 import com.example.cineticket_pro.domain.repository.SessaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ public class SessaoService {
 
     @Autowired
     private SessaoRepository sessaoRepository;
+
+    @Autowired
+    private FilmeRepository filmeRepository;
 
     public List<SessaoResponse> listarTodasSessoesTable() {
         return sessaoRepository.findAll().stream().map(SessaoResponse::new).toList();
@@ -80,5 +85,28 @@ public class SessaoService {
             return true;
         }
         return false;
+    }
+
+    public boolean juntarSessaoFilme(Long id, JuntarFilmeSessaoRequest juntarFilmeSessaoRequest){
+
+        Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
+        Filme filmeBanco = filmeRepository.findById(juntarFilmeSessaoRequest.filme_id()).orElse(null);
+
+        if(sessaoBanco!= null && filmeBanco != null){
+            var filme = sessaoBanco.getFilmes().stream().anyMatch(u->u.getId().equals(filmeBanco.getId()));
+
+
+            if(filme){
+                return true;
+            }else{
+                sessaoBanco.getFilmes().add(filmeBanco);
+                sessaoRepository.save(sessaoBanco);
+
+                return true;
+            }
+        }
+
+        return false;
+
     }
 }
