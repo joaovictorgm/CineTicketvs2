@@ -15,29 +15,30 @@ public class IngressoService {
     @Autowired
     private IngressoRepository ingressoRepository;
 
-    public List<IngressoResponse> listarTodosIngressosTable(){
+    public List<IngressoResponse> listarTodosIngressosTable() {
         return ingressoRepository.findAll().stream().map(IngressoResponse::new).toList();
 
     }
+
     public IngressoResponse salvaringresso(IngressoRequest ingresso, Long id) {
 
         //Novo Ingresso
-        if(id == 0L) {
+        if (id == 0L) {
             Ingresso ingressoBanco = new Ingresso(ingresso);
             ingressoRepository.save(ingressoBanco);
 
             return new IngressoResponse(ingressoBanco);
-        }else {
+        } else {
             //Ingresso existente
             Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
-            if(ingressoBanco!= null ){
+            if (ingressoBanco != null) {
                 ingressoBanco.setSessao(ingresso.sessao());
                 ingressoBanco.setFilme(ingresso.filme());
                 ingressoBanco.setAssento(ingresso.assento());
                 ingressoBanco.setValorPago(ingresso.valorPago());
                 ingressoBanco.setDataCompra(ingresso.dataCompra());
                 ingressoRepository.save(ingressoBanco);
-                return  new IngressoResponse(ingressoBanco);
+                return new IngressoResponse(ingressoBanco);
             }
 
         }
@@ -48,7 +49,7 @@ public class IngressoService {
     public IngressoResponse buscarPorId(Long id) {
 
         var ingresso = ingressoRepository.findById(id).orElse(null);
-        if(ingresso == null){
+        if (ingresso == null) {
             return null;
         }
 
@@ -57,22 +58,30 @@ public class IngressoService {
 
     }
 
-    public boolean atualizarStatus(EnumStatusIngresso status, Long id) {
+    public boolean atualizarStatus(EnumStatusIngresso statusIngresso, Long id) {
 
         Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
-        if(ingressoBanco!= null ){
-            ingressoBanco.setStatusIngresso(status);
+        if (ingressoBanco != null) {
+            ingressoBanco.setStatusIngresso(statusIngresso);
             ingressoRepository.save(ingressoBanco);
-            return  true;
+            return true;
         }
         return false;
 
     }
 
 
-    /*public boolean atualizarStatus(EnumStatusIngresso enumStatusIngresso) {
-    }*/
+    public boolean atualizarStatusTipo(EnumTipoIngresso statusIngressoTipo, Long id) {
 
-   /* public boolean atualizarStatus(EnumTipoIngresso enumTipoIngresso, Long id) {
-    }*/
+        Ingresso ingressoBancoTipo = ingressoRepository.findById(id).orElse(null);
+        if (ingressoBancoTipo != null){
+            ingressoBancoTipo.setStatusTipo(statusIngressoTipo);
+            ingressoRepository.save(ingressoBancoTipo);
+            return true;
+        }
+        return false;
+    }
 }
+
+
+

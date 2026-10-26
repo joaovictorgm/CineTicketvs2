@@ -1,4 +1,4 @@
 package com.example.cineticket_pro.application.DTOs;
 
-public record AtualizarStatusIngressoRequest(EnumTipoIngresso statusIngressoRequest) {
+public record AtualizarStatusIngressoRequest(EnumStatusIngresso statusIngresso) {
 }

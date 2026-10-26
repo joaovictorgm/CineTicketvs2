@@ -53,8 +53,8 @@ public class IngressoController {
 
     @PatchMapping("/{id}/status")
     @Operation(summary = "Método de atualização de status do ingresso", description = "Método responsável por atualizar apenas o status de um ingresso já emitido")
-    public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusIngressoRequest statusIngressoRequest) {
-        var atualizarIngresso = ingressoService.atualizarStatus(statusIngressoRequest.statusIngressoRequest(),id);
+    public ResponseEntity<Void> atualizarStatus(@PathVariable Long id) {
+        var atualizarIngresso = ingressoService.atualizarStatusTipo(EnumTipoIngresso.INTEIRA,id);
 
         if(atualizarIngresso){
             return ResponseEntity.ok().build();
@@ -77,12 +77,14 @@ public class IngressoController {
         }
     }
 
+
+
     //arrumar o tipo de ingresso
     @DeleteMapping("/{id}/excluir")
     @Operation(summary = "Método de exclusão de ingresso", description = "Método responsável por cancelar (soft delete) um ingresso emitido")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
 
-        var atualizarIngresso = ingressoService.atualizarStatus(EnumStatusIngresso.PAGO);
+        var atualizarIngresso = ingressoService.atualizarStatus(EnumStatusIngresso.DISPONIVEL,id);
 
         if(atualizarIngresso){
             return ResponseEntity.ok().build();
