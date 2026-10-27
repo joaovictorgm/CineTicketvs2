@@ -8,13 +8,12 @@ import com.example.cineticket_pro.domain.repository.SessaoRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.net.HttpURLConnection;
-import java.nio.file.AccessDeniedException;
+
+
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 
 

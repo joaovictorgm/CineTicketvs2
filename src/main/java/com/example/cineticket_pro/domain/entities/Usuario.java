@@ -46,7 +46,7 @@ public class Usuario implements UserDetails {
     @JoinColumn(name = "empresa_id", referencedColumnName = "id")
     public Empresa empresa;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tb_codigosessao",
     joinColumns = @JoinColumn(name = "usuario_id"),
     inverseJoinColumns = @JoinColumn(name="sessao_id")

@@ -3,13 +3,12 @@ package com.example.cineticket_pro.application.DTOs;
 import com.example.cineticket_pro.domain.entities.Usuario;
 
 public record UsuarioResponse(Long id, String nome, String telefone, String email, String filme, String sessao, String ingresso,
-                              String usuarioEntidadeIngresso, EnumStatusUsuario statusUsuario) {
+                              EnumStatusUsuario statusUsuario) {
 
     public UsuarioResponse(Usuario usuarioEntidade){
         this (
                 usuarioEntidade.getId(),
                 usuarioEntidade.getNome(),
-                usuarioEntidade.getCpf().toString(),
                 usuarioEntidade.getTelefone(),
                 usuarioEntidade.getEmail(),
                 usuarioEntidade.getFilme(),

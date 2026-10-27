@@ -26,12 +26,13 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         /* publicas */
-                .requestMatchers("/auth/login","/swagger-ui/**","/webjars/**","/swagger-resources/**","/v3/api-docs/**").permitAll()
+                .requestMatchers("/auth/login","/swagger-ui/**","/swagger-ui.html","/webjars/**","/swagger-resources/**","/v3/api-docs/**").permitAll()
                 .requestMatchers("/senha/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         /* só funcionário */
                         .requestMatchers("/usuarios/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/gerentes/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,   "/filmes/**", "/sessoes/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,    "/filmes/**", "/sessoes/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH,  "/filmes/**", "/sessoes/**").hasRole("ADMIN")
