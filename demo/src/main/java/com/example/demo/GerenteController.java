@@ -58,7 +58,7 @@ public class GerenteController {
             voltar(event);
 
         }else {
-            showMessage(Alert.AlertType.ERROR,"Erro ao salvar gerente!");
+            showMessage(Alert.AlertType.ERROR,"Erro ao salvar gerente! Código: " + respostaApi);
         }
 
 

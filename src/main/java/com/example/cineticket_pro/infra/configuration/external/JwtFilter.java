@@ -36,6 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 || uri.startsWith("/senha/esqueci-senha")
                 || uri.startsWith("/senha/redefinir-senha")
                 || uri.equals("/usuarios") && request.getMethod().equals("POST")
+                || (request.getMethod().equals("POST") && uri.equals("/gerentes"))
                 ){
             filterChain.doFilter(request,response);
             return;
