@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Filme } from "../types/filmes"
-import axios from "axios";
 import Link from "next/link";
+import { atualizarStatusFilme, buscarListaFilmes, deletarFilme } from "@/app/services/filmeService";
 
 
 
@@ -17,45 +17,33 @@ export default function Filmes() {
 
     const carregarDados = async () => {
         try {
-            const dados = axios.get<Filme[]>("http://localhost:8080/filmes");
-            console.log("Resposta da API:", (await dados).data);
-            setFilme((await dados).data);
+           const dados = await buscarListaFilmes();
+
+           setFilme(dados);
         } catch (error) {
             alert("Erro ao carregar dados")
         }
     }
 
     const handlerDeletarFilme = async (filme: Filme) => {
-        var dadosRetorno = await axios.delete('http://localhost:8080/filmes/' + filme.id + '/excluir');
+        var dadosRetorno = await deletarFilme(filme.id || 0);
 
-        if (dadosRetorno.status == 200) {
+        if (dadosRetorno == 200) {
             alert("Excluido com sucesso!")
         } else {
-            alert(dadosRetorno.data);
+            alert("Erro ao excluir");
             return;
         }
         carregarDados();
     }
 
     const handleAlterarStatusFilme = async (filme: Filme) => {
-        var novoStatus = {};
-        if (filme.status === "ATIVO") {
-            novoStatus = { status: "BLOQUEADO" }
-        } else {
-            novoStatus = { status: "ATIVO" }
-        }
-
-        var dadosRetorno = await axios.patch('http://localhost:8080/filmes/' + filme.id + '/status', novoStatus);
-        if (dadosRetorno.status === 200) {
-            alert("Atualizado status com sucesso!")
-        } else {
-            alert(dadosRetorno.data);
-
-            return;
-        }
-
+        await atualizarStatusFilme(filme);
         carregarDados();
-    }
+        }
+
+       
+    
 
     return (
         <div className=" bg-blue-100 p-8">

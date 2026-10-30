@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Filme } from "@/app/(sistema)/types/filmes";
 import axios from "axios";
+import { consultaFilmePorId } from "@/app/services/filmeService";
 
 export default function EditarFilme() {
 
@@ -22,10 +23,11 @@ export default function EditarFilme() {
     }, []);
 
     const buscarDados = async () => {
-        const valorFilmeBack = await axios.get<Filme>('http://localhost:8080/filmes/' + codigo)
 
-        if (valorFilmeBack.status == 200) {
-            setFilme(valorFilmeBack.data);
+        const valorFilmeBack = await consultaFilmePorId(codigo);
+        
+        if (valorFilmeBack) {
+            setFilme(valorFilmeBack);
         } else {
             router.push("/filmes")
         }

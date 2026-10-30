@@ -21,7 +21,7 @@ export default function EditarGerente() {
     }, []);
 
     const buscarDados = async () => {
-        const valorGerenteBack = await axios.get<Gerente>('http://localhost:8080/gerentes/' + codigo)
+        
 
         if (valorGerenteBack.status === 200) {
             setGerente(valorGerenteBack.data);

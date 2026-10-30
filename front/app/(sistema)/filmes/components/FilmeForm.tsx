@@ -5,6 +5,7 @@ import { Filme, FilmeFormProps } from "../../types/filmes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
+import { atualizarFilme, salvarFilme } from "@/app/services/filmeService";
 
 export default function FilmeForm({filmeExistente}:FilmeFormProps) {
 
@@ -27,12 +28,12 @@ export default function FilmeForm({filmeExistente}:FilmeFormProps) {
     const handlerSalvar = async (formData: FormData) =>{
 
         if(filmeExistente){
-            var dadosRetorno = await axios.put<number>('http://localhost:8080/filmes/'+filme.id,filme)
+            var dadosRetorno = await atualizarFilme(filme);
 
-        if(dadosRetorno.status == 200){
+        if(dadosRetorno){
             alert("Filme foi salvo com sucesso!");
         } else {
-            alert(dadosRetorno.data);
+            alert("Erro ao atualizar filme");
             return;
         }
 
@@ -40,19 +41,39 @@ export default function FilmeForm({filmeExistente}:FilmeFormProps) {
         }else{
 
       
-        var dadosRetorno = await axios.post<number>('http://localhost:8080/filmes' ,filme)
+      if(filmeExistente){
+        var dadosRetorno = await salvarFilme(filme);
 
-        if(dadosRetorno.status == 200){
+        if(dadosRetorno){
             alert("filme foi salvo com sucesso!");
         } else {
-            alert(dadosRetorno.data);
+            alert("Erro ao salvar filme");
 
             return;
         }
 
-        router.push("/filmes")
+    }else{
+        if(filmeExistente){
+        var dadosRetorno = await salvarFilme(filme);
+        if(dadosRetorno){
+            alert("Filme foi salvo com sucesso!")
+        }else{
+            alert("Erro ao salvar Filme")
 
+            return;
+        }
+    } else {
+
+        var dadosRetorno = await salvarFilme(filme);
+        if(dadosRetorno){
+            alert("Usuário foi salvo com sucesso!")
+        } else {
+            alert("Erro ao salvar Usuário!");
+
+            return;
+        }
     }
+    router.push("/filmes")
 
     }
     

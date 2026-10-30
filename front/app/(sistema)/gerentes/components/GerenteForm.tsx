@@ -26,7 +26,7 @@ export default function GerenteForm({ gerenteExistente }: GerenteFormProps) {
 
     const handlerSalvar = async (formData: FormData) => {
         if (gerenteExistente) {
-            var dadosRetorno = await axios.put<number>('http://localhost:8080/gerentes/' + gerente.id, gerente)
+            
             if (dadosRetorno.status == 200) {
                 alert("Gerente foi salvo com sucesso!")
             } else {

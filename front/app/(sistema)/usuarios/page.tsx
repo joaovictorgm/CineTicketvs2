@@ -1,10 +1,11 @@
 // npx create-next-app@latest front --typescript --tailwind --eslint
 'use client'
 
-import axios from "axios";
+
 import Link from "next/link"; 
 import { Usuario } from "../types/usuario";
 import { useEffect, useState } from "react";
+import { atualizarStatusUsuario, buscarListaUsuarios, deletarUsuario } from "@/app/services/usuarioService";
 
 export default function Usuarios(){
 
@@ -16,9 +17,9 @@ export default function Usuarios(){
 
     const carregarDados = async ()=> {
         try {
-        const dados =  axios.get<Usuario[]>("http://localhost:8080/usuarios");
+        const dados =  await buscarListaUsuarios();
        
-        setUsuario((await dados).data);
+        setUsuario( dados);
 
     } catch (error) {
         alert("Erro ao carregar dados")
@@ -26,37 +27,27 @@ export default function Usuarios(){
     }
 
     const handlerDeletarUsuario = async(usuario:Usuario) =>{
-        var dadosRetorno = await axios.delete('http://localhost:8080/usuarios/'+usuario.id+'/excluir');
+        var dadosRetorno = await deletarUsuario(usuario.id || 0);
 
-        if(dadosRetorno.status == 200){
+        if(dadosRetorno == 200){
             alert("Excluido com sucesso!");
         } else {
-            alert(dadosRetorno.data);
+            alert("Erro ao excluir");
             return;
         }
 
         carregarDados();
     }
 
-    const handleAlterarStatusUsuario = async(usuario:Usuario)=>{
-        var novoStatus = {};
-        if(usuario.status==="ATIVO"){
-            novoStatus = {status:"BLOQUEADO"}
-        } else{
-            novoStatus = {status:"ATIVO"}
-        }
+    const handleAlterarStatusUsuario = async(usuario:Usuario) =>{
 
-        var dadosRetorno = await axios.patch('http://localhost:8080/usuarios/'+usuario.id+'/status',novoStatus);
-        if(dadosRetorno.status===200){
-            alert("Atualizado status com sucesso!")
-        }else{
-            alert(dadosRetorno.data);
-
-            return;
-        }
+        await atualizarStatusUsuario(usuario);
 
         carregarDados();
+
     }
+
+    
 
     return (
     <div className=" bg-blue-50 p-8">
@@ -108,7 +99,7 @@ export default function Usuarios(){
             DELETAR
         </button>
         <button
-            onClick={() => handleAlterarStatusUsuario(usuario)}
+            onClick={() => atualizarStatusUsuario(usuario)}
             className={`font-medium transition-colors text-left ${
                 usuario.status === 'BLOQUEADO'
                     ? 'text-orange-600 hover:text-orange-800'

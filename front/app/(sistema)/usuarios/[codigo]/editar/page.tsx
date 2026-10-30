@@ -5,15 +5,19 @@ import UsuarioForm from "../../components/UsuarioForm";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Usuario } from "@/app/(sistema)/types/usuario";
-import axios from "axios";
+import { buscarListaUsuarios, consultaUsuarioPorId, deletarUsuario } from "@/app/services/usuarioService";
+
 
 export default function EditarUsuario(){
+
+    
+
 
     const parametro = useParams();
 
     const codigo = Number(parametro.codigo);
 
-    const [usuario, setUsuario] = useState<Usuario | null>(null)
+    const [usuario,setUsuario] = useState<Usuario|null>(null)
     const router = useRouter();
 
     useEffect(()=>{
@@ -22,20 +26,18 @@ export default function EditarUsuario(){
 
     },[]);
 
-    const buscarDados = async() =>{
-    
-     const valorUsuarioBack = await axios.get<Usuario>('http://localhost:8080/usuarios/'+codigo)
+    const buscarDados =async() =>{
 
-     if(valorUsuarioBack.status==200){
-        setUsuario(valorUsuarioBack.data);
-     }else{
-        router.push("/usuarios")
-        
-     }
-
-     
+        const valorUsuarioBack = await consultaUsuarioPorId(codigo);
+        if(valorUsuarioBack){
+            setUsuario(valorUsuarioBack);
+        }else{
+            router.push("/usuarios")
+        }
 
     }
+
+    
 
     if(!usuario) return(<div className="p-1">Carregando Dados</div>)
     return(

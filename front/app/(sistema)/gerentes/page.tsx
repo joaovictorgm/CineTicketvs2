@@ -16,7 +16,7 @@ export default function Gerentes() {
 
     const carregarDados = async () => {
         try {
-            const dados = axios.get<Gerente[]>("http://localhost:8080/gerentes");
+            
             setGerente((await dados).data);
         } catch (error) {
             alert("Erro ao carregar dados")
@@ -24,7 +24,7 @@ export default function Gerentes() {
     }
 
     const handlerDeletarGerente = async (gerente: Gerente) => {
-        var dadosRetorno = await axios.delete('http://localhost:8080/gerentes/' + gerente.id + '/excluir')
+       
 
         if (dadosRetorno.status == 200) {
             alert("Excluido como sucesso!");
@@ -37,20 +37,7 @@ export default function Gerentes() {
     }
 
     const handlerAlterarStatusGerente = async (gerente: Gerente) => {
-        var novoStatus = {};
-        if (gerente.status === "ATIVO") {
-            novoStatus = { status: "BLOQUEADO" }
-        } else {
-            novoStatus = { status: "ATIVO" }
-        }
-
-        var dadosRetorno = await axios.patch('http://localhost:8080/gerentes/' + gerente.id + '/status', novoStatus);
-        if (dadosRetorno.status === 200) {
-            alert("Atualizado status como sucesso!")
-        } else {
-            alert(dadosRetorno.data);
-
-            return;
+        
         }
 
         carregarDados();

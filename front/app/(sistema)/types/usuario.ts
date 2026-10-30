@@ -1,4 +1,5 @@
 export class Usuario{
+    static status: string;
     constructor(
        public id: number| null,
        public nome:string,

@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Usuario, UsuarioFormProps } from "../../types/usuario";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { atualizarFilme } from "@/app/services/filmeService";
+import { atualizarUsuario, salvarUsuario } from "@/app/services/usuarioService";
 
 export default function UsuarioForm({usuarioExistente}:UsuarioFormProps) {
 
@@ -32,32 +34,43 @@ export default function UsuarioForm({usuarioExistente}:UsuarioFormProps) {
     const handlerSalvar = async (formData: FormData) =>{
 
         if(usuarioExistente){
-            var dadosRetorno = await axios.put<number>('http://localhost:8080/usuarios'+usuario.id,usuario)
+            var dadosRetorno = await atualizarUsuario(usuario);
 
-        if(dadosRetorno.status == 200){
+        if(dadosRetorno){
             alert("Usuário foi salvo com sucesso!");
         } else {
-            alert(dadosRetorno.data);
+            alert("Erro ao atualizar Usuário");
             return;
         }
 
 
         }else{
 
-      
-        var dadosRetorno = await axios.post<number>('http://localhost:8080/usuarios' ,usuario)
+      if(usuarioExistente){
+        var dadosRetorno = await salvarUsuario(usuario);
 
-        if(dadosRetorno.status == 200){
+        if(dadosRetorno){
             alert("Usuário foi salvo com sucesso!");
         } else {
-            alert(dadosRetorno.data);
+            alert("Erro ao salvar Usuário");
 
             return;
         }
 
-        router.push("/usuarios")
+      
 
+    } else {
+        var dadosRetorno = await salvarUsuario(usuario);
+        if(dadosRetorno){
+            alert("Usuário foi salvo com sucesso!")
+        } else {
+            alert("Erro ao salvar Usuário!");
+
+            return;
+        }
     }
+
+    router.push("/usuarios");
 
     }
     return (
