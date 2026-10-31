@@ -72,7 +72,8 @@ public class UsuarioService {
 
 
     public UsuarioLogado getUsuarioLogado() {
-        return (UsuarioLogado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (UsuarioLogado) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
     }
 
     public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) throws AccessDeniedException {
@@ -149,6 +150,15 @@ public class UsuarioService {
         }
         return false;
 
+    }
+
+    public UsuarioResponse buscarUsuarioLogado() {
+        try{
+            var usuarioLogado = getUsuarioLogado();
+            return usuarioRepository.findById(usuarioLogado.id()).stream().map(UsuarioResponse::new).findFirst().orElse(null);
+        }catch (Exception e){
+            throw new RuntimeException("Erro ao buscar usuario logado!");
+        }
     }
 
 }

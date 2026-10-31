@@ -24,10 +24,13 @@ public class Gerente {
 
     public String senha;
 
-    private EnumStatusGerente status;
 
-    /*@ManyToOne(fetch = = FetchType.EAGER)
-    @JoinColumn(name = "empresa_id",referencedColumnName = "id")*/
+    private EnumStatusGerente status;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "empresa_id", referencedColumnName = "id")
+    public Empresa empresa;
+
+
 
     public Gerente(GerenteRequest gerente) {
         this.setNome(gerente.nome());

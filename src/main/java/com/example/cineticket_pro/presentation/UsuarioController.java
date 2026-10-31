@@ -31,6 +31,7 @@ public class UsuarioController {
 
 
     @PostMapping("/admin")
+    @Operation(summary = "Criar administrador e empresa",description = "Cadastra a empresa e o primeiro usuário administrador dela. Exige a chave secreta de administração no corpo da requisição. Retorna 200 com os dados do admin criado e 400 se os dados forem inválidos ou o e-mail já estiver cadastrado.")
     public ResponseEntity<CriarAdminResponse>criarAdmin(@RequestBody CriarAdminRequest criarAdminRequest){
 
         try {
@@ -104,6 +105,7 @@ public class UsuarioController {
     }
 
     @PatchMapping("/{id}/entrarsessao")
+    @Operation(summary = "Registrar entrada do usuário em uma sessão", description = "Associa o usuário informado a uma sessão de cinema. Retorna 200 em caso de sucesso e 404 se o usuário ou a sessão não forem encontrados.")
     public ResponseEntity<?> entrarsessao(@PathVariable Long id , @RequestBody EntrarSessaoRequest entrarSessaoRequest){
 
         boolean retornoEntrarSessao = usuarioService.entrarsessao(id, entrarSessaoRequest);
@@ -114,6 +116,10 @@ public class UsuarioController {
         return ResponseEntity.notFound().build();
     }
 
-
-            }
+    @GetMapping("/buscarusuariologado")
+    @Operation(summary = "Usuario logado", description = "Usuario logado")
+    public ResponseEntity<UsuarioResponse> buscarUsuarioLogado(){
+        return ResponseEntity.ok(usuarioService.buscarUsuarioLogado());
+    }
+}
 

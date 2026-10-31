@@ -41,18 +41,9 @@ public class Sessao {
     @JoinColumn(name = "empresa_id",referencedColumnName = "id")
     private Empresa empresa;
 
-    @ManyToMany
-    @JoinTable(
-            name = "tb_cadastrofilme",
-            joinColumns = @JoinColumn(name = "sessao_id"),
-            inverseJoinColumns = @JoinColumn(name = "filme_id")
-    )
+@OneToMany(mappedBy = "sessao")
+private List<Filme> filmes;
 
-    private Set<Filme> filmes = new HashSet<>();
-
-    public void juntarfilmesessao(Filme filme){
-        this.filmes.add(filme);
-    }
 
 
 

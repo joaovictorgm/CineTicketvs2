@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Filme {
+public class Filme  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -27,11 +27,14 @@ public class Filme {
     public String classificacaoEtaria;
     public String dataEstreia;
 
+    @ManyToOne
+    @JoinColumn(name = "sessao_id", referencedColumnName = "id")
+    public Sessao sessao;
+
 
     public EnumStatusFilme statusFilme = EnumStatusFilme.ATIVO;
 
-    @ManyToMany(mappedBy = "filmes")
-    private Set<Sessao> filmes = new HashSet<>();
+
 
     public Filme(FilmeRequest filme) {
         this.setTitulo(filme.titulo());

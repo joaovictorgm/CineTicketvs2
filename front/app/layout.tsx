@@ -1,6 +1,6 @@
 import { Metadata } from "@/node_modules/next/types";
 import "./globals.css";
-import StoreProvider from "./redux/slices/StoreProvider";
+import StoreProvider from "./redux/StoreProvider";
 
 
 export const metadata: Metadata = {

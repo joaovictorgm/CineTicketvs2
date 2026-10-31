@@ -7,6 +7,7 @@ import Cookies  from "js-cookie";
 import { useDispatch } from "react-redux";
 import { buscarUsuarioLogado } from "../services/usuarioService";
 import { login } from "../redux/slices/authSlice";
+import { loginBack } from "../services/authService";
 
 export default function Login() {
     
@@ -21,17 +22,14 @@ export default function Login() {
             const emailTela = formData.get("email")?.toString() ?? "";
             const senhaTela = formData.get("senha")?.toString() ?? "";
 
-            var loginResposta = await axios.post<LoginResponse>(
-                "http://localhost:8080/auth/login",
-                { email: emailTela, senha: senhaTela }
-            );
+            var loginResposta = await loginBack(emailTela,senhaTela);
 
-            if (loginResposta.status == 200) {
-                Cookies.set('token',loginResposta.data.token,{secure: true, expires: 7} );
+            if (loginResposta != null) {
+                Cookies.set('token',loginResposta.token,{secure: true, expires: 7} );
                 var usuarioLogado = await buscarUsuarioLogado();
 
                 dispatch(login({
-                    token:loginResposta.data.token,
+                    token:loginResposta.token,
                     usuario:{...usuarioLogado}
                 }
                 ));
