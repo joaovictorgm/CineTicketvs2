@@ -1,6 +1,12 @@
 import Link from "next/link";
+import { store } from "../redux/store";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/slices/authSlice";
 
 export default function Header(){
+
+    const usuario = store.getState().auth.usuario;
+    const dispatch = useDispatch();
 
     return(
     <header className="bg-white shadow-md border-b border-blue-100">
@@ -12,9 +18,14 @@ export default function Header(){
                     <circle cx="12" cy="7" r="4" />
                 </svg>
             </div>
-            <span className="text-blue-900 font-medium"> Usuário Teste</span>
+            <span className="text-blue-900 font-medium">{usuario? usuario.nome.toLocaleUperCase() : 'Usuário não identificado'}</span>
         </div>
-        <Link href="/home" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Sair</Link>
+       
+       <button
+        onClick={()=>{
+        dispatch(logout());
+        }
+        } className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Sair</button>
     </div>
     </header>
     );

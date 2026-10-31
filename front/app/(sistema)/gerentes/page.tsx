@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Gerente } from "../types/gerente";
+import { atualizarStatusGerente, buscarListaGerente, deletarGerente } from "@/app/services/gerenteService";
+import { Usuario } from "../types/usuario";
 
 
 export default function Gerentes() {
@@ -17,19 +19,20 @@ export default function Gerentes() {
     const carregarDados = async () => {
         try {
             
-            setGerente((await dados).data);
+            const dados = await buscarListaGerente();
+            setGerente(dados);
         } catch (error) {
             alert("Erro ao carregar dados")
         }
     }
 
     const handlerDeletarGerente = async (gerente: Gerente) => {
-       
+        var dadosRetorno = await deletarGerente(gerente.id || 0);
 
-        if (dadosRetorno.status == 200) {
+        if (dadosRetorno == 200) {
             alert("Excluido como sucesso!");
         } else {
-            alert(dadosRetorno.data);
+            alert("Erro ao excluir");
             return;
         }
 
@@ -37,13 +40,11 @@ export default function Gerentes() {
     }
 
     const handlerAlterarStatusGerente = async (gerente: Gerente) => {
-        
-        }
 
+        await atualizarStatusGerente(gerente);
         carregarDados();
 
-    }
-
+        }
 
 
     return (

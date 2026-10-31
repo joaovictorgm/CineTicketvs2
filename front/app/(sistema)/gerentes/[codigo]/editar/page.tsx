@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Gerente } from "@/app/(sistema)/types/gerente";
 import axios from "axios";
+import { consultaGerentePorId } from "@/app/services/gerenteService";
 
 export default function EditarGerente() {
 
@@ -22,13 +23,14 @@ export default function EditarGerente() {
 
     const buscarDados = async () => {
         
-
-        if (valorGerenteBack.status === 200) {
-            setGerente(valorGerenteBack.data);
-        } else {
+        const valorGerenteBack = await consultaGerentePorId(codigo);
+        if(valorGerenteBack){
+            setGerente(valorGerenteBack);
+        }else{
             router.push("/gerentes")
         }
-    }
+        }
+    
     if (!gerente) return (<div className="p-4">Carregando Dados</div>)
     return (
         <div>

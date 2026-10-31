@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Gerente, GerenteFormProps } from "../../types/gerente";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from "axios";
+import { salvarGerente } from "@/app/services/gerenteService";
 
 export default function GerenteForm({ gerenteExistente }: GerenteFormProps) {
     const router = useRouter();
@@ -26,22 +26,22 @@ export default function GerenteForm({ gerenteExistente }: GerenteFormProps) {
 
     const handlerSalvar = async (formData: FormData) => {
         if (gerenteExistente) {
-            
-            if (dadosRetorno.status == 200) {
+            var dadosRetorno = await salvarGerente(gerente);
+            if (dadosRetorno) {
                 alert("Gerente foi salvo com sucesso!")
             } else {
-                alert(dadosRetorno.data);
+                alert("Erro ao salvar gerente");
                 return;
             }
 
         } else {
 
-            var dadosRetorno = await axios.post<number>('http://localhost:8080/gerentes', gerente)
+            var dadosRetorno = await salvarGerente(gerente);
 
-            if (dadosRetorno.status == 200) {
+            if (dadosRetorno) {
                 alert("Gerente foi salvo com sucesso!")
             } else {
-                alert(dadosRetorno.data);
+                alert("Erro ao salvar Gerente");
 
                 return;
             }

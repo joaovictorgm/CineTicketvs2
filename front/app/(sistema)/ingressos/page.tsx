@@ -3,7 +3,8 @@
 import Link from "@/node_modules/next/link";
 import { useEffect, useState } from "react";
 import { Ingresso } from "../types/ingresso";
-import axios from "axios";
+import Cookies  from "js-cookie";
+import { atualizarStatusIngresso, buscarListaIngressos, deletarIngresso } from "@/app/services/ingressoService";
 
 
 export default function Ingressos() {
@@ -16,8 +17,10 @@ export default function Ingressos() {
 
     const carregarDados = async () => {
         try {
-            const dados = axios.get<Ingresso[]>("http://localhost:8080/ingressos");
-            setIngresso((await dados).data);
+            
+          const dados = await buscarListaIngressos();
+
+          setIngresso(dados);
 
         } catch (error) {
             alert("Erro ao carregar dados")
@@ -25,12 +28,12 @@ export default function Ingressos() {
     }
 
     const handlerDeletarIngresso = async (ingresso: Ingresso) => {
-        var dadosRetorno = await axios.delete('http://localhost:8080/ingressos/' + ingresso.id + '/excluir')
+        var dadosRetorno = await deletarIngresso(ingresso.id || 0);
 
-        if (dadosRetorno.status == 200) {
+        if (dadosRetorno == 200) {
             alert("A venda foi realizda com sucesso!");
         } else {
-            alert(dadosRetorno.data);
+            alert("Erro ao excluir");
             return;
         }
 
@@ -40,29 +43,14 @@ export default function Ingressos() {
     }
 
     const handlerAlterarStatusIngresso = async (ingresso: Ingresso) => {
-        var novoStatus = {};
-        if (ingresso.statusIngresso == "DISPONIVEL") {
-            novoStatus = { status: "PAGO" }
-        } else {
-            novoStatus = { status: "DISPONIVEL" }
-        }
 
-        var dadosRetorno = await axios.patch('http://localhost:8080/ingressos/' + ingresso.id + '/status', novoStatus)
-        if (dadosRetorno.status == 200) {
-            alert("Atualizado status com sucesso!")
-
-        } else {
-            alert(dadosRetorno.data);
-            return;
-        }
+        await atualizarStatusIngresso(ingresso);
 
         carregarDados();
+       
+        }
 
-    }
-
-
-
-
+       
 
     return (
         <div className="bg-blue-50 p-8">

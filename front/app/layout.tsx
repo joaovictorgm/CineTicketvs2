@@ -1,5 +1,6 @@
 import { Metadata } from "@/node_modules/next/types";
 import "./globals.css";
+import StoreProvider from "./redux/slices/StoreProvider";
 
 
 export const metadata: Metadata = {
@@ -13,7 +14,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-BR"
       className="h-full">
       <body>
+        <StoreProvider>
         {children}
+        </StoreProvider>
       </body>
     </html>
   );

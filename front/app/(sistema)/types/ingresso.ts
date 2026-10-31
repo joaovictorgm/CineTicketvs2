@@ -1,4 +1,5 @@
 export class Ingresso{
+    static statusIngresso: string;
     constructor(
         public id: number | null,
         public sessao: string,

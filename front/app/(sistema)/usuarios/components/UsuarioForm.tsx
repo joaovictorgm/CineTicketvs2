@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Usuario, UsuarioFormProps } from "../../types/usuario";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { atualizarFilme } from "@/app/services/filmeService";
 import { atualizarUsuario, salvarUsuario } from "@/app/services/usuarioService";
 
 export default function UsuarioForm({usuarioExistente}:UsuarioFormProps) {
@@ -73,6 +71,7 @@ export default function UsuarioForm({usuarioExistente}:UsuarioFormProps) {
     router.push("/usuarios");
 
     }
+}
     return (
         <form action={handlerSalvar} className="bg-white rounded-lg border border-blue-100">
             <div className="grid grid-cols-2 gap-x-6 gap-y-4 p-6">

@@ -4,10 +4,16 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { LoginResponse } from "../(sistema)/types/auth";
 import Cookies  from "js-cookie";
+import { useDispatch } from "react-redux";
+import { buscarUsuarioLogado } from "../services/usuarioService";
+import { login } from "../redux/slices/authSlice";
 
 export default function Login() {
+    
+
 
     const router = useRouter();
+    const dispatch = useDispatch();
 
     const handleLogin = async (formData: FormData) => {
         try {
@@ -22,7 +28,13 @@ export default function Login() {
 
             if (loginResposta.status == 200) {
                 Cookies.set('token',loginResposta.data.token,{secure: true, expires: 7} );
-                router.push("/home");
+                var usuarioLogado = await buscarUsuarioLogado();
+
+                dispatch(login({
+                    token:loginResposta.data.token,
+                    usuario:{...usuarioLogado}
+                }
+                ));
             } else {
                 alert("Login ou senha inválida!");
             }
