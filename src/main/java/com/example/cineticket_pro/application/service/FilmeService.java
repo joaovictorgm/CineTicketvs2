@@ -2,6 +2,7 @@ package com.example.cineticket_pro.application.service;
 
 
 import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.application.port.EmpresaContextoPort;
 import com.example.cineticket_pro.domain.entities.Filme;
 import com.example.cineticket_pro.domain.entities.Usuario;
 import com.example.cineticket_pro.domain.repository.FilmeRepository;
@@ -15,6 +16,9 @@ public class FilmeService {
 
     @Autowired
     private FilmeRepository filmeRepository;
+
+    @Autowired
+     private EmpresaContextoPort empresaContexto;
 
     public List<FilmeResponse> listarTodosFilmesTable(){
         return filmeRepository.findAll().stream().map(FilmeResponse::new).toList();

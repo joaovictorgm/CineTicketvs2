@@ -2,6 +2,7 @@ package com.example.cineticket_pro.application.service;
 
 
 import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.application.port.EmpresaContextoPort;
 import com.example.cineticket_pro.domain.entities.Ingresso;
 import com.example.cineticket_pro.domain.repository.IngressoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class IngressoService {
 
     @Autowired
     private IngressoRepository ingressoRepository;
+
+    @Autowired
+    private EmpresaContextoPort empresaContexto;
 
     public List<IngressoResponse> listarTodosIngressosTable() {
         return ingressoRepository.findAll().stream().map(IngressoResponse::new).toList();
@@ -32,8 +36,6 @@ public class IngressoService {
             //Ingresso existente
             Ingresso ingressoBanco = ingressoRepository.findById(id).orElse(null);
             if (ingressoBanco != null) {
-                ingressoBanco.setSessao(ingresso.sessao());
-                ingressoBanco.setFilme(ingresso.filme());
                 ingressoBanco.setAssento(ingresso.assento());
                 ingressoBanco.setValorPago(ingresso.valorPago());
                 ingressoBanco.setDataCompra(ingresso.dataCompra());

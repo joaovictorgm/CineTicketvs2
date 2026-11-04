@@ -2,6 +2,7 @@ package com.example.cineticket_pro.application.service;
 
 
 import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.application.port.EmpresaContextoPort;
 import com.example.cineticket_pro.domain.entities.Gerente;
 import com.example.cineticket_pro.domain.repository.GerenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ public class GerenteService {
 
     @Autowired
     private GerenteRepository gerenteRepository;
+
+     private EmpresaContextoPort empresaContexto;
 
     @Autowired TokenService tokenService;
     /*public LoginResponse validarGerenteAutenticadoRetornaToken(LoginRequest request){

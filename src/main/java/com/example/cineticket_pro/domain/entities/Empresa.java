@@ -29,4 +29,8 @@ public class Empresa {
     private List<Sessao> sessaos;
     @OneToMany(mappedBy = "empresa")
     private List<Gerente> gerentes;
+    @OneToMany(mappedBy = "empresa")
+    private List <Filme> filmes;
+    @OneToMany(mappedBy = "ingressos")
+    private List<Ingresso> ingressos;
 }

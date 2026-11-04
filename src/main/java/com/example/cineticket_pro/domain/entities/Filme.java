@@ -27,6 +27,10 @@ public class Filme  {
     public String classificacaoEtaria;
     public String dataEstreia;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "empresa_id",referencedColumnName = "id")
+    private Empresa empresa;
+
     @ManyToOne
     @JoinColumn(name = "sessao_id", referencedColumnName = "id")
     public Sessao sessao;

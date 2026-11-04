@@ -28,7 +28,6 @@ public class Sessao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     public Long id;
-    public String filme;//fk
     public String data;
     public String sala;
     @Enumerated(EnumType.STRING)
@@ -41,6 +40,7 @@ public class Sessao {
     @JoinColumn(name = "empresa_id",referencedColumnName = "id")
     private Empresa empresa;
 
+
 @OneToMany(mappedBy = "sessao")
 private List<Filme> filmes;
 
@@ -48,7 +48,6 @@ private List<Filme> filmes;
 
 
     public Sessao(SessaoRequest sessao) {
-        this.setFilme(sessao.filme());
         this.setData(sessao.data());
         this.setSala(sessao.sala());
         this.setPreco(sessao.preco());

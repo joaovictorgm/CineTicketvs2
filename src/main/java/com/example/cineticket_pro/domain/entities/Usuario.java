@@ -36,9 +36,6 @@ public class Usuario implements UserDetails {
     public String telefone;
     public String email;
     public String senha;
-    public String filme; //fk
-    public String sessao;//fk
-    public String ingresso;//fk
     private String role = "ROLE_USER";
     @Enumerated(EnumType.STRING)
     private EnumStatusUsuario status;

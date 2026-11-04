@@ -2,6 +2,7 @@ package com.example.cineticket_pro.application.service;
 
 
 import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.application.port.EmpresaContextoPort;
 import com.example.cineticket_pro.domain.entities.Filme;
 import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.entities.Usuario;
@@ -21,6 +22,9 @@ public class SessaoService {
     @Autowired
     private FilmeRepository filmeRepository;
 
+    @Autowired
+    private EmpresaContextoPort empresaContexto;
+
     public List<SessaoResponse> listarTodasSessoesTable() {
         return sessaoRepository.findAll().stream().map(SessaoResponse::new).toList();
     }
@@ -37,7 +41,6 @@ public class SessaoService {
             //Sessao existente
             Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
             if (sessaoBanco != null) {
-                sessaoBanco.setFilme(sessao.filme());
                 sessaoBanco.setData(sessao.data());
                 sessaoBanco.setSala(sessao.sala());
                 sessaoBanco.setStatus(sessao.status());
