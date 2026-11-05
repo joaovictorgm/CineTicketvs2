@@ -29,7 +29,7 @@ public class GerenteService {
         return  null;
     }*/
 public List<GerenteResponse> listarTodosGerentesTable(){
-    return gerenteRepository.findAll().stream().map(GerenteResponse::new).toList();
+    return gerenteRepository.findAllByEmpresaId(empresaContexto.empresaId()).stream().map(GerenteResponse::new).toList();
 }
 
     public GerenteResponse salvarGerente(GerenteRequest gerente, Long id) {

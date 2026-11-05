@@ -11,4 +11,5 @@ import java.util.List;
 public interface FilmeRepository extends JpaRepository<Filme,Long> {
     List<Filme> getFilmeByEmpresa_id(Long empresa);
     Optional<Filme> findByIdAndEmpresaId(Long id, Long empresaId);
+    List<Filme> findAllByEmpresaId(Long empresaId);
 }

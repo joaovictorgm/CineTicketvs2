@@ -26,7 +26,7 @@ public class SessaoService {
     private EmpresaContextoPort empresaContexto;
 
     public List<SessaoResponse> listarTodasSessoesTable() {
-        return sessaoRepository.findAll().stream().map(SessaoResponse::new).toList();
+        return sessaoRepository.findAllByEmpresaId(empresaContexto.empresaId()).stream().map(SessaoResponse::new).toList();
     }
 
     public SessaoResponse salvarSessao(SessaoRequest sessao, Long id) {

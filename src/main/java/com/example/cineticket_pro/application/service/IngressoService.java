@@ -19,8 +19,8 @@ public class IngressoService {
     @Autowired
     private EmpresaContextoPort empresaContexto;
 
-    public List<IngressoResponse> listarTodosIngressosTable() {
-        return ingressoRepository.findAll().stream().map(IngressoResponse::new).toList();
+    public List<IngressoResponse> listarTodosIngressosTable(){
+        return ingressoRepository.findAllByEmpresaId(empresaContexto.empresaId()).stream().map(IngressoResponse::new).toList();
 
     }
 

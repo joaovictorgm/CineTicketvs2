@@ -16,4 +16,6 @@ public interface GerenteRepository extends JpaRepository<Gerente,Long> {
     List<Gerente> getUsuarioByEmpresa_id(Long empresa);
 
     Optional<Gerente> findByIdAndEmpresaId(Long id, Long empresaId);
+
+    List<Gerente> findAllByEmpresaId(Long empresaId);
 }

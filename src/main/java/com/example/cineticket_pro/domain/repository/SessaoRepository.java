@@ -12,6 +12,7 @@ import java.util.List;
 public interface SessaoRepository extends JpaRepository<Sessao, Long> {
     List<Sessao> getSessoesByEmpresa_Id(Long empresa);
     Optional<Sessao> findByIdAndEmpresaId(Long id, Long empresaId);
+    List<Sessao> findAllByEmpresaId(Long empresaId);
 
 
 

@@ -20,8 +20,8 @@ public class FilmeService {
     @Autowired
      private EmpresaContextoPort empresaContexto;
 
-    public List<FilmeResponse> listarTodosFilmesTable(Long empresaid){
-        return filmeRepository.getFilmeByEmpresa_id(empresaid).stream().map(FilmeResponse::new).toList();
+    public List<FilmeResponse> listarTodosFilmesTable(){
+        return filmeRepository.findAllByEmpresaId(empresaContexto.empresaId()).stream().map(FilmeResponse::new).toList();
     }
 
     public FilmeResponse salvarFilme(FilmeRequest filme, Long id) {

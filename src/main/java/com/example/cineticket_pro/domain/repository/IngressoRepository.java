@@ -10,7 +10,10 @@ import java.util.Optional;
 @Repository
 public interface IngressoRepository extends JpaRepository<Ingresso, Long> {
 
-    List<Ingresso> getUsuarioByEmpresa_id(Long empresa);
+    List<Ingresso> getIngressoByEmpresa_id(Long empresa);
 
     Optional<Ingresso> findByIdAndEmpresaId(Long id, Long empresaId);
+
+    List<Ingresso> findAllByEmpresaId(Long empresaId);
+
 }
