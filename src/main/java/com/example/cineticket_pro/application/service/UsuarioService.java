@@ -2,10 +2,13 @@ package com.example.cineticket_pro.application.service;
 
 
 import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.domain.entities.Empresa;
 import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.entities.Usuario;
+import com.example.cineticket_pro.domain.repository.EmpresaRepository;
 import com.example.cineticket_pro.domain.repository.SessaoRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
+import com.example.cineticket_pro.domain.valueobject.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,12 +36,14 @@ public class UsuarioService {
 
     @Value("${spring.secretkey}")
     private String secret;
+    @Autowired
+    private EmpresaRepository empresaRepository;
 
 
     public LoginResponse validarUsuarioAutenticadoeRetornaToken(LoginRequest request) {
 
-
-        if (usuarioRepository.existsUsuarioByEmailAndSenha(request.email(), request.senha())) {
+          String email = new Email(request.email()).toString();
+        if (usuarioRepository.existsUsuarioByEmailAndSenha(email, request.senha())) {
 
             var token = tokenService.gerarToken(request);
             return new LoginResponse(token);
@@ -63,9 +68,16 @@ public class UsuarioService {
            throw new AccessDeniedException( "Chave de adminstrador inválida");
         }
 
-        Usuario usuarioAdminSalvar = new Usuario(criarAdminRequest);
+        Empresa empresa = new Empresa();
+        empresa.setRazaoSocial(criarEmpresaRequest.razaoSocial();
+        empresa.setCnpj(criarEmpresaRequest.cnpj());
+        empresa.setNomeFantasia(criarEmpresaRequest.nomeFantasia());
+        empresaRepository.save(empresa);
 
+        Usuario usuarioAdminSalvar = new Usuario(criarAdminRequest);
+        usuarioAdminSalvar.setEmpresa(empresa);
         usuarioRepository.save(usuarioAdminSalvar);
+
 
         return new CriarAdminResponse(usuarioAdminSalvar.getId(), "Usuario Salvo com sucesso");
     }

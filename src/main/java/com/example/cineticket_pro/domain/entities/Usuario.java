@@ -2,6 +2,7 @@ package com.example.cineticket_pro.domain.entities;
 
 import com.example.cineticket_pro.application.DTOs.*;
 import com.example.cineticket_pro.domain.valueobject.CPF;
+import com.example.cineticket_pro.domain.valueobject.Email;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -56,11 +57,10 @@ public class Usuario implements UserDetails {
     }
 
     public void setEmail(String email) {
-        if(!email.isEmpty() && !email.contains("@")){
-            throw new IllegalArgumentException("Email inválido");
+        this.email = new Email(email).toString();
         }
-        this.email = email;
-    }
+
+
 
     @JsonIgnore
     public String resetToken;

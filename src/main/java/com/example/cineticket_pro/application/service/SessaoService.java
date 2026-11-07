@@ -3,11 +3,14 @@ package com.example.cineticket_pro.application.service;
 
 import com.example.cineticket_pro.application.DTOs.*;
 import com.example.cineticket_pro.application.port.EmpresaContextoPort;
+import com.example.cineticket_pro.domain.entities.Empresa;
 import com.example.cineticket_pro.domain.entities.Filme;
 import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.entities.Usuario;
+import com.example.cineticket_pro.domain.repository.EmpresaRepository;
 import com.example.cineticket_pro.domain.repository.FilmeRepository;
 import com.example.cineticket_pro.domain.repository.SessaoRepository;
+import org.hibernate.internal.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +26,13 @@ public class SessaoService {
     private FilmeRepository filmeRepository;
 
     @Autowired
+    private EmpresaRepository empresaRepository;
+
+    @Autowired
     private EmpresaContextoPort empresaContexto;
 
     public List<SessaoResponse> listarTodasSessoesTable() {
-        return sessaoRepository.findAll().stream().map(SessaoResponse::new).toList();
+        return sessaoRepository.findAllByEmpresaId(empresaContexto.empresaId()).stream().map(SessaoResponse::new).toList();
     }
 
     public SessaoResponse salvarSessao(SessaoRequest sessao, Long id) {
@@ -92,22 +98,17 @@ public class SessaoService {
 
     public boolean juntarSessaoFilme(Long id, JuntarFilmeSessaoRequest juntarFilmeSessaoRequest){
 
-        Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
-        Filme filmeBanco = filmeRepository.findById(juntarFilmeSessaoRequest.filme_id()).orElse(null);
+        Long empresaId = empresaContexto.empresaId();
+        Sessao sessaoBanco = sessaoRepository.findByIdAndEmpresaId(id, empresaId).orElse(null);
+        Filme filmeBanco = filmeRepository.findByIdAndEmpresaId(juntarFilmeSessaoRequest.filme_id(),empresaId);
 
         if(sessaoBanco!= null && filmeBanco != null){
-            var filme = sessaoBanco.getFilmes().stream().anyMatch(u->u.getId().equals(filmeBanco.getId()));
+            sessaoBanco.setFilmes(filmeBanco);
+            sessaoRepository.save(sessaoBanco);
+            return true;
 
-
-            if(filme){
-                return true;
-            }else{
-                sessaoBanco.getFilmes().add(filmeBanco);
-                sessaoRepository.save(sessaoBanco);
-
-                return true;
             }
-        }
+
 
         return false;
 

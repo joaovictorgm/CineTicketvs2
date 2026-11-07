@@ -3,7 +3,10 @@ package com.example.cineticket_pro.infra.configuration.external;
 import com.example.cineticket_pro.application.DTOs.UsuarioLogado;
 import com.example.cineticket_pro.application.port.EmpresaContextoPort;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class EmpresaContextoAdapter implements EmpresaContextoPort {
 
 
