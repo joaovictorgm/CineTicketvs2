@@ -32,4 +32,14 @@ public class Token {
         this.setUsuario(usuario);
         this.setDataCadastro(LocalDateTime.now());
     }
+
+    @ManyToOne
+    @JoinColumn(name="gerente-id", referencedColumnName = "id")
+    private Gerente gerente;
+    public Token (String token, Gerente gerente) {
+
+        this.setToken(token);
+        this.setGerente(gerente);
+        this.setDataCadastro(LocalDateTime.now());
+    }
 }

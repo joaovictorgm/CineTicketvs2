@@ -1,10 +1,7 @@
 package com.example.cineticket_pro.presentation;
 
-import com.example.cineticket_pro.application.DTOs.AtualizarStatusGerenteRequest;
-import com.example.cineticket_pro.application.DTOs.GerenteRequest;
-import com.example.cineticket_pro.application.DTOs.GerenteResponse;
+import com.example.cineticket_pro.application.DTOs.*;
 import com.example.cineticket_pro.application.service.GerenteService;
-import com.example.cineticket_pro.application.DTOs.EnumStatusGerente;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,5 +80,14 @@ public ResponseEntity<?>criar(@RequestBody GerenteRequest gerente){
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<CriarAdminResponse> registrarEmpresa(@RequestBody CriarAdminRequest criarAdminRequest){
+        try{
+            return ResponseEntity.ok(gerenteService.criarGerenteeEmpresa(criarAdminRequest));
+        }catch (RuntimeException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

@@ -62,25 +62,7 @@ public class UsuarioService {
         return usuarioRepository.getUsuarioByEmpresa_id(usuarioLogado.empresa_id()).stream().map(UsuarioResponse::new).toList();
     }
 
-    public CriarAdminResponse criarAdmin(CriarAdminRequest criarAdminRequest) throws AccessDeniedException {
 
-        if (criarAdminRequest.secretKey() == null ||!criarAdminRequest.secretKey().equals(secret)) {
-           throw new AccessDeniedException( "Chave de adminstrador inválida");
-        }
-
-        Empresa empresa = new Empresa();
-        empresa.setRazaoSocial(criarEmpresaRequest.razaoSocial();
-        empresa.setCnpj(criarEmpresaRequest.cnpj());
-        empresa.setNomeFantasia(criarEmpresaRequest.nomeFantasia());
-        empresaRepository.save(empresa);
-
-        Usuario usuarioAdminSalvar = new Usuario(criarAdminRequest);
-        usuarioAdminSalvar.setEmpresa(empresa);
-        usuarioRepository.save(usuarioAdminSalvar);
-
-
-        return new CriarAdminResponse(usuarioAdminSalvar.getId(), "Usuario Salvo com sucesso");
-    }
 
 
     public UsuarioLogado getUsuarioLogado() {

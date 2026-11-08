@@ -9,6 +9,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.cineticket_pro.application.DTOs.LoginRequest;
 import com.example.cineticket_pro.application.DTOs.UsuarioLogado;
 import com.example.cineticket_pro.domain.entities.Token;
+import com.example.cineticket_pro.domain.repository.GerenteRepository;
 import com.example.cineticket_pro.domain.repository.TokenRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class TokenService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    private GerenteRepository gerenteRepository;
+
+    @Autowired
     private TokenRepository tokenRepository;
 
     public String gerarToken(LoginRequest loginRequest) {
@@ -42,7 +46,7 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
 
             var usuario = usuarioRepository.findAll().stream().filter(u -> u.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
-
+            var gerente = gerenteRepository.findAll().stream().filter(g -> g.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
             String token = JWT.create()
                     .withIssuer(emissor)
                     .withSubject(loginRequest.email())
@@ -50,6 +54,7 @@ public class TokenService {
                     .sign(algorithm);
 
                     tokenRepository.save(new Token(token, usuario));
+                    tokenRepository.save(new Token(token, gerente));
             return token;
 
 
@@ -68,7 +73,11 @@ public class TokenService {
             throw new IllegalArgumentException("Token Invalido!");
         }
 
-        return new UsuarioLogado(tokenBanco.getUsuario());
+       if(tokenBanco.getUsuario()!= null){
+           return new UsuarioLogado(tokenBanco.getGerente());
+       }
+
+       return new UsuarioLogado(tokenBanco.getGerente());
     }
 
 

@@ -2,7 +2,7 @@ package com.example.cineticket_pro.application.DTOs;
 
 import com.example.cineticket_pro.domain.entities.Usuario;
 
-public record UsuarioResponse(Long id, String nome, String telefone, String email, String filme, String sessao, String ingresso,
+public record UsuarioResponse(Long id, String nome, String telefone, String email,
                               EnumStatusUsuario statusUsuario) {
 
     public UsuarioResponse(Usuario usuarioEntidade){
@@ -11,9 +11,6 @@ public record UsuarioResponse(Long id, String nome, String telefone, String emai
                 usuarioEntidade.getNome(),
                 usuarioEntidade.getTelefone(),
                 usuarioEntidade.getEmail(),
-                usuarioEntidade.getFilme(),
-                usuarioEntidade.getSessao(),
-                usuarioEntidade.getIngresso(),
                 usuarioEntidade.getStatus()
         );
     }

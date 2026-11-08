@@ -1,5 +1,6 @@
 package com.example.cineticket_pro.application.DTOs;
 
+import com.example.cineticket_pro.domain.entities.Gerente;
 import com.example.cineticket_pro.domain.entities.Usuario;
 
 
@@ -14,5 +15,21 @@ public record UsuarioLogado(Long id,  String email,Long empresa_id,
                 usuario.getAuthorities()
         );
 
+
+        }
+
+    public UsuarioLogado(Gerente gerente){
+        this(
+                gerente.getId(),
+                gerente.getEmail(),
+                gerente.getEmpresa()!=null? gerente.getEmpresa().getId():null,
+                gerente.getAuthorities()
+        );
+
+
     }
-}
+
+
+
+    }
+

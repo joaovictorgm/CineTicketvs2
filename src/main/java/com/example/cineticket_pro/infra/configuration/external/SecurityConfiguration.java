@@ -29,18 +29,23 @@ public class SecurityConfiguration {
                 .requestMatchers("/auth/login","/swagger-ui/**","/swagger-ui.html","/webjars/**","/swagger-resources/**","/v3/api-docs/**").permitAll()
                 .requestMatchers("/senha/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/gerentes").permitAll()
+                .requestMatchers(HttpMethod.POST, "/empresas").permitAll()
+
+                        /* só gerente*/
+                        .requestMatchers("/gerentes/**").hasRole("GERENTE")
+
+
                         /* só funcionário */
-                        .requestMatchers("/usuarios/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,"/gerentes/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST,   "/filmes/**", "/sessoes/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT,    "/filmes/**", "/sessoes/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH,  "/filmes/**", "/sessoes/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/filmes/**", "/sessoes/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/usuarios").hasAnyRole("GERENTE", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasAnyRole("GERENTE", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/usuarios/*/status").hasAnyRole("GERENTE", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN")
                          /* cliente e funcinário*/
-                        .requestMatchers(HttpMethod.GET, "/filmes/**", "/sessoes/**").hasAnyRole("USER","ADMIN")
-                        .requestMatchers("/ingressos/**").hasAnyRole("USER","ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE","ADMIN","USER")
+                        .requestMatchers("/ingressos/**").hasAnyRole("GERENTE","USER","ADMIN")
 
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

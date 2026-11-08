@@ -18,4 +18,7 @@ public interface GerenteRepository extends JpaRepository<Gerente,Long> {
     Optional<Gerente> findByIdAndEmpresaId(Long id, Long empresaId);
 
     List<Gerente> findAllByEmpresaId(Long empresaId);
+
+    boolean existsGerenteByEmailAndSenha(String email, String senha);
+    Optional<Gerente> findByEmail(String email);
 }

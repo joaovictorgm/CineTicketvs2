@@ -6,5 +6,9 @@ public record CriarAdminRequest(
         String senha,
         String telefone,
         EnumStatusUsuario status,
-        String secretKey) {
+        EnumStatusGerente statusg,
+        String secretKey,
+        String razaoSocial,
+        String cnpj,
+        String nomeFantasia) {
 }
