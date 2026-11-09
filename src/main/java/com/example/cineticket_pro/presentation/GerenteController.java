@@ -85,7 +85,12 @@ public class GerenteController {
 
 
     @PostMapping("/admin")
-    public ResponseEntity<CriarAdminResponse> criarAdmin(@RequestBody CriarAdminRequest criarAdminRequest) {
-        return ResponseEntity.ok(gerenteService.criarGerenteeEmpresa(criarAdminRequest));
+    public ResponseEntity<?> criarAdmin(@RequestBody CriarAdminRequest criarAdminRequest) {
+        try {
+            return ResponseEntity.ok(gerenteService.criarGerenteeEmpresa(criarAdminRequest));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getClass().getSimpleName() + ": " + e.getMessage());
+        }
     }
 }

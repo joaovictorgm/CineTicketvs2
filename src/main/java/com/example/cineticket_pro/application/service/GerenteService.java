@@ -22,7 +22,7 @@ import java.util.List;
 
 @Service
 public class GerenteService {
-    @Value("${app.admin.secret-key}}")
+    @Value("${app.admin.secret-key}")
     private String secretAdmin;
 
     @Autowired
