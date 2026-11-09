@@ -47,6 +47,7 @@ private List<Filme> filmes;
 
 
 
+
     public Sessao(SessaoRequest sessao) {
         this.setData(sessao.data());
         this.setSala(sessao.sala());

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.GerenteEmpresaController">
+   <children>
+      <Label layoutX="99.0" layoutY="76.0" text="Nome" />
+       <TextField fx:id="txtNome" layoutX="151.0" layoutY="72.0" />
+      <Label layoutX="101.0" layoutY="127.0" text="Email" />
+      <TextField fx:id="txtEmail" layoutX="151.0" layoutY="123.0" />
+      <Button layoutX="67.0" layoutY="343.0" mnemonicParsing="false" onAction="#salvarGerenteEmpresa" text="Salvar" />
+      <Button layoutX="486.0" layoutY="343.0" mnemonicParsing="false" onAction="#voltar" text="Voltar" />
+      <ComboBox layoutX="152.0" layoutY="231.0" prefWidth="150.0" />
+      <Label layoutX="99.0" layoutY="235.0" text="Status" />
+      <Label layoutX="99.0" layoutY="169.0" text="Senha" />
+      <TextField fx:id="txtSenha" layoutX="152.0" layoutY="165.0" />
+      <Label layoutX="184.0" layoutY="19.0" text="GERENTE" />
+      <Label layoutX="452.0" layoutY="19.0" text="EMPRESA" />
+
+      <Label layoutX="351.0" layoutY="76.0" text="Razão Social" />
+      <TextField fx:id="txtRazaoSocial" layoutX="429.0" layoutY="72.0" />
+
+      <TextField fx:id="txtCnpj" layoutX="429.0" layoutY="111.0" />
+      <Label layoutX="351.0" layoutY="118.0" text="CNPJ" />
+
+      <TextField fx:id="txtNomefantasia" layoutX="429.0" layoutY="165.0" />
+      <Label layoutX="337.0" layoutY="169.0" text="Nome Fantasia" />
+      <PasswordField fx:id="txtChaveSecreta" layoutX="429.0" layoutY="231.0" />
+      <Label layoutX="339.0" layoutY="235.0" text="Chave Secreta" />
+
+
+
+
+
+
+   </children>
+</AnchorPane>

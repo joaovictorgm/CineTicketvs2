@@ -1,7 +1,6 @@
 package com.example.cineticket_pro.domain.entities;
 
 import com.example.cineticket_pro.application.DTOs.*;
-import com.example.cineticket_pro.domain.valueobject.CPF;
 import com.example.cineticket_pro.domain.valueobject.Email;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

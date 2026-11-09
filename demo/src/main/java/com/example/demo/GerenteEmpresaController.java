@@ -1,13 +1,11 @@
 package com.example.demo;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -17,7 +15,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class GerenteController {
+public class GerenteEmpresaController {
 
     @FXML
     private TextField txtNome;
@@ -29,14 +27,26 @@ public class GerenteController {
     @FXML
     private TextField txtSenha;
 
+    @FXML
+    private TextField txtRazaoSocial;
+
+    @FXML
+    private TextField txtCnpj;
+
+    @FXML
+    private TextField txtNomefantasia;
+
+    @FXML
+    private PasswordField txtChaveSecreta;
+
 
 
 
 
     @FXML
-    public void salvarGerente(ActionEvent event) throws Exception {
-        if (txtNome.getText().isBlank() || txtEmail.getText().isBlank() || txtSenha.getText().isBlank()) {
-            showMessage(Alert.AlertType.INFORMATION, "Preencha nome, e-mail e senha.");
+    public void salvarGerenteEmpresa(ActionEvent event) throws Exception {
+        if (txtNome.getText().isBlank() || txtEmail.getText().isBlank() || txtSenha.getText().isBlank() || txtRazaoSocial.getText().isBlank() || txtCnpj.getText().isBlank() || txtNomefantasia.getText().isBlank() || txtChaveSecreta.getText().isBlank()) {
+            showMessage(Alert.AlertType.INFORMATION, "Preencha todos os campos obrigatórios.");
             return;
         }
 
@@ -44,21 +54,31 @@ public class GerenteController {
         //Validar Dados
 
         String jsonRequest = String.format(
-                "{\"nome\": \"%s\", \"email\": \"%s\", \"senha\": \"%s\"}",
+                "{\"nome\": \"%s\", \"email\": \"%s\", \"senha\": \"%s\", \"secretKey\": \"%s\", "
+                        + "\"razaoSocial\": \"%s\", \"cnpj\": \"%s\", \"nomeFantasia\": \"%s\"}",
                 txtNome.getText(),
                 txtEmail.getText(),
-                txtSenha.getText());
+                txtSenha.getText(),
+                txtChaveSecreta.getText(),
+                txtRazaoSocial.getText(),
+                txtCnpj.getText(),
+                txtNomefantasia.getText());
 
 
-        int respostaApi = executaMetodoAPI("http://localhost:8080/gerentes",jsonRequest,"POST");
+
+
+
+
+
+        int respostaApi = executaMetodoAPI("http://localhost:8080/gerentes/admin",jsonRequest,"POST");
 
 
         if(respostaApi ==200){
-            showMessage(Alert.AlertType.INFORMATION,"Gerente salvo com sucesso!");
+            showMessage(Alert.AlertType.INFORMATION,"Gerente e Empresa salvo com sucesso!");
             voltar(event);
 
         }else {
-            showMessage(Alert.AlertType.ERROR,"Erro ao salvar gerente! Código: " + respostaApi);
+            showMessage(Alert.AlertType.ERROR,"Erro ao salvar gerente e empresa! Código: " + respostaApi);
         }
 
 

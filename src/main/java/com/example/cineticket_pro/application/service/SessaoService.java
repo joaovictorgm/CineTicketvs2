@@ -96,7 +96,7 @@ public class SessaoService {
         return false;
     }
 
-    public boolean juntarSessaoFilme(Long id, JuntarFilmeSessaoRequest juntarFilmeSessaoRequest){
+    /*public boolean juntarSessaoFilme(Long id, JuntarFilmeSessaoRequest juntarFilmeSessaoRequest){
 
         Long empresaId = empresaContexto.empresaId();
         Sessao sessaoBanco = sessaoRepository.findByIdAndEmpresaId(id, empresaId).orElse(null);
@@ -112,5 +112,5 @@ public class SessaoService {
 
         return false;
 
-    }
+    }*/
 }

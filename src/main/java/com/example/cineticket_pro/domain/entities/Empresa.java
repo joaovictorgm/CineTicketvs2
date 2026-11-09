@@ -30,7 +30,6 @@ public class Empresa {
     @OneToMany(mappedBy = "empresa")
     private List<Gerente> gerentes;
     @OneToMany(mappedBy = "empresa")
-    private List <Filme> filmes;
-    @OneToMany(mappedBy = "ingressos")
-    private List<Ingresso> ingressos;
+    private List<Filme> filmes;
+
 }

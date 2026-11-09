@@ -1,4 +1,4 @@
-package com.example.cineticket_pro.infra.configuration.external;
+package com.example.cineticket_pro.infra.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

@@ -1,4 +1,4 @@
-package com.example.cineticket_pro.infra.configuration.external;
+package com.example.cineticket_pro.infra.configuration;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,9 @@ public class SecurityConfiguration {
                         /* publicas */
                 .requestMatchers("/auth/login","/swagger-ui/**","/swagger-ui.html","/webjars/**","/swagger-resources/**","/v3/api-docs/**").permitAll()
                 .requestMatchers("/senha/**").permitAll()
+                .requestMatchers("/error").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/empresas").permitAll()
+                .requestMatchers(HttpMethod.POST, "/gerentes/admin").permitAll()
 
                         /* só gerente*/
                         .requestMatchers("/gerentes/**").hasRole("GERENTE")

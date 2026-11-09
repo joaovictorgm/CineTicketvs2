@@ -26,13 +26,10 @@ public class Ingresso {
     public EnumStatusIngresso statusIngresso = EnumStatusIngresso.DISPONIVEL;
     public String  dataCompra;
 
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empresa_id",referencedColumnName = "id")
     private Empresa empresa;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "sessao_id",referencedColumnName = "id")
-    private Sessao sessao;
 
     public Ingresso(IngressoRequest ingresso) {
         this.setAssento(ingresso.assento());

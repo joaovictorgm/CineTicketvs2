@@ -1,9 +1,8 @@
 package com.example.cineticket_pro.presentation;
 
 import com.example.cineticket_pro.application.DTOs.LoginRequest;
-import com.example.cineticket_pro.application.DTOs.LoginResponse;
 
-import com.example.cineticket_pro.application.service.TokenService;
+import com.example.cineticket_pro.application.service.GerenteService;
 import com.example.cineticket_pro.application.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,18 +22,25 @@ public class AuthController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private GerenteService gerenteService;
+
     @PostMapping("/login")
-    @Operation(description = "Método de login", summary = "Autenticação de Gerentes")
+    @Operation(description = "Método de login", summary = "Autenticação de Usuário")
     public ResponseEntity <?> login(@RequestBody LoginRequest loginRequest){
 
-        var resultadoAutenticacaoRetornoToken = usuarioService.validarUsuarioAutenticadoeRetornaToken(loginRequest);
+        var resultadoAutenticacaoRetornoTokenUsuario = usuarioService.validarUsuarioAutenticadoeRetornaToken(loginRequest);
+        var resultadoAutenticacaoRetornoTokenGerente = gerenteService.validarGerenteAutenticadoeRetornaToken(loginRequest);
 
-        if(resultadoAutenticacaoRetornoToken != null){
+        if(resultadoAutenticacaoRetornoTokenUsuario != null ){
 
-
-            return ResponseEntity.ok((resultadoAutenticacaoRetornoToken));
+            return ResponseEntity.ok((resultadoAutenticacaoRetornoTokenUsuario ));
+        }if(resultadoAutenticacaoRetornoTokenGerente != null) {
+            return ResponseEntity.ok((resultadoAutenticacaoRetornoTokenGerente ));
         }
         return ResponseEntity.status(HttpURLConnection.HTTP_UNAUTHORIZED).build();
 
     }
+
+
 }

@@ -1,4 +1,4 @@
-package com.example.cineticket_pro.infra.configuration.external;
+package com.example.cineticket_pro.infra.configuration;
 
 import com.example.cineticket_pro.application.DTOs.UsuarioLogado;
 import com.example.cineticket_pro.application.port.EmpresaContextoPort;

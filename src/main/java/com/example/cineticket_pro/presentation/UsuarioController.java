@@ -2,6 +2,7 @@ package com.example.cineticket_pro.presentation;
 
 
 import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.application.service.GerenteService;
 import com.example.cineticket_pro.application.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,29 +23,12 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+
     @GetMapping
     @Operation(summary="Método de consulta de lista de usuários",description="Método responsável pela consulta de todos os usuários cadastrados")
     public ResponseEntity<List<UsuarioResponse>>listarTodos(){
         return ResponseEntity.ok(usuarioService.listarTodosUsuariosTable());
     }
-
-
-
-    @PostMapping("/admin")
-    @Operation(summary = "Criar administrador e empresa",description = "Cadastra a empresa e o primeiro usuário administrador dela. Exige a chave secreta de administração no corpo da requisição. Retorna 200 com os dados do admin criado e 400 se os dados forem inválidos ou o e-mail já estiver cadastrado.")
-    public ResponseEntity<CriarAdminResponse>criarAdmin(@RequestBody CriarAdminRequest criarAdminRequest){
-
-        try {
-            CriarAdminResponse respostaSalvar = usuarioService.criarAdmin(criarAdminRequest);
-            return ResponseEntity.ok(respostaSalvar);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-    }
-
-
 
 
     @GetMapping("/{id}")

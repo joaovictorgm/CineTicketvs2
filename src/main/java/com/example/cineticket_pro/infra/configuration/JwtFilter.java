@@ -1,4 +1,4 @@
-package com.example.cineticket_pro.infra.configuration.external;
+package com.example.cineticket_pro.infra.configuration;
 
 import com.example.cineticket_pro.application.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -30,18 +30,17 @@ public class JwtFilter extends OncePerRequestFilter {
                 || uri.startsWith("/swagger-ui")
                 || uri.startsWith("/v2/api-docs")
                 || uri.startsWith("/v3/api-docs")
-                || uri.startsWith("swagger-resources")
-                || uri.startsWith("webjars")
+                || uri.startsWith("/swagger-resources")
+                || uri.startsWith("/webjars")
                 || uri.startsWith("/auth/login")
                 || uri.startsWith("/senha/esqueci-senha")
                 || uri.startsWith("/senha/redefinir-senha")
-                || uri.equals("/usuarios") && request.getMethod().equals("POST")
-                || (request.getMethod().equals("POST") && uri.equals("/gerentes"))
-                ){
+                || (request.getMethod().equals("POST") && uri.equals("/gerentes/admin"))
+                || uri.equals("/error")
+        ){
             filterChain.doFilter(request,response);
             return;
         }
-
         String authHeader = request.getHeader("Authorization");
 
         if(authHeader != null && authHeader.startsWith("Bearer ")){

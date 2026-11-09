@@ -6,10 +6,13 @@ import com.example.cineticket_pro.application.port.EmpresaContextoPort;
 import com.example.cineticket_pro.domain.entities.Empresa;
 import com.example.cineticket_pro.domain.entities.Gerente;
 import com.example.cineticket_pro.domain.entities.Usuario;
+import com.example.cineticket_pro.domain.interfaces.DadosCnpj;
+import com.example.cineticket_pro.domain.interfaces.iCnpjExternalRepository;
 import com.example.cineticket_pro.domain.repository.EmpresaRepository;
 import com.example.cineticket_pro.domain.repository.GerenteRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
 import com.example.cineticket_pro.domain.valueobject.Email;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,8 +22,8 @@ import java.util.List;
 
 @Service
 public class GerenteService {
-    @Value("${spring.secretkey}")
-    private String secret;
+    @Value("${app.admin.secret-key}}")
+    private String secretAdmin;
 
     @Autowired
     private GerenteRepository gerenteRepository;
@@ -34,6 +37,9 @@ public class GerenteService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private iCnpjExternalRepository cnpjExterno;
 
 
     public LoginResponse validarGerenteAutenticadoeRetornaToken(LoginRequest request) {
@@ -98,13 +104,14 @@ public List<GerenteResponse> listarTodosGerentesTable(){
         return false;
 
     }
-
+   @Transactional
     public CriarAdminResponse criarGerenteeEmpresa(CriarAdminRequest criarGerenteRequest) throws AccessDeniedException {
 
-        if (criarGerenteRequest.secretKey() == null ||!criarGerenteRequest.secretKey().equals(secret)) {
+        if (criarGerenteRequest.secretKey() == null ||!criarGerenteRequest.secretKey().equals(secretAdmin)) {
             throw new AccessDeniedException( "Chave inválida");
         }
 
+        String cnpj = criarGerenteRequest.cnpj() == null ? "" : criarGerenteRequest.cnpj().replaceAll("\\D", "");
         if(empresaRepository.existsByCnpj(criarGerenteRequest.cnpj())){
             throw new IllegalArgumentException("CNPJ já cadastrado");
         }
@@ -113,9 +120,11 @@ public List<GerenteResponse> listarTodosGerentesTable(){
             throw new IllegalArgumentException("Email já cadastrado");
         }
 
+        DadosCnpj dadosCnpj = cnpjExterno.buscarEmpresaPorCnpj(cnpj);
+
         Empresa empresa = new Empresa();
-        empresa.setRazaoSocial(criarGerenteRequest.razaoSocial());
-        empresa.setCnpj(criarGerenteRequest.cnpj());
+        empresa.setRazaoSocial(dadosCnpj.razaoSocial());
+        empresa.setCnpj(cnpj);
         empresa.setNomeFantasia(criarGerenteRequest.nomeFantasia());
         empresaRepository.save(empresa);
 
