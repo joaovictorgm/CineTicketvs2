@@ -12,6 +12,7 @@ import com.example.cineticket_pro.domain.entities.Token;
 import com.example.cineticket_pro.domain.repository.GerenteRepository;
 import com.example.cineticket_pro.domain.repository.TokenRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
+import com.example.cineticket_pro.domain.valueobject.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ public class TokenService {
 
 
             Algorithm algorithm = Algorithm.HMAC256(secret);
+            String email = new Email(loginRequest.email().toString());
 
             var usuario = usuarioRepository.findAll().stream().filter(u -> u.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
             var gerente = gerenteRepository.findAll().stream().filter(g -> g.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
@@ -52,9 +54,13 @@ public class TokenService {
                     .withSubject(loginRequest.email())
                     .withExpiresAt(this.getDataExpiracao())
                     .sign(algorithm);
+        if (usuario != null) {
+            tokenRepository.save(new Token(token, usuario));
+        } else if (gerente != null) {
 
-                    tokenRepository.save(new Token(token, usuario));
-                    tokenRepository.save(new Token(token, gerente));
+            tokenRepository.save(new Token(token, gerente));
+        }
+
             return token;
 
 
@@ -63,24 +69,19 @@ public class TokenService {
     public UsuarioLogado verificarToken(String token) throws JWTVerificationException {
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
-        JWTVerifier verificador = JWT.require(algorithm).withIssuer(emissor).build();
+        JWT.require(algorithm).withIssuer(emissor).build().verify(token);
+        var tokenBanco = tokenRepository.findTokenByToken(token).orElseThrow(() ->new IllegalArgumentException("Token inválido!"));
 
-        verificador.verify(token);
-
-        var tokenBanco = tokenRepository.findTokenByToken(token).orElse(null);
-
-        if (tokenBanco == null) {
-            throw new IllegalArgumentException("Token Invalido!");
-        }
 
        if(tokenBanco.getUsuario()!= null){
+           return new UsuarioLogado(tokenBanco.getUsuario());
+       }
+       if(tokenBanco.getGerente()!=null){
            return new UsuarioLogado(tokenBanco.getGerente());
        }
+        throw new IllegalArgumentException("Token Invalido!");
 
-       return new UsuarioLogado(tokenBanco.getGerente());
     }
-
-
 
 
     private Instant getDataExpiracao(){

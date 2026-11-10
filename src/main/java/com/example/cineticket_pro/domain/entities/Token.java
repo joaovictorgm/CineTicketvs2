@@ -34,7 +34,7 @@ public class Token {
     }
 
     @ManyToOne
-    @JoinColumn(name="gerente-id", referencedColumnName = "id")
+    @JoinColumn(name="gerente_id", referencedColumnName = "id")
     private Gerente gerente;
     public Token (String token, Gerente gerente) {
 

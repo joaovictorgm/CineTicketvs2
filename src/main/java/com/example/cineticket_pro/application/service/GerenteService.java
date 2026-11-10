@@ -28,6 +28,7 @@ public class GerenteService {
     @Autowired
     private GerenteRepository gerenteRepository;
 
+    @Autowired
      private EmpresaContextoPort empresaContexto;
 
      @Autowired

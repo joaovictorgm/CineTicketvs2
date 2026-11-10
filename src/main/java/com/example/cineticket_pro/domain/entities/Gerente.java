@@ -49,7 +49,7 @@ public class Gerente implements UserDetails {
         this.setNome(criarGerenteAdminRequest.nome());
         this.setEmail(criarGerenteAdminRequest.email());
         this.setSenha(criarGerenteAdminRequest.senha());
-        this.setStatus(criarGerenteAdminRequest.status() != null ? criarGerenteAdminRequest.statusg(): EnumStatusGerente.ATIVO)
+        this.setStatus(criarGerenteAdminRequest.statusg() != null ? criarGerenteAdminRequest.statusg(): EnumStatusGerente.ATIVO)
         ;
     }
 
