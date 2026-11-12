@@ -45,7 +45,7 @@ public class TokenService {
 
 
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            String email = new Email(loginRequest.email().toString());
+            String email = new Email(loginRequest.email()).toString();
 
             var usuario = usuarioRepository.findAll().stream().filter(u -> u.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
             var gerente = gerenteRepository.findAll().stream().filter(g -> g.getEmail().equals(loginRequest.email())).findFirst().orElse(null);

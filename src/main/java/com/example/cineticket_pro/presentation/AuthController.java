@@ -7,6 +7,7 @@ import com.example.cineticket_pro.application.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,18 +30,15 @@ public class AuthController {
     @Operation(description = "Método de login", summary = "Autenticação de Usuário")
     public ResponseEntity <?> login(@RequestBody LoginRequest loginRequest){
 
-        var resultadoAutenticacaoRetornoTokenUsuario = usuarioService.validarUsuarioAutenticadoeRetornaToken(loginRequest);
-        var resultadoAutenticacaoRetornoTokenGerente = gerenteService.validarGerenteAutenticadoeRetornaToken(loginRequest);
+        var usuario = usuarioService.validarUsuarioAutenticadoeRetornaToken(loginRequest);
+        if (usuario != null) return ResponseEntity.ok(usuario);
 
-        if(resultadoAutenticacaoRetornoTokenUsuario != null ){
+        var gerente = gerenteService.validarGerenteAutenticadoeRetornaToken(loginRequest);
+        if (gerente != null) return ResponseEntity.ok(gerente);
 
-            return ResponseEntity.ok((resultadoAutenticacaoRetornoTokenUsuario ));
-        }if(resultadoAutenticacaoRetornoTokenGerente != null) {
-            return ResponseEntity.ok((resultadoAutenticacaoRetornoTokenGerente ));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
         }
-        return ResponseEntity.status(HttpURLConnection.HTTP_UNAUTHORIZED).build();
-
-    }
 
 
 }
