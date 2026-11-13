@@ -12,6 +12,7 @@ import com.example.cineticket_pro.domain.entities.Token;
 import com.example.cineticket_pro.domain.repository.GerenteRepository;
 import com.example.cineticket_pro.domain.repository.TokenRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
+import com.example.cineticket_pro.domain.valueobject.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -41,23 +42,24 @@ public class TokenService {
     private TokenRepository tokenRepository;
 
     public String gerarToken(LoginRequest loginRequest) {
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        String email = new Email(loginRequest.email()).toString();
 
+        var usuario = usuarioRepository.findByEmail(email).orElse(null);
+        var gerente = gerenteRepository.findByEmail(email).orElse(null);
 
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+        String token = JWT.create()
+                .withIssuer(emissor)
+                .withSubject(email)
+                .withExpiresAt(this.getDataExpiracao())
+                .sign(algorithm);
 
-            var usuario = usuarioRepository.findAll().stream().filter(u -> u.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
-            var gerente = gerenteRepository.findAll().stream().filter(g -> g.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
-            String token = JWT.create()
-                    .withIssuer(emissor)
-                    .withSubject(loginRequest.email())
-                    .withExpiresAt(this.getDataExpiracao())
-                    .sign(algorithm);
-
-                    tokenRepository.save(new Token(token, usuario));
-                    tokenRepository.save(new Token(token, gerente));
-            return token;
-
-
+        if (usuario != null) {
+            tokenRepository.save(new Token(token, usuario));
+        } else if (gerente != null) {
+            tokenRepository.save(new Token(token, gerente));
+        }
+        return token;
     }
 
     public UsuarioLogado verificarToken(String token) throws JWTVerificationException {
@@ -73,11 +75,15 @@ public class TokenService {
             throw new IllegalArgumentException("Token Invalido!");
         }
 
-       if(tokenBanco.getUsuario()!= null){
-           return new UsuarioLogado(tokenBanco.getGerente());
-       }
+        if (tokenBanco.getUsuario() != null) {
+            return new UsuarioLogado(tokenBanco.getUsuario());     // era getGerente()
+        }
+        if (tokenBanco.getGerente() != null) {
+            return new UsuarioLogado(tokenBanco.getGerente());
+        }
+        throw new IllegalArgumentException("Token Invalido!");
 
-       return new UsuarioLogado(tokenBanco.getGerente());
+
     }
 
 

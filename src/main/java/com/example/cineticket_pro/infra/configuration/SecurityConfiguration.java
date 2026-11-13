@@ -25,18 +25,19 @@ public class SecurityConfiguration {
         return  http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        /* publicas */
-                .requestMatchers("/auth/login","/swagger-ui/**","/swagger-ui.html","/webjars/**","/swagger-resources/**","/v3/api-docs/**").permitAll()
-                .requestMatchers("/senha/**").permitAll()
-                .requestMatchers("/error").permitAll()
-                .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/gerentes/admin").permitAll()
 
-                        /* só gerente*/
+                        /* públicas */
+                        .requestMatchers("/auth/login","/swagger-ui/**","/swagger-ui.html","/webjars/**","/swagger-resources/**","/v3/api-docs/**").permitAll()
+                        .requestMatchers("/senha/**").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/gerentes/admin").permitAll()
+
+                        /* só gerente */
                         .requestMatchers("/gerentes/**").hasRole("GERENTE")
 
-
-                        /* só funcionário */
+                        /* só funcionário (e gerente) */
+                        .requestMatchers(HttpMethod.GET, "/usuarios").hasAnyRole("GERENTE", "ADMIN")          // NOVO: cliente não lista usuários
                         .requestMatchers(HttpMethod.POST, "/usuarios").hasAnyRole("GERENTE", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasAnyRole("GERENTE", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/usuarios/*/status").hasAnyRole("GERENTE", "ADMIN")
@@ -44,14 +45,19 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN")
-                         /* cliente e funcinário*/
+                        .requestMatchers(HttpMethod.PUT, "/ingressos/**").hasAnyRole("GERENTE", "ADMIN")       // NOVO
+                        .requestMatchers(HttpMethod.DELETE, "/ingressos/**").hasAnyRole("GERENTE", "ADMIN")    // NOVO
+
+                        /* cliente e funcionário */
                         .requestMatchers(HttpMethod.GET, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE","ADMIN","USER")
-                        .requestMatchers("/ingressos/**").hasAnyRole("GERENTE","USER","ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/ingressos/**").hasAnyRole("GERENTE","ADMIN","USER")  // NOVO (separado)
+                        .requestMatchers(HttpMethod.POST, "/ingressos/**").hasAnyRole("GERENTE","ADMIN","USER") // NOVO (separado)
 
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
     @Bean
     public FilterRegistrationBean<JwtFilter> jwtFilterRegistration(JwtFilter filter) {
         FilterRegistrationBean<JwtFilter> registration = new FilterRegistrationBean<>(filter);
