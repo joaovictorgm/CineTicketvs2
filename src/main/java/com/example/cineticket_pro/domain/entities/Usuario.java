@@ -74,7 +74,6 @@ public class Usuario implements UserDetails {
         this.setSenha(criarAdminRequest.senha());
         this.setTelefone(criarAdminRequest.telefone());
         this.setStatus(criarAdminRequest.status() != null ? criarAdminRequest.status() : EnumStatusUsuario.ATIVO);
-
         this.setRole("ROLE_ADMIN");
     }
 
@@ -83,6 +82,7 @@ public class Usuario implements UserDetails {
         this.setEmail(usuario.email());
         this.setSenha(usuario.senha());
         this.setTelefone(usuario.telefone());
+        this.setStatus(usuario.status() != null ? usuario.status() : EnumStatusUsuario.ATIVO);
         this.setRole("ROLE_USER");
     }
 

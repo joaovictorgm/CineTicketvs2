@@ -6,6 +6,7 @@ import com.example.cineticket_pro.domain.entities.Empresa;
 import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.entities.Usuario;
 import com.example.cineticket_pro.domain.repository.EmpresaRepository;
+import com.example.cineticket_pro.domain.repository.GerenteRepository;
 import com.example.cineticket_pro.domain.repository.SessaoRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
 import com.example.cineticket_pro.domain.valueobject.Email;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import com.example.cineticket_pro.application.DTOs.EnumStatusUsuario;
 
 
 
@@ -27,6 +29,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private GerenteRepository gerenteRepository;
 
     @Autowired
     private SessaoRepository sessaoRepository;
@@ -72,21 +77,37 @@ public class UsuarioService {
 
     public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) throws AccessDeniedException {
 
+        var logado = getUsuarioLogado();
+        boolean gerente = logado.authorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_GERENTE"));
+        boolean admin   = logado.authorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
         //Novo Usuario
         if (id == 0L) {
+            if (!gerente && !admin) {
+                throw new AccessDeniedException("Sem permissão para cadastrar usuário");
+            }
+
+            String email = new Email(usuario.email()).toString();
+            if (usuarioRepository.findByEmail(email).isPresent()
+                    || gerenteRepository.findByEmail(email).isPresent()) {
+                throw new IllegalArgumentException("Email já cadastrado");
+            }
+
             Usuario usuarioBanco = new Usuario(usuario);
+            usuarioBanco.setEmpresa(empresaRepository.getReferenceById(logado.empresa_id()));  // empresa do token
+            usuarioBanco.setRole(gerente ? "ROLE_ADMIN" : "ROLE_USER");                        // gerente→ADMIN, admin→USER
+            usuarioBanco.setStatus(usuario.status() != null ? usuario.status() : EnumStatusUsuario.ATIVO);
             usuarioRepository.save(usuarioBanco);
 
             return new UsuarioResponse(usuarioBanco);
+
         } else {
-            //Usuario existente; só o dono ou um ADMIN altera
-            var logado = getUsuarioLogado();
-            boolean admin = logado.authorities().stream().anyMatch(a ->a.getAuthority().equals("ROLE_ADMIN"));
-            if(!admin && !logado.id().equals(id)){
+            //Usuario existente; só o dono, um ADMIN ou o GERENTE altera
+            if (!gerente && !admin && !logado.id().equals(id)) {
                 throw new AccessDeniedException("Voce só pode alterar o seu próprio cadastro");
             }
-            Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
+
+            Usuario usuarioBanco = usuarioRepository.findByIdAndEmpresaId(id, logado.empresa_id()).orElse(null);
             if (usuarioBanco != null) {
                 usuarioBanco.setNome(usuario.nome());
                 usuarioBanco.setEmail(usuario.email());
@@ -94,7 +115,6 @@ public class UsuarioService {
                 usuarioRepository.save(usuarioBanco);
                 return new UsuarioResponse(usuarioBanco);
             }
-
         }
 
         return null;
@@ -102,7 +122,7 @@ public class UsuarioService {
 
     public UsuarioResponse buscarPorId(Long id) {
 
-        var usuario = usuarioRepository.findById(id).orElse(null);
+        var usuario = usuarioRepository.findByIdAndEmpresaId(id, getUsuarioLogado().empresa_id()).orElse(null);
         if (usuario == null) {
             return null;
         }
