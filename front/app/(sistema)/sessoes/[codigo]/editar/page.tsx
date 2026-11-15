@@ -4,8 +4,8 @@ import Link from "next/link";
 import SessaoForm from "../../components/SessaoForm";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Sessao } from "@/app/(sistema)/types/sessao";
+import { consultaSessaoPorId } from "@/app/services/sessaoService";
 
 export default function EditarSessao() {
 
@@ -23,10 +23,10 @@ export default function EditarSessao() {
 
     const buscarDados = async () => {
 
-        const valorSessaoBack = await axios.get<Sessao>('http://localhost:8080/sessoes/' + codigo)
+        const valorSessaoBack = await consultaSessaoPorId( codigo)
 
-        if (valorSessaoBack.status == 200) {
-            setSessao(valorSessaoBack.data);
+        if (valorSessaoBack) {
+            setSessao(valorSessaoBack);
         } else {
             router.push("/sessoes")
         }

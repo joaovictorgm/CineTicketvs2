@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Sessao, SessaoFormProps } from "../../types/sessao";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from "axios";
+import { atualizarSessao, salvarSessao } from "@/app/services/sessaoService";
 
 export default function SessaoForm({ sessaoExistente }: SessaoFormProps) {
 
@@ -33,27 +33,28 @@ export default function SessaoForm({ sessaoExistente }: SessaoFormProps) {
     const handlerSalvar = async (formData: FormData) => {
 
         if (sessaoExistente) {
-            var dadosRetorno = await axios.put<number>('http://localhost:8080/sessoes/' + sessao.id, sessao)
+          var dadosRetorno = await atualizarSessao(sessao);
 
-            if (dadosRetorno.status == 200) {
+            if (dadosRetorno) {
                 alert("Sessão foi salva com sucesso!");
                   router.push("/sessoes")
             } else {
-                alert(dadosRetorno.data);
+                alert("Erro ao atualizar filme");
                 return;
             }
 
 
         } else {
-
-
-            var dadosRetorno = await axios.post<number>('http://localhost:8080/sessoes', sessao)
-
-            if (dadosRetorno.status == 200) {
+           
+            if (sessaoExistente) {
+                var dadosRetorno = await salvarSessao(sessao);
+                if(dadosRetorno){
                 alert("Sessao foi salva com sucesso!");
+                }
+             
                   router.push("/sessoes")
             } else {
-                alert(dadosRetorno.data);
+                alert("Erro ao salvar sessão");
 
                 return;
             }

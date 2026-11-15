@@ -6,26 +6,26 @@ import { LoginResponse } from "../(sistema)/types/auth";
 import Cookies  from "js-cookie";
 import { useDispatch } from "react-redux";
 import { buscarUsuarioLogado } from "../services/usuarioService";
-import { login } from "../redux/slices/authSlice";
+import { login, setToken, logout } from "../redux/slices/authSlice";
 import { loginBack } from "../services/authService";
 
 export default function Login() {
     
 
 
-    const router = useRouter();
+   
     const dispatch = useDispatch();
 
     const handleLogin = async (formData: FormData) => {
         try {
-            debugger;
+         
             const emailTela = formData.get("email")?.toString() ?? "";
             const senhaTela = formData.get("senha")?.toString() ?? "";
 
             var loginResposta = await loginBack(emailTela,senhaTela);
 
             if (loginResposta != null) {
-                Cookies.set('token',loginResposta.token,{secure: true, expires: 7} );
+                dispatch(setToken(loginResposta.token));
                 var usuarioLogado = await buscarUsuarioLogado();
 
                 dispatch(login({
@@ -37,9 +37,10 @@ export default function Login() {
                 alert("Login ou senha inválida!");
             }
         } catch (error) {
+            dispatch(logout());
             alert("Login ou senha Invalido!");
         }
-    } // ← fecha o handleLogin aqui
+    } 
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-blue-50">

@@ -3,11 +3,16 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Sessao } from "../types/sessao";
-import axios from "axios";
+import api from "@/app/services/api";
+import { useDispatch } from "react-redux";
+import {adicionarItem} from "@/app/redux/slices/carrinhoSlice"
+import { buscarListaFilmes } from "@/app/services/filmeService";
+import { atualizarSessao, atualizarStatusSessao, atualizarTipoSessao, buscarListaSessao, deletarSessao } from "@/app/services/sessaoService";
 
 export default function Sessoes() {
 
     const [sessoes, setSessao] = useState<Sessao[]>([]);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         carregarDados();
@@ -15,20 +20,20 @@ export default function Sessoes() {
 
     const carregarDados = async () => {
         try {
-            const dados = axios.get<Sessao[]>("http://localhost:8080/sessoes")
-            setSessao((await dados).data);
+            const dados = await buscarListaSessao();
+            setSessao(dados);
         } catch (erros) {
             alert("Erro ao carregar Dados")
         }
     }
 
     const handlerDeletarSessao = async (sessao: Sessao) => {
-        var dadosRetorno = await axios.delete('http://localhost:8080/sessoes/' + sessao.id + '/excluir')
+       var dadosRetorno = await deletarSessao(sessao.id || 0);
 
-        if (dadosRetorno.status == 200) {
+        if (dadosRetorno == 200) {
             alert("Excluido com sucesso!")
         } else {
-            alert(dadosRetorno.data);
+            alert(dadosRetorno);
             return;
         }
 
@@ -37,39 +42,15 @@ export default function Sessoes() {
     }
 
     const handlerAlterarStatusSessao = async (sessao: Sessao) => {
-        var novoStatus = {};
-        if (sessao.statusSessao === "ATIVO") {
-            novoStatus = { statusSessao: "DESATIVADO" }
-        } else {
-            novoStatus = { statusSessao: "ATIVO" }
-        }
+      await atualizarStatusSessao(sessao);
 
-        var dadosRetorno = await axios.patch('http://localhost:8080/sessoes/' + sessao.id + '/status-sessao', novoStatus);
-        if (dadosRetorno.status === 200) {
-            alert("Atualizado status com sucesso!")
-        } else {
-            alert(dadosRetorno.data);
-            return;
-        }
-
-        carregarDados();
+      carregarDados();
+        
+        
     }
 
     const handlerAlterarTipoSessao = async (sessao: Sessao) => {
-        var novoTipo = {};
-        if (sessao.status === "EXIBIÇÃO_2D") {
-            novoTipo = { statusExibicao: "EXIBICÃO_3D" }
-        } else {
-            novoTipo = { statusExibicao: "EXIBIÇÃO_2D" }
-        }
-
-        var dadosRetorno = await axios.patch('http://localhost:8080/sessoes/' + sessao.id + '/status', novoTipo);
-        if (dadosRetorno.status === 200) {
-            alert("Atualizado tipo com sucesso!")
-        } else {
-            alert(dadosRetorno.data);
-            return;
-        }
+      await atualizarTipoSessao(sessao);
 
         carregarDados();
     }
@@ -138,6 +119,17 @@ export default function Sessoes() {
                                             <Link href={`/sessoes/${sessao.id}/editar`} className="text-blue-600 hover:underline">
                                                 EDITAR
                                             </Link>
+                                            <button onClick={() => dispatch(adicionarItem({
+                                             sessaoId: sessao.id!,
+                                             filme: sessao.data,
+                                             data:sessao.data,
+                                             sala: sessao.sala,
+                                             preco: Number(sessao.preco),
+                                             assentosDisponiveis: sessao.assentosDisponiveis,
+                                            }))}className="text-blue-600 hover:text-blue-800 font-medium transition-colors text-left">
+                                             ADICIONAR AO CARRINHO  
+                                            </button>
+
                                             <button onClick={() => handlerDeletarSessao(sessao)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
                                                 DELETAR
                                             </button>
@@ -165,7 +157,7 @@ export default function Sessoes() {
                             ))}
                             {sessoes.length === 0 && (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text">
+                                    <td colSpan={9} className="px-6 py-12 text-center text">
                                         Nenhuma sessao Encontrada
                                     </td>
                                 </tr>

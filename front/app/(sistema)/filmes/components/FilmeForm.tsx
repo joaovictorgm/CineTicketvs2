@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Filme, FilmeFormProps } from "../../types/filmes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from "axios";
 import { atualizarFilme, salvarFilme } from "@/app/services/filmeService";
 
 export default function FilmeForm({filmeExistente}:FilmeFormProps) {
@@ -51,24 +50,14 @@ export default function FilmeForm({filmeExistente}:FilmeFormProps) {
 
             return;
         }
-
-    }else{
-        if(filmeExistente){
-        var dadosRetorno = await salvarFilme(filme);
-        if(dadosRetorno){
-            alert("Filme foi salvo com sucesso!")
-        }else{
-            alert("Erro ao salvar Filme")
-
-            return;
-        }
+       
     } else {
 
         var dadosRetorno = await salvarFilme(filme);
         if(dadosRetorno){
-            alert("Usuário foi salvo com sucesso!")
+            alert("Filme foi salvo com sucesso!")
         } else {
-            alert("Erro ao salvar Usuário!");
+            alert("Erro ao salvar Filme!");
 
             return;
         }
@@ -76,6 +65,7 @@ export default function FilmeForm({filmeExistente}:FilmeFormProps) {
     router.push("/filmes")
 
     }
+}
     
     return (
         <form action={handlerSalvar}className="bg-white rounded-lg border border-blue-100">
@@ -118,3 +108,4 @@ export default function FilmeForm({filmeExistente}:FilmeFormProps) {
 
     );
 }
+    

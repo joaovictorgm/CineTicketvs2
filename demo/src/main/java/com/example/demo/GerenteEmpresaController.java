@@ -24,6 +24,7 @@ public class GerenteEmpresaController {
     @FXML
     private TextField txtEmail;
 
+
     @FXML
     private TextField txtSenha;
 

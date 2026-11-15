@@ -1,11 +1,11 @@
-import Link from "next/link";
-import { store } from "../redux/store";
-import { useDispatch } from "react-redux";
+'use client'
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 import { logout } from "../redux/slices/authSlice";
 
 export default function Header(){
 
-    const usuario = store.getState().auth.usuario;
+    const usuario = useSelector((state:RootState) => state.auth.usuario);
     const dispatch = useDispatch();
 
     return(
@@ -18,7 +18,7 @@ export default function Header(){
                     <circle cx="12" cy="7" r="4" />
                 </svg>
             </div>
-            <span className="text-blue-900 font-medium">{usuario? usuario.nome.toLocaleUperCase() : 'Usuário não identificado'}</span>
+            <span className="text-blue-900 font-medium">{usuario? usuario.nome.toLocaleUpperCase() : 'Usuário não identificado'}</span>
         </div>
        
        <button
