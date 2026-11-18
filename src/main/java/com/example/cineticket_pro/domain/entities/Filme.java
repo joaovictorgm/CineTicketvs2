@@ -26,14 +26,12 @@ public class Filme  {
     public String dataEstreia;
 
 
-    @ManyToOne
-    @JoinColumn(name = "sessao_id", referencedColumnName = "id")
-    public Sessao sessao;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empresa_id", referencedColumnName = "id")
     public Empresa empresa;
 
-
+    @Enumerated
     public EnumStatusFilme statusFilme = EnumStatusFilme.ATIVO;
 
 

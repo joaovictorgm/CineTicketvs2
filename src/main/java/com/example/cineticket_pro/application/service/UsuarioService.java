@@ -13,6 +13,7 @@ import com.example.cineticket_pro.domain.valueobject.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.cineticket_pro.application.DTOs.EnumStatusUsuario;
 
@@ -29,6 +30,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private GerenteRepository gerenteRepository;
@@ -48,7 +52,8 @@ public class UsuarioService {
     public LoginResponse validarUsuarioAutenticadoeRetornaToken(LoginRequest request) {
 
           String email = new Email(request.email()).toString();
-        if (usuarioRepository.existsUsuarioByEmailAndSenha(email, request.senha())) {
+          var usuario = usuarioRepository.findByEmail(email).orElse(null);
+        if (usuario != null && passwordEncoder.matches(request.senha(),usuario.getSenha())) {
 
             var token = tokenService.gerarToken(request);
             return new LoginResponse(token);
@@ -97,6 +102,7 @@ public class UsuarioService {
             usuarioBanco.setEmpresa(empresaRepository.getReferenceById(logado.empresa_id()));  // empresa do token
             usuarioBanco.setRole(gerente ? "ROLE_ADMIN" : "ROLE_USER");                        // gerente→ADMIN, admin→USER
             usuarioBanco.setStatus(usuario.status() != null ? usuario.status() : EnumStatusUsuario.ATIVO);
+            usuarioBanco.setSenha(passwordEncoder.encode(usuario.senha()));
             usuarioRepository.save(usuarioBanco);
 
             return new UsuarioResponse(usuarioBanco);
@@ -111,7 +117,7 @@ public class UsuarioService {
             if (usuarioBanco != null) {
                 usuarioBanco.setNome(usuario.nome());
                 usuarioBanco.setEmail(usuario.email());
-                usuarioBanco.setSenha(usuario.senha());
+                usuarioBanco.setSenha(passwordEncoder.encode(usuario.senha()));
                 usuarioRepository.save(usuarioBanco);
                 return new UsuarioResponse(usuarioBanco);
             }
@@ -166,13 +172,20 @@ public class UsuarioService {
 
     }
 
-    public UsuarioResponse buscarUsuarioLogado() {
-        try{
-            var usuarioLogado = getUsuarioLogado();
-            return usuarioRepository.findById(usuarioLogado.id()).stream().map(UsuarioResponse::new).findFirst().orElse(null);
-        }catch (Exception e){
-            throw new RuntimeException("Erro ao buscar usuario logado!");
+    public PerfilResponse buscarUsuarioLogado() {
+        var logado = getUsuarioLogado();
+        boolean gerente = logado.authorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_GERENTE"));
+
+        if (gerente) {
+            var g = gerenteRepository.findById(logado.id())
+                    .orElseThrow(() -> new RuntimeException("Gerente não encontrado"));
+            return new PerfilResponse(g.getId(), g.getNome(), g.getEmail(), "ROLE_GERENTE");
         }
+
+        var u = usuarioRepository.findById(logado.id())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        return new PerfilResponse(u.getId(), u.getNome(), u.getEmail(), u.getRole());
     }
 
 }

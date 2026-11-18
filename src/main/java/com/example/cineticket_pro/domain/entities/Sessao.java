@@ -4,10 +4,7 @@ import com.example.cineticket_pro.application.DTOs.EnumStatusSessao;
 import com.example.cineticket_pro.application.DTOs.EnumTipoExibicao;
 import com.example.cineticket_pro.application.DTOs.SessaoRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,17 +29,21 @@ public class Sessao {
     public String sala;
     @Enumerated(EnumType.STRING)
     public EnumTipoExibicao status = EnumTipoExibicao.EXIBICAO_2D;
+    @Enumerated(EnumType.STRING)
     public EnumStatusSessao statusSessao= EnumStatusSessao.ATIVO;
     public String preco;
     public int assentosDisponiveis;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "empresa_id",referencedColumnName = "id")
-    private Empresa empresa;
+    @JoinColumn(name = "filme_id", nullable = false)
+    private Filme filme;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "empresa_id", referencedColumnName = "id")
+    public Empresa empresa;
 
 
-@OneToMany(mappedBy = "sessao")
-private List<Filme> filmes;
+
 
 
 

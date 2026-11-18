@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -22,14 +23,22 @@ public class Ingresso {
     public Long id;
     public String  assento;
     public String valorPago;
+    @Enumerated(EnumType.STRING)
     public EnumTipoIngresso statusTipo = EnumTipoIngresso.INTEIRA ;
+    @Enumerated(EnumType.STRING)
     public EnumStatusIngresso statusIngresso = EnumStatusIngresso.DISPONIVEL;
     public String  dataCompra;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sessao_id", referencedColumnName = "id", nullable = false)
+    private Sessao sessao;
+
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "empresa_id",referencedColumnName = "id")
-    private Empresa empresa;
+    @JoinColumn(name = "filme_id", referencedColumnName = "id", nullable = false)
+    private Filme filme;
+
+
 
     public Ingresso(IngressoRequest ingresso) {
         this.setAssento(ingresso.assento());

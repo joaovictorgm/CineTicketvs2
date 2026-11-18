@@ -38,7 +38,7 @@ public class Gerente implements UserDetails {
 
     private String role = "ROLE_GERENTE";
 
-
+    @Enumerated(EnumType.STRING)
     private EnumStatusGerente status;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empresa_id", referencedColumnName = "id")

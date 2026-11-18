@@ -11,7 +11,7 @@
       <TextField fx:id="txtEmail" layoutX="151.0" layoutY="123.0" />
       <Button layoutX="67.0" layoutY="343.0" mnemonicParsing="false" onAction="#salvarGerenteEmpresa" text="Salvar" />
       <Button layoutX="486.0" layoutY="343.0" mnemonicParsing="false" onAction="#voltar" text="Voltar" />
-      <ComboBox layoutX="151.0" layoutY="218.0" prefWidth="150.0" />
+      <ComboBox fx:id="cmbStatus" layoutX="151.0" layoutY="218.0" prefWidth="150.0" />
       <Label layoutX="99.0" layoutY="226.0" text="Status" />
       <Label layoutX="99.0" layoutY="169.0" text="Senha" />
       <TextField fx:id="txtSenha" layoutX="152.0" layoutY="165.0" />

@@ -7,6 +7,7 @@ public record SessaoRequest(
         EnumTipoExibicao status,
         EnumStatusSessao statusSessao,
         String preco,
-        int assentosDisponiveis
+        int assentosDisponiveis,
+        Long filmeId
 ) {
 }

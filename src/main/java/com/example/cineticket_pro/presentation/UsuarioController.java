@@ -101,7 +101,7 @@ public class UsuarioController {
 
     @GetMapping("/buscarusuariologado")
     @Operation(summary = "Usuario logado", description = "Usuario logado")
-    public ResponseEntity<UsuarioResponse> buscarUsuarioLogado(){
+    public ResponseEntity<PerfilResponse> buscarUsuarioLogado(){
         return ResponseEntity.ok(usuarioService.buscarUsuarioLogado());
     }
 }

@@ -1,18 +1,33 @@
+'use client'                                   
 import Link from "next/link";
+import { useSelector } from "react-redux";      
+import { RootState } from "../redux/store";     
 
 export default function Sidebar(){
+
+    const usuario = useSelector((state: RootState) => state.auth.usuario);   // <- adicionar
+    const ehGerente = usuario?.role === "ROLE_GERENTE";                       // <- adicionar
+    const ehAdmin = usuario?.role === "ROLE_ADMIN";                           // <- adicionar
 
     return(<aside className="w-64 bg-blue-900 min-h-screen flex flex-col">
         <div className="text-white text-xl font-bold px-6 py-5 border-b border-blue-800">
             CineTicket
         </div>
         <nav className="flex flex-col gap-1 p-4">
-            <Link href="/home" className="text-blue-100 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">Home</Link>
-            <Link href="/usuarios" className="text-blue-100 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">Usuários</Link>
-            <Link href="/ingressos" className="text-blue-100 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">Ingressos</Link>
-            <Link href="/sessoes" className="text-blue-100 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">Sessões</Link>
-            <Link href="/gerentes" className="text-blue-100 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">Gerentes</Link>
-            <Link href="/filmes" className="text-blue-100 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">Filmes</Link>
+            <Link href="/home" className="...">Home</Link>
+
+            {(ehGerente || ehAdmin) && (                                      // <- envolver
+                <Link href="/usuarios" className="...">Usuários</Link>
+            )}
+
+            <Link href="/ingressos" className="...">Ingressos</Link>
+            <Link href="/sessoes" className="...">Sessões</Link>
+
+            {ehGerente && (                                                   // <- envolver
+                <Link href="/gerentes" className="...">Gerentes</Link>
+            )}
+
+            <Link href="/filmes" className="...">Filmes</Link>
         </nav>
     </aside>);
 }

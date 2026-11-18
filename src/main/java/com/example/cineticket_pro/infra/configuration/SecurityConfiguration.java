@@ -10,6 +10,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -37,7 +39,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/gerentes/**").hasRole("GERENTE")
 
                         /* só funcionário (e gerente) */
-                        .requestMatchers(HttpMethod.GET, "/usuarios").hasAnyRole("GERENTE", "ADMIN")          // NOVO: cliente não lista usuários
+                        .requestMatchers(HttpMethod.GET, "/usuarios").hasAnyRole("GERENTE", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/usuarios").hasAnyRole("GERENTE", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasAnyRole("GERENTE", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/usuarios/*/status").hasAnyRole("GERENTE", "ADMIN")
@@ -45,13 +47,13 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/ingressos/**").hasAnyRole("GERENTE", "ADMIN")       // NOVO
-                        .requestMatchers(HttpMethod.DELETE, "/ingressos/**").hasAnyRole("GERENTE", "ADMIN")    // NOVO
+                        .requestMatchers(HttpMethod.PUT, "/ingressos/**").hasAnyRole("GERENTE", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/ingressos/**").hasAnyRole("GERENTE", "ADMIN")
 
                         /* cliente e funcionário */
                         .requestMatchers(HttpMethod.GET, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE","ADMIN","USER")
-                        .requestMatchers(HttpMethod.GET, "/ingressos/**").hasAnyRole("GERENTE","ADMIN","USER")  // NOVO (separado)
-                        .requestMatchers(HttpMethod.POST, "/ingressos/**").hasAnyRole("GERENTE","ADMIN","USER") // NOVO (separado)
+                        .requestMatchers(HttpMethod.GET, "/ingressos/**").hasAnyRole("GERENTE","ADMIN","USER")
+                        .requestMatchers(HttpMethod.POST, "/ingressos/**").hasAnyRole("GERENTE","ADMIN","USER")
 
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -63,5 +65,10 @@ public class SecurityConfiguration {
         FilterRegistrationBean<JwtFilter> registration = new FilterRegistrationBean<>(filter);
         registration.setEnabled(false);
         return registration;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }

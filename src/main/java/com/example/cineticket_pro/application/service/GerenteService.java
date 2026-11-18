@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,11 +43,16 @@ public class GerenteService {
     @Autowired
     private iCnpjExternalRepository cnpjExterno;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     public LoginResponse validarGerenteAutenticadoeRetornaToken(LoginRequest request) {
 
         String email = new Email(request.email()).toString();
-        if (gerenteRepository.existsGerenteByEmailAndSenha(email, request.senha())) {
+
+        var gerente = gerenteRepository.findByEmail(email).orElse(null);
+        if (gerente != null && passwordEncoder.matches(request.senha(), gerente.getSenha())) {
 
             var token = tokenService.gerarToken(request);
             return new LoginResponse(token);
@@ -72,7 +78,7 @@ public List<GerenteResponse> listarTodosGerentesTable(){
             if(gerenteBanco!= null ){
                 gerenteBanco.setNome(gerente.nome());
                 gerenteBanco.setEmail(gerente.email());
-                gerenteBanco.setSenha(gerente.senha());
+                gerenteBanco.setSenha(passwordEncoder.encode(gerente.senha()));
                 gerenteRepository.save(gerenteBanco);
                 return  new GerenteResponse(gerenteBanco);
             }
@@ -132,7 +138,7 @@ public List<GerenteResponse> listarTodosGerentesTable(){
         Gerente gerente= new Gerente(criarGerenteRequest);
         gerente.setNome(criarGerenteRequest.nome());
         gerente.setEmail(email);
-        gerente.setSenha(criarGerenteRequest.senha());
+        gerente.setSenha(passwordEncoder.encode(criarGerenteRequest.senha()));
         gerente.setEmpresa(empresa);
         gerenteRepository.save(gerente);
 

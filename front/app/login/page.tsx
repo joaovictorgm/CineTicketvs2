@@ -1,19 +1,18 @@
 'use client'
 
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import { LoginResponse } from "../(sistema)/types/auth";
-import Cookies  from "js-cookie";
+
 import { useDispatch } from "react-redux";
 import { buscarUsuarioLogado } from "../services/usuarioService";
 import { login, setToken, logout } from "../redux/slices/authSlice";
 import { loginBack } from "../services/authService";
+import {useRouter} from "next/navigation";
+
 
 export default function Login() {
     
 
 
-   
+    const router = useRouter();
     const dispatch = useDispatch();
 
     const handleLogin = async (formData: FormData) => {
@@ -33,10 +32,12 @@ export default function Login() {
                     usuario:{...usuarioLogado}
                 }
                 ));
+                router.push("/home")
             } else {
                 alert("Login ou senha inválida!");
             }
         } catch (error) {
+            console.log(error);
             dispatch(logout());
             alert("Login ou senha Invalido!");
         }

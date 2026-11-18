@@ -1,11 +1,13 @@
 package com.example.demo;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -24,6 +26,9 @@ public class GerenteEmpresaController {
     @FXML
     private TextField txtEmail;
 
+    @FXML
+    private ComboBox<String> cmbStatus;
+
 
     @FXML
     private TextField txtSenha;
@@ -40,7 +45,11 @@ public class GerenteEmpresaController {
     @FXML
     private PasswordField txtChaveSecreta;
 
-
+    @FXML
+    public void initialize() {
+        cmbStatus.setItems(FXCollections.observableArrayList("ATIVO", "EXCLUIDO"));
+        cmbStatus.setValue("ATIVO");
+    }
 
 
 
@@ -55,11 +64,12 @@ public class GerenteEmpresaController {
         //Validar Dados
 
         String jsonRequest = String.format(
-                "{\"nome\": \"%s\", \"email\": \"%s\", \"senha\": \"%s\", \"secretKey\": \"%s\", "
+                "{\"nome\": \"%s\", \"email\": \"%s\", \"senha\": \"%s\", \"statusg\": \"%s\", \"secretKey\": \"%s\", "
                         + "\"razaoSocial\": \"%s\", \"cnpj\": \"%s\", \"nomeFantasia\": \"%s\"}",
                 txtNome.getText(),
                 txtEmail.getText(),
                 txtSenha.getText(),
+                cmbStatus.getValue(),
                 txtChaveSecreta.getText(),
                 txtRazaoSocial.getText(),
                 txtCnpj.getText(),

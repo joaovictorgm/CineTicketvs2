@@ -32,20 +32,24 @@ public class SessaoService {
     private EmpresaContextoPort empresaContexto;
 
     public List<SessaoResponse> listarTodasSessoesTable() {
-        return sessaoRepository.findAllByEmpresaId(empresaContexto.empresaId()).stream().map(SessaoResponse::new).toList();
+        return sessaoRepository.findAllByFilmeEmpresaId(empresaContexto.empresaId()).stream().map(SessaoResponse::new).toList();
     }
 
     public SessaoResponse salvarSessao(SessaoRequest sessao, Long id) {
-
+        Long empresaid = empresaContexto.empresaId();
         //Nova Sessao
         if (id == 0L) {
+            Filme filmeBanco = filmeRepository.findByIdAndEmpresaId(sessao.filmeId(), empresaContexto.empresaId()).orElseThrow(() -> new IllegalArgumentException("Filme não encontrado"));
+
             Sessao sessaoBanco = new Sessao(sessao);
+            sessaoBanco.setFilme(filmeBanco);
+            sessaoBanco.setEmpresa(empresaRepository.getReferenceById(empresaid));
             sessaoRepository.save(sessaoBanco);
 
             return new SessaoResponse(sessaoBanco);
         } else {
             //Sessao existente
-            Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
+            Sessao sessaoBanco = sessaoRepository.findByIdAndFilmeEmpresaId(id, empresaid).orElse(null);
             if (sessaoBanco != null) {
                 sessaoBanco.setData(sessao.data());
                 sessaoBanco.setSala(sessao.sala());
@@ -64,7 +68,7 @@ public class SessaoService {
 
     public SessaoResponse buscarPorId(Long id) {
 
-        var sessao = sessaoRepository.findById(id).orElse(null);
+        var sessao = sessaoRepository.findByIdAndFilmeEmpresaId(id, empresaContexto.empresaId()).orElse(null);
         if (sessao == null) {
             return null;
         }
@@ -76,7 +80,7 @@ public class SessaoService {
 
     public boolean atualizarTipoSessao(EnumTipoExibicao status, Long id) {
 
-        Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
+        Sessao sessaoBanco = sessaoRepository.findByIdAndFilmeEmpresaId(id, empresaContexto.empresaId()).orElse(null);
         if (sessaoBanco != null) {
             sessaoBanco.setStatus(status);
             sessaoRepository.save(sessaoBanco);
@@ -87,7 +91,7 @@ public class SessaoService {
 
     public boolean atualizarStatusSessao(EnumStatusSessao status, Long id) {
 
-        Sessao sessaoBanco = sessaoRepository.findById(id).orElse(null);
+        Sessao sessaoBanco = sessaoRepository.findByIdAndFilmeEmpresaId(id, empresaContexto.empresaId()).orElse(null);
         if (sessaoBanco != null) {
             sessaoBanco.setStatusSessao(status);
             sessaoRepository.save(sessaoBanco);
@@ -96,21 +100,5 @@ public class SessaoService {
         return false;
     }
 
-    /*public boolean juntarSessaoFilme(Long id, JuntarFilmeSessaoRequest juntarFilmeSessaoRequest){
 
-        Long empresaId = empresaContexto.empresaId();
-        Sessao sessaoBanco = sessaoRepository.findByIdAndEmpresaId(id, empresaId).orElse(null);
-        Filme filmeBanco = filmeRepository.findByIdAndEmpresaId(juntarFilmeSessaoRequest.filme_id(),empresaId);
-
-        if(sessaoBanco!= null && filmeBanco != null){
-            sessaoBanco.setFilmes(filmeBanco);
-            sessaoRepository.save(sessaoBanco);
-            return true;
-
-            }
-
-
-        return false;
-
-    }*/
 }
