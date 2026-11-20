@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsCon
+@AllArgsConstructor
 
 public class Empresa {
 
