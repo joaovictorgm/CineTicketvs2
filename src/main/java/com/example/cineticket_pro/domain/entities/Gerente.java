@@ -2,8 +2,6 @@ package com.example.cineticket_pro.domain.entities;
 
 
 import com.example.cineticket_pro.application.DTOs.CriarAdminRequest;
-import com.example.cineticket_pro.application.DTOs.EnumStatusGerente;
-import com.example.cineticket_pro.application.DTOs.EnumStatusUsuario;
 import com.example.cineticket_pro.application.DTOs.GerenteRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

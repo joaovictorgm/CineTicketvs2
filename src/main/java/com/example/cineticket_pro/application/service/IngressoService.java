@@ -3,9 +3,7 @@ package com.example.cineticket_pro.application.service;
 
 import com.example.cineticket_pro.application.DTOs.*;
 import com.example.cineticket_pro.application.port.EmpresaContextoPort;
-import com.example.cineticket_pro.domain.entities.Ingresso;
-import com.example.cineticket_pro.domain.entities.Sessao;
-import com.example.cineticket_pro.domain.entities.Usuario;
+import com.example.cineticket_pro.domain.entities.*;
 import com.example.cineticket_pro.domain.repository.IngressoRepository;
 import com.example.cineticket_pro.domain.repository.SessaoRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;

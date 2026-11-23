@@ -2,6 +2,7 @@ package com.example.cineticket_pro.presentation;
 
 import com.example.cineticket_pro.application.DTOs.*;
 import com.example.cineticket_pro.application.service.SessaoService;
+import com.example.cineticket_pro.domain.entities.EnumStatusSessao;
 import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.repository.SessaoRepository;
 import io.swagger.v3.oas.annotations.Operation;

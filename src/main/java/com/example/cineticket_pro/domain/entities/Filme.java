@@ -1,6 +1,5 @@
 package com.example.cineticket_pro.domain.entities;
 
-import com.example.cineticket_pro.application.DTOs.EnumStatusFilme;
 import com.example.cineticket_pro.application.DTOs.FilmeRequest;
 import com.example.cineticket_pro.domain.valueobject.ClassificaoEtaria;
 import jakarta.persistence.*;

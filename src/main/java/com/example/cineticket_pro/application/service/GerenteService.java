@@ -4,8 +4,8 @@ package com.example.cineticket_pro.application.service;
 import com.example.cineticket_pro.application.DTOs.*;
 import com.example.cineticket_pro.application.port.EmpresaContextoPort;
 import com.example.cineticket_pro.domain.entities.Empresa;
+import com.example.cineticket_pro.domain.entities.EnumStatusGerente;
 import com.example.cineticket_pro.domain.entities.Gerente;
-import com.example.cineticket_pro.domain.entities.Usuario;
 import com.example.cineticket_pro.domain.interfaces.DadosCnpj;
 import com.example.cineticket_pro.domain.interfaces.iCnpjExternalRepository;
 import com.example.cineticket_pro.domain.repository.EmpresaRepository;
@@ -100,7 +100,7 @@ public List<GerenteResponse> listarTodosGerentesTable(){
 
     }
 
-    public boolean atualizarStatus(EnumStatusGerente status,Long id) {
+    public boolean atualizarStatus(EnumStatusGerente status, Long id) {
 
         Gerente gerenteBanco = gerenteRepository.findById(id).orElse(null);
         if(gerenteBanco!= null ){

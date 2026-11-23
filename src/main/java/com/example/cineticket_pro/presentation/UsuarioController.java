@@ -3,6 +3,7 @@ package com.example.cineticket_pro.presentation;
 
 import com.example.cineticket_pro.application.DTOs.*;
 import com.example.cineticket_pro.application.service.UsuarioService;
+import com.example.cineticket_pro.domain.entities.EnumStatusUsuario;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,15 +1,10 @@
 package com.example.cineticket_pro.domain.entities;
 
-import com.example.cineticket_pro.application.DTOs.EnumStatusIngresso;
-import com.example.cineticket_pro.application.DTOs.EnumTipoIngresso;
 import com.example.cineticket_pro.application.DTOs.IngressoRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-import java.util.List;
 
 @Entity
 @Data

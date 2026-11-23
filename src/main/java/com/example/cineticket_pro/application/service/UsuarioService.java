@@ -2,7 +2,6 @@ package com.example.cineticket_pro.application.service;
 
 
 import com.example.cineticket_pro.application.DTOs.*;
-import com.example.cineticket_pro.domain.entities.Empresa;
 import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.entities.Usuario;
 import com.example.cineticket_pro.domain.repository.EmpresaRepository;
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.example.cineticket_pro.application.DTOs.EnumStatusUsuario;
+import com.example.cineticket_pro.domain.entities.EnumStatusUsuario;
 
 
 

@@ -1,5 +1,7 @@
 package com.example.cineticket_pro.application.DTOs;
 
+import com.example.cineticket_pro.domain.entities.EnumStatusUsuario;
+import com.example.cineticket_pro.domain.entities.EnumTipoCliente;
 import com.example.cineticket_pro.domain.entities.Usuario;
 
 public record UsuarioResponse(Long id, String nome, String telefone, String email, EnumTipoCliente tipoCliente,

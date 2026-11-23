@@ -1,4 +1,4 @@
-package com.example.cineticket_pro.application.DTOs;
+package com.example.cineticket_pro.domain.entities;
 
 public enum EnumTipoExibicao {
     EXIBICAO_2D("2D"),
