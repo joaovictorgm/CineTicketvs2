@@ -23,16 +23,16 @@ public class SecurityConfiguration {
     private JwtFilter jwtFilter;
 
     @Bean
-    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception{
-        return  http.cors(Customizer.withDefaults())
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
 
                         /* públicas */
-                        .requestMatchers("/auth/login","/swagger-ui/**","/swagger-ui.html","/webjars/**","/swagger-resources/**","/v3/api-docs/**").permitAll()
+                        .requestMatchers("/auth/login", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/senha/**").permitAll()
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/gerentes/admin").permitAll()
 
                         /* só gerente */
@@ -51,9 +51,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, "/ingressos/**").hasAnyRole("GERENTE", "ADMIN")
 
                         /* cliente e funcionário */
-                        .requestMatchers(HttpMethod.GET, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE","ADMIN","USER")
-                        .requestMatchers(HttpMethod.GET, "/ingressos/**").hasAnyRole("GERENTE","ADMIN","USER")
-                        .requestMatchers(HttpMethod.POST, "/ingressos/**").hasAnyRole("GERENTE","ADMIN","USER")
+                        .requestMatchers(HttpMethod.GET, "/filmes/**", "/sessoes/**").hasAnyRole("GERENTE", "ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/ingressos/**").hasAnyRole("GERENTE", "ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/ingressos/**").hasAnyRole("GERENTE", "ADMIN", "USER")
 
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -68,7 +68,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

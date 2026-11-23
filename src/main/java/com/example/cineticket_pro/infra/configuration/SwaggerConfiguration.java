@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfiguration {
-@Bean
-    public OpenAPI customOpemAPI(){
+    @Bean
+    public OpenAPI customOpemAPI() {
 
         return new OpenAPI()
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth")).components(new Components().addSecuritySchemes("bearerAuth",new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").scheme("bearer").bearerFormat("JWT")
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth")).components(new Components().addSecuritySchemes("bearerAuth", new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").scheme("bearer").bearerFormat("JWT")
                 )).info(new Info().title("cineticket").version("1.0.0").description("Api para projeto do cineticket"));
     }
 }

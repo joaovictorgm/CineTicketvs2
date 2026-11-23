@@ -19,22 +19,21 @@ import java.util.List;
 public class FilmeController {
 
 
-
     @Autowired
     private FilmeService filmeService;
 
     @GetMapping
     @Operation(summary = "Método de consulta de lista de filmes!", description = "Método responsavel a consulta de todos os filmes sem filtro!")
-    public ResponseEntity<List<FilmeResponse>> listarTodos(){
+    public ResponseEntity<List<FilmeResponse>> listarTodos() {
 
         return ResponseEntity.ok(filmeService.listarTodosFilmesTable());
     }
 
     @GetMapping("{id}")
     @Operation(summary = "Método de busca de filme por ID", description = "Método responsável por buscar um filme específico através do seu identificador")
-    public ResponseEntity<FilmeResponse>buscaPorId(@PathVariable Long id){
+    public ResponseEntity<FilmeResponse> buscaPorId(@PathVariable Long id) {
         FilmeResponse filmeBanco = filmeService.buscarPorId(id);
-        if(filmeBanco != null){
+        if (filmeBanco != null) {
             return ResponseEntity.ok(filmeBanco);
         }
         return ResponseEntity.notFound().build();
@@ -43,12 +42,12 @@ public class FilmeController {
     @PostMapping
     @Operation(summary = "Método de criação de filmes!", description = "Método responsavel de criar filmes sem filtro!")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?>criar(@RequestBody FilmeRequest filme){
-        try{
+    public ResponseEntity<?> criar(@RequestBody FilmeRequest filme) {
+        try {
             FilmeResponse filmeBanco = filmeService.salvarFilme(filme, 0L);
             return ResponseEntity.ok(filmeBanco);
-        } catch (Exception e){
-           return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
 
@@ -56,23 +55,24 @@ public class FilmeController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Método de atualização de filme", description = "Método responsável por atualizar os dados de um filme já cadastrado")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody FilmeRequest filme){
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody FilmeRequest filme) {
         try {
-           FilmeResponse filmeBanco = filmeService.salvarFilme(filme, id);
-           return ResponseEntity.ok(filmeBanco);
-        } catch (Exception e){
+            FilmeResponse filmeBanco = filmeService.salvarFilme(filme, id);
+            return ResponseEntity.ok(filmeBanco);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-@DeleteMapping("/{id}")
-@Operation(summary = "Método de exclusão de filme", description = "Método responsável por remover (ou desativar) um filme cadastrado")
-    public ResponseEntity<Void> excluir(@PathVariable Long id){
-       var atualizarFilme = filmeService.atualizarStatus(EnumStatusFilme.DESATIVADO,id);
 
-       if(atualizarFilme){
-           return ResponseEntity.ok().build();
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Método de exclusão de filme", description = "Método responsável por remover (ou desativar) um filme cadastrado")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        var atualizarFilme = filmeService.atualizarStatus(EnumStatusFilme.DESATIVADO, id);
 
-    }
+        if (atualizarFilme) {
+            return ResponseEntity.ok().build();
+
+        }
         return ResponseEntity.notFound().build();
     }
 

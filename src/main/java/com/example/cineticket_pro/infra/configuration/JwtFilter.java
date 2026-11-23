@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Component
 
@@ -26,7 +25,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        if(request.getMethod().equals("OPTIONS")
+        if (request.getMethod().equals("OPTIONS")
                 || uri.startsWith("/swagger-ui")
                 || uri.startsWith("/v2/api-docs")
                 || uri.startsWith("/v3/api-docs")
@@ -37,37 +36,37 @@ public class JwtFilter extends OncePerRequestFilter {
                 || uri.startsWith("/senha/redefinir-senha")
                 || (request.getMethod().equals("POST") && uri.equals("/gerentes/admin"))
                 || uri.equals("/error")
-        ){
-            filterChain.doFilter(request,response);
+        ) {
+            filterChain.doFilter(request, response);
             return;
         }
         String authHeader = request.getHeader("Authorization");
 
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
-            String token = authHeader.replace("Bearer ","");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.replace("Bearer ", "");
 
-            try{
+            try {
 
                 var usuarioLogado = tokenService.verificarToken(token);
-               var user = new UsernamePasswordAuthenticationToken(
-                       usuarioLogado ,  null ,usuarioLogado.authorities()
+                var user = new UsernamePasswordAuthenticationToken(
+                        usuarioLogado, null, usuarioLogado.authorities()
 
-               );
+                );
 
                 SecurityContextHolder.getContext().setAuthentication(user);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().println("Token invalido");
                 return;
 
             }
-        }else {
+        } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().println("Token inválido");
             return;
         }
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }

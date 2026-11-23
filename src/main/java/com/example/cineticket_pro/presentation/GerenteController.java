@@ -1,6 +1,9 @@
 package com.example.cineticket_pro.presentation;
 
-import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.application.DTOs.AtualizarStatusGerenteRequest;
+import com.example.cineticket_pro.application.DTOs.CriarAdminRequest;
+import com.example.cineticket_pro.application.DTOs.GerenteRequest;
+import com.example.cineticket_pro.application.DTOs.GerenteResponse;
 import com.example.cineticket_pro.application.service.GerenteService;
 import com.example.cineticket_pro.domain.entities.EnumStatusGerente;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/gerentes")
-@Tag(name="Gerentes",description = "Métodos responsáveis pelo cadastro e consulta de gerentes do sistema")
+@Tag(name = "Gerentes", description = "Métodos responsáveis pelo cadastro e consulta de gerentes do sistema")
 public class GerenteController {
 
 

@@ -27,11 +27,11 @@ public class SenhaController {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // NOVO
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/esqueci-senha")
     @Operation(summary = "Esqueci senha", description = "Método responsável por gerar um token temporário de redefinição de senha e associá-lo ao usuário correspondente ao email informado")
-    public ResponseEntity<?> esqueciSenha(@RequestBody EsqueciSenhaRequest esqueciSenhaRequest){
+    public ResponseEntity<?> esqueciSenha(@RequestBody EsqueciSenhaRequest esqueciSenhaRequest) {
 
         if (!Email.isValidEmail(esqueciSenhaRequest.email())) {
             return ResponseEntity.ok("Se o email existir, um link de redefinição foi gerado");
@@ -39,7 +39,7 @@ public class SenhaController {
         var email = new Email(esqueciSenhaRequest.email()).toString();
         var usuarioBanco = usuarioRepository.findByEmail(email);
 
-        if(usuarioBanco.isEmpty()){
+        if (usuarioBanco.isEmpty()) {
             return ResponseEntity.ok("Se o email existir, um link de redefinição foi gerado");
         }
         var usuarioEncontrado = usuarioBanco.get();
@@ -48,26 +48,26 @@ public class SenhaController {
 
         usuarioRepository.save(usuarioEncontrado);
 
-        System.out.println("Token de redefinição: "+usuarioEncontrado.getResetToken()); // só para testes
+        System.out.println("Token de redefinição: " + usuarioEncontrado.getResetToken()); // só para testes
 
         return ResponseEntity.ok("Se o email existir, um link de redefinição foi gerado");
     }
 
     @PostMapping("/redefinir-senha")
-    @Operation(summary = "Redefinir senha",description = "Método responsável por definir uma nova senha a partir do token de redefinição")
-    public ResponseEntity<?> redefinirSenha(@RequestBody RedefinirSenhaRequest redefinirSenhaRequest){
+    @Operation(summary = "Redefinir senha", description = "Método responsável por definir uma nova senha a partir do token de redefinição")
+    public ResponseEntity<?> redefinirSenha(@RequestBody RedefinirSenhaRequest redefinirSenhaRequest) {
 
         var usuarioBanco = usuarioRepository.findByResetToken(redefinirSenhaRequest.token());
 
-        if(usuarioBanco.isEmpty()){
+        if (usuarioBanco.isEmpty()) {
             return ResponseEntity.status(HttpURLConnection.HTTP_BAD_REQUEST).body("Token inválido");
         }
 
         var usuarioEncontrado = usuarioBanco.get();
 
 
-        if(usuarioEncontrado.getResetTokenExpiracao() == null
-                || usuarioEncontrado.getResetTokenExpiracao().isBefore(LocalDateTime.now())){
+        if (usuarioEncontrado.getResetTokenExpiracao() == null
+                || usuarioEncontrado.getResetTokenExpiracao().isBefore(LocalDateTime.now())) {
             return ResponseEntity.status(HttpURLConnection.HTTP_BAD_REQUEST).body("Token inválido");
         }
 

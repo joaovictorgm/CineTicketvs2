@@ -1,6 +1,8 @@
 package com.example.cineticket_pro.presentation;
 
-import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.application.DTOs.AtualizarStatusIngressoRequest;
+import com.example.cineticket_pro.application.DTOs.IngressoRequest;
+import com.example.cineticket_pro.application.DTOs.IngressoResponse;
 import com.example.cineticket_pro.application.service.IngressoService;
 import com.example.cineticket_pro.domain.entities.EnumStatusIngresso;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,9 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ingressos")
-@Tag(name="Ingressos",description = "Métodos responsáveis pela emissão e consulta de ingressos das sessões")
+@Tag(name = "Ingressos", description = "Métodos responsáveis pela emissão e consulta de ingressos das sessões")
 public class IngressoController {
-
 
 
     @Autowired
@@ -66,33 +67,32 @@ public class IngressoController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Método de atualização de ingresso", description = "Método responsável por atualizar os dados completos de um ingresso já emitido")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody IngressoRequest ingresso){
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody IngressoRequest ingresso) {
 
 
-    try{
+        try {
             IngressoResponse ingressoBanco = ingressoService.salvaringresso(ingresso, id);
             return ResponseEntity.ok(ingressoBanco);
-        }catch (Exception e){
-        return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 
 
     //arrumar o tipo de ingresso
     @DeleteMapping("/{id}/excluir")
     @Operation(summary = "Método de exclusão de ingresso", description = "Método responsável por cancelar (soft delete) um ingresso emitido")
-    public ResponseEntity<Void> excluir(@PathVariable Long id){
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
 
-        var atualizarIngresso = ingressoService.atualizarStatus(EnumStatusIngresso.DISPONIVEL,id);
+        var atualizarIngresso = ingressoService.atualizarStatus(EnumStatusIngresso.DISPONIVEL, id);
 
-        if(atualizarIngresso){
+        if (atualizarIngresso) {
             return ResponseEntity.ok().build();
         }
-        return  ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build();
     }
 
-    }
+}
 
 
 

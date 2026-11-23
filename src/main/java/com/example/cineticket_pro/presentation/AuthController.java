@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 @RestController
 @Tag(description = "Controler de autenticação", name = "Autenticação")
 @RequestMapping("/auth")
@@ -28,7 +27,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(description = "Método de login", summary = "Autenticação de Usuário")
-    public ResponseEntity <?> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 
         var usuario = usuarioService.validarUsuarioAutenticadoeRetornaToken(loginRequest);
         if (usuario != null) return ResponseEntity.ok(usuario);
@@ -38,7 +37,7 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-        }
+    }
 
 
 }
