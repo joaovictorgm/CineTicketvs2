@@ -4,40 +4,49 @@
 import Link from "next/link";
 import { Sessao, SessaoFormProps } from "../../types/sessao";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { atualizarSessao, salvarSessao } from "@/app/services/sessaoService";
+import { buscarListaFilmes } from "@/app/services/filmeService";
+import { mensagemErro } from "@/app/services/erroApi";
 
 export default function SessaoForm({ sessaoExistente }: SessaoFormProps) {
 
-    const router = useRouter();
+const router = useRouter();
 
-    const [sessao, setSessao] = useState<Sessao>(sessaoExistente || new Sessao(null, "", "", "", "EXIBIÇÃO_2D", "ATIVO", "", 0))
+const [sessao, setSessao] = useState<Sessao>(sessaoExistente || new Sessao(null, "", "", "", "EXIBICAO_2D", "ATIVO", "", 0, null))
+
+const [filmes, setFilmes] = useState<Awaited<ReturnType<typeof buscarListaFilmes>>>([]);
+
+useEffect(() => {
+    buscarListaFilmes().then(setFilmes).catch((erro) => alert(mensagemErro(erro)));
+}, []);
 
 
-    const handlerChange = (campo: 'filme' | 'data' | 'sala' | 'status' | 'statusSessao' | 'preco' | 'assentosDisponiveis', valor: string) => {
-        setSessao(valorAnterior =>
-            new Sessao(
-                valorAnterior.id,
-                campo === 'filme' ? valor : valorAnterior.filme,
-                campo === 'data' ? valor : valorAnterior.data,
-                campo === 'sala' ? valor : valorAnterior.sala,
-                valorAnterior.status,
-                valorAnterior.statusSessao,
-                campo === 'preco' ? valor : valorAnterior.preco,
-                campo === 'assentosDisponiveis' ? Number(valor) : valorAnterior.assentosDisponiveis,
+const handlerChange = (campo: 'filme' | 'filmeId' | 'data' | 'sala' | 'status' | 'statusSessao' | 'preco' | 'assentosDisponiveis', valor: string) => {
+    setSessao(valorAnterior =>
+        new Sessao(
+            valorAnterior.id,
+            campo === 'filme' ? valor : valorAnterior.filme,
+            campo === 'data' ? valor : valorAnterior.data,
+            campo === 'sala' ? valor : valorAnterior.sala,
+            valorAnterior.status,
+            valorAnterior.statusSessao,
+            campo === 'preco' ? valor : valorAnterior.preco,
+            campo === 'assentosDisponiveis' ? Number(valor) : valorAnterior.assentosDisponiveis,
+            campo === 'filmeId' ? Number(valor) : valorAnterior.filmeId,
 
-            )
         )
-    }
+    )
+}
 
-    const handlerSalvar = async (formData: FormData) => {
-
+const handlerSalvar = async (formData: FormData) => {
+    try {
         if (sessaoExistente) {
-          var dadosRetorno = await atualizarSessao(sessao);
+            var dadosRetorno = await atualizarSessao(sessao);
 
             if (dadosRetorno) {
                 alert("Sessão foi salva com sucesso!");
-                  router.push("/sessoes")
+                    router.push("/sessoes")
             } else {
                 alert("Erro ao atualizar filme");
                 return;
@@ -45,70 +54,72 @@ export default function SessaoForm({ sessaoExistente }: SessaoFormProps) {
 
 
         } else {
-           
-            if (sessaoExistente) {
-                var dadosRetorno = await salvarSessao(sessao);
-                if(dadosRetorno){
-                alert("Sessao foi salva com sucesso!");
-                }
-             
-                  router.push("/sessoes")
+
+            var dadosRetorno = await salvarSessao(sessao);
+
+            if (dadosRetorno) {
+                alert("Sessão foi salva com sucesso!");
+                router.push("/sessoes");
             } else {
                 alert("Erro ao salvar sessão");
-
                 return;
             }
 
-            router.push("/sessoes")
-
         }
-
+    } catch (erro) {
+        alert(mensagemErro(erro));
     }
 
-    return (
-        <form action={handlerSalvar} className="bg-white rounded-lg border border-blue-100">
-            <div className="grid grid-cols-2 gap-x-6 gap-y-4 p-6">
-                <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                        Filme
-                    </label>
-                    <input name="Filme" value={sessao.filme} onChange={(e) => handlerChange('filme', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                    </input>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                        Data
-                    </label>
-                    <input name="Data" value={sessao.data} onChange={(e) => handlerChange('data', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                    </input>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                        Sala
-                    </label>
-                    <input name="Sala" value={sessao.sala} onChange={(e) => handlerChange('sala', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                    </input>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                        Preço
-                    </label>
-                    <input name="preco" value={sessao.preco} onChange={(e) => handlerChange('preco', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                    </input>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
-                        Assentos disponiveis
-                    </label>
-                    <input name="assdisponiveis" value={sessao.assentosDisponiveis} onChange={(e) => handlerChange('assentosDisponiveis', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                    </input>
-                </div>
-            </div>
-            <div className="flex justify-end gap-3 border-t border-blue-100 px-6 py-4">
-                <Link href="/sessoes" className="px-4 py-2 text-sm rounded text-blue-700 border border-blue-200 hover:bg-blue-50 transition-colors">Cancelar</Link>
-                <button type="submit" className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded hover:bg-blue-700 transition-colors">Salvar</button>
-            </div>
-        </form>
+}
 
-    );
+return (
+    <form action={handlerSalvar} className="bg-white rounded-lg border border-blue-100">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4 p-6">
+            <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
+                    Filme
+                </label>
+                <select name="Filme" value={sessao.filmeId ?? ""} onChange={(e) => handlerChange('filmeId', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <option value="">Selecione um filme</option>
+                    {filmes.map((f) => (
+                        <option key={f.id} value={f.id ?? ""}>{f.titulo}</option>
+                    ))}
+                </select>
+            </div>
+            <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
+                    Data
+                </label>
+                <input name="Data" value={sessao.data} onChange={(e) => handlerChange('data', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                </input>
+            </div>
+            <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
+                    Sala
+                </label>
+                <input name="Sala" value={sessao.sala} onChange={(e) => handlerChange('sala', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                </input>
+            </div>
+            <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
+                    Preço
+                </label>
+                <input name="preco" value={sessao.preco} onChange={(e) => handlerChange('preco', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                </input>
+            </div>
+            <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-blue-700 uppercase tracking-wide">
+                    Assentos disponiveis
+                </label>
+                <input name="assdisponiveis" value={sessao.assentosDisponiveis} onChange={(e) => handlerChange('assentosDisponiveis', e.target.value)} className="border border-blue-200 rounded px-3 py-2 text-sm text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                </input>
+            </div>
+        </div>
+        <div className="flex justify-end gap-3 border-t border-blue-100 px-6 py-4">
+            <Link href="/sessoes" className="px-4 py-2 text-sm rounded text-blue-700 border border-blue-200 hover:bg-blue-50 transition-colors">Cancelar</Link>
+            <button type="submit" className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded hover:bg-blue-700 transition-colors">Salvar</button>
+        </div>
+    </form>
+
+);
 }

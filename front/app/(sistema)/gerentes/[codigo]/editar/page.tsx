@@ -5,52 +5,51 @@ import GerenteForm from "../../components/GerenteForm";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Gerente } from "@/app/(sistema)/types/gerente";
-import axios from "axios";
 import { consultaGerentePorId } from "@/app/services/gerenteService";
 
 export default function EditarGerente() {
 
-    const parametro = useParams();
+const parametro = useParams();
 
 
-    const codigo = Number(parametro.codigo);
-    const [gerente, setGerente] = useState<Gerente | null>(null)
-    const router = useRouter();
+const codigo = Number(parametro.codigo);
+const [gerente, setGerente] = useState<Gerente | null>(null)
+const router = useRouter();
 
-    useEffect(() => {
-        buscarDados();
-    }, []);
+useEffect(() => {
+    buscarDados();
+}, []);
 
-    const buscarDados = async () => {
-        
-        const valorGerenteBack = await consultaGerentePorId(codigo);
-        if(valorGerenteBack){
-            setGerente(valorGerenteBack);
-        }else{
-            router.push("/gerentes")
-        }
-        }
+const buscarDados = async () => {
     
-    if (!gerente) return (<div className="p-4">Carregando Dados</div>)
-    return (
+    const valorGerenteBack = await consultaGerentePorId(codigo);
+    if(valorGerenteBack){
+        setGerente(valorGerenteBack);
+    }else{
+        router.push("/gerentes")
+    }
+    }
+
+if (!gerente) return (<div className="p-4">Carregando Dados</div>)
+return (
+    <div>
         <div>
             <div>
-                <div>
-                    <Link href="/gerentes" className="text-sm text-blue-600 hover:underline">
-                        ← Voltar para listagem
-                    </Link>
-                    <div className="flex items-center justify-between mt-3 mb-6 border-b border-blue-100 pb-4">
-                        <h1 className="text-xl font-semibold text-blue-900">
-                            <span>Editar Gerente {codigo}</span>
-                        </h1>
-                        <p className="text-sm text-blue-500">Prencha os dados para  editar um  gerente</p>
-                    </div>
+                <Link href="/gerentes" className="text-sm text-blue-600 hover:underline">
+                    ← Voltar para listagem
+                </Link>
+                <div className="flex items-center justify-between mt-3 mb-6 border-b border-blue-100 pb-4">
+                    <h1 className="text-xl font-semibold text-blue-900">
+                        <span>Editar Gerente {codigo}</span>
+                    </h1>
+                    <p className="text-sm text-blue-500">Prencha os dados para  editar um  gerente</p>
+                </div>
 
-                </div>
-                <div>
-                    <GerenteForm gerenteExistente={gerente} />
-                </div>
+            </div>
+            <div>
+                <GerenteForm gerenteExistente={gerente} />
             </div>
         </div>
-    )
+    </div>
+)
 }

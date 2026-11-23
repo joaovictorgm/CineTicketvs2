@@ -115,15 +115,6 @@ public class SessaoController {
         return ResponseEntity.notFound().build();
     }
 
-    /*@PatchMapping("/{id}/juntarfilmesessao")
-    public ResponseEntity<?> juntarfilmesessao(@PathVariable Long id, @RequestBody JuntarFilmeSessaoRequest juntarFilmeSessaoRequest){
-        boolean retornoFilmeSessao = sessaoService.juntarSessaoFilme(id, juntarFilmeSessaoRequest);
 
-        if(retornoFilmeSessao){
-            return ResponseEntity.ok().build();
-        }
-
-        return  ResponseEntity.notFound().build();
-    }*/
 
 }

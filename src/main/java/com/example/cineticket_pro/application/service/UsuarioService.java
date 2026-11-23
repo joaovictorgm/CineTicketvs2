@@ -98,6 +98,8 @@ public class UsuarioService {
                 throw new IllegalArgumentException("Email já cadastrado");
             }
 
+
+
             Usuario usuarioBanco = new Usuario(usuario);
             usuarioBanco.setEmpresa(empresaRepository.getReferenceById(logado.empresa_id()));  // empresa do token
             usuarioBanco.setRole(gerente ? "ROLE_ADMIN" : "ROLE_USER");                        // gerente→ADMIN, admin→USER
@@ -113,14 +115,23 @@ public class UsuarioService {
                 throw new AccessDeniedException("Voce só pode alterar o seu próprio cadastro");
             }
 
+
+
             Usuario usuarioBanco = usuarioRepository.findByIdAndEmpresaId(id, logado.empresa_id()).orElse(null);
             if (usuarioBanco != null) {
                 usuarioBanco.setNome(usuario.nome());
                 usuarioBanco.setEmail(usuario.email());
-                usuarioBanco.setSenha(passwordEncoder.encode(usuario.senha()));
+                if (usuario.senha() != null && !usuario.senha().isBlank()) {
+                    usuarioBanco.setSenha(passwordEncoder.encode(usuario.senha()));
+                }
+                if (usuario.tipoCliente() != null && (gerente || admin)) {
+                    usuarioBanco.setTipoCliente(usuario.tipoCliente());
+                }
+
                 usuarioRepository.save(usuarioBanco);
                 return new UsuarioResponse(usuarioBanco);
             }
+
         }
 
         return null;

@@ -9,50 +9,50 @@ import { consultaSessaoPorId } from "@/app/services/sessaoService";
 
 export default function EditarSessao() {
 
-    const parametro = useParams();
+const parametro = useParams();
 
-    const codigo = Number(parametro.codigo);
+const codigo = Number(parametro.codigo);
 
-    const [sessao, setSessao] = useState<Sessao | null>(null)
+const [sessao, setSessao] = useState<Sessao | null>(null)
 
-    const router = useRouter();
+const router = useRouter();
 
-    useEffect(() => {
-        buscarDados();
-    }, []);
+useEffect(() => {
+    buscarDados();
+}, []);
 
-    const buscarDados = async () => {
+const buscarDados = async () => {
 
-        const valorSessaoBack = await consultaSessaoPorId( codigo)
+    const valorSessaoBack = await consultaSessaoPorId( codigo)
 
-        if (valorSessaoBack) {
-            setSessao(valorSessaoBack);
-        } else {
-            router.push("/sessoes")
-        }
-
+    if (valorSessaoBack) {
+        setSessao(valorSessaoBack);
+    } else {
+        router.push("/sessoes")
     }
 
-    if (!sessao) return (<div className="p-5">Carregando Dados</div>)
-    return (
+}
+
+if (!sessao) return (<div className="p-5">Carregando Dados</div>)
+return (
+    <div>
         <div>
             <div>
-                <div>
-                    <Link href="/sessoes" className="text-sm text-blue-600 hover:underline">
-                        ← Voltar para listagem
-                    </Link>
-                    <div className="flex items-center justify-between mt-3 mb-6 border-b border-blue-100 pb-4">
-                        <h1 className="text-xl font-semibold text-blue-900">
-                            <span>Editar Sessão {codigo}</span>
-                        </h1>
-                        <p className="text-sm text-blue-500">Prencha os dados para registrar uma sessão</p>
-                    </div>
+                <Link href="/sessoes" className="text-sm text-blue-600 hover:underline">
+                    ← Voltar para listagem
+                </Link>
+                <div className="flex items-center justify-between mt-3 mb-6 border-b border-blue-100 pb-4">
+                    <h1 className="text-xl font-semibold text-blue-900">
+                        <span>Editar Sessão {codigo}</span>
+                    </h1>
+                    <p className="text-sm text-blue-500">Prencha os dados para registrar uma sessão</p>
+                </div>
 
-                </div>
-                <div>
-                    <SessaoForm sessaoExistente={sessao} />
-                </div>
+            </div>
+            <div>
+                <SessaoForm sessaoExistente={sessao} />
             </div>
         </div>
-    )
+    </div>
+)
 }

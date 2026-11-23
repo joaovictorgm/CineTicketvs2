@@ -14,6 +14,8 @@ public interface IngressoRepository extends JpaRepository<Ingresso, Long> {
 
     Optional<Ingresso> findByIdAndSessaoFilmeEmpresaId(Long id, Long empresaId);
 
+    List<Ingresso> findAllBySessaoFilmeEmpresaIdAndUsuarioId(Long empresaId, Long usuarioId);
+
 
 
 

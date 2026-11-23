@@ -2,122 +2,117 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Gerente } from "../types/gerente";
 import { atualizarStatusGerente, buscarListaGerente, deletarGerente } from "@/app/services/gerenteService";
-import { Usuario } from "../types/usuario";
+
 
 
 export default function Gerentes() {
 
-    const [gerentes, setGerente] = useState<Gerente[]>([]);
+const [gerentes, setGerente] = useState<Gerente[]>([]);
 
-    useEffect(() => {
-        carregarDados();
-    }, [])
+useEffect(() => {
+    carregarDados();
+}, [])
 
-    const carregarDados = async () => {
-        try {
-            
-            const dados = await buscarListaGerente();
-            setGerente(dados);
-        } catch (error) {
-            alert("Erro ao carregar dados")
-        }
+const carregarDados = async () => {
+    try {
+        
+        const dados = await buscarListaGerente();
+        setGerente(dados);
+    } catch (error) {
+        alert("Erro ao carregar dados")
+    }
+}
+
+const handlerDeletarGerente = async (gerente: Gerente) => {
+    var dadosRetorno = await deletarGerente(gerente.id || 0);
+
+    if (dadosRetorno == 200) {
+        alert("Excluido como sucesso!");
+    } else {
+        alert("Erro ao excluir");
+        return;
     }
 
-    const handlerDeletarGerente = async (gerente: Gerente) => {
-        var dadosRetorno = await deletarGerente(gerente.id || 0);
+    carregarDados();
+}
 
-        if (dadosRetorno == 200) {
-            alert("Excluido como sucesso!");
-        } else {
-            alert("Erro ao excluir");
-            return;
-        }
+const handlerAlterarStatusGerente = async (gerente: Gerente) => {
 
-        carregarDados();
+    await atualizarStatusGerente(gerente);
+    carregarDados();
+
     }
 
-    const handlerAlterarStatusGerente = async (gerente: Gerente) => {
 
-        await atualizarStatusGerente(gerente);
-        carregarDados();
+return (
+    <div className="bg-blue-50 p-8">
+        <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold text-blue-900">
+                Gestão de gerentes
+            </h1>
+            <Link href="/gerentes/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Cadastrar novo gerente</Link>
+        </div>
 
-        }
-
-
-    return (
-        <div className="bg-blue-50 p-8">
-            <div className="flex items-center justify-between mb-6">
-                <h1 className="text-2xl font-bold text-blue-900">
-                    Gestão de gerentes
-                </h1>
-                <Link href="/gerentes/novo" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Cadastrar novo gerente</Link>
-            </div>
-
-            <div>
-                <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                    <table className="w-full text-left">
-                        <thead className="bg-blue-600 text-white">
-                            <tr>
-                                <th className="px-4 py-3 font-semibold">Codigo</th>
-                                <th className="px-4 py-3 font-semibold">Nome</th>
-                                <th className="px-4 py-3 font-semibold">Email</th>
-                                <th className="px-4 py-3 font-semibold">Senha</th>
-                                <th className="px-4 py-3 font-semibold">Status</th>
-                                <th className="px-4 py-3 font-semibold">Ações</th>
+        <div>
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                <table className="w-full text-left">
+                    <thead className="bg-blue-600 text-white">
+                        <tr>
+                            <th className="px-4 py-3 font-semibold">Codigo</th>
+                            <th className="px-4 py-3 font-semibold">Nome</th>
+                            <th className="px-4 py-3 font-semibold">Email</th>
+                            <th className="px-4 py-3 font-semibold">Status</th>
+                            <th className="px-4 py-3 font-semibold">Ações</th>
 
 
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-blue-100">
+                        {gerentes.map((gerente) => (
+                            <tr key={gerente.id} className="hover:bg-blue-50">
+                                <td className="px-4 py-3 text-blue-900">
+                                    {gerente.id}
+                                </td>
+                                <td className="px-4 py-3 text-blue-900">
+                                    {gerente.nome}
+                                </td>
+                                <td className="px-4 py-3 text-blue-900">
+                                    {gerente.email}
+                                </td>
+
+                                <td className="px-4 py-3 text-blue-900">
+                                    {gerente.status}
+                                </td>
+                                <td className="px-4 py-3 text-blue-900">
+                                    <div className="flex flex-col gap-1 items-start">
+                                        <Link href={`/gerentes/${gerente.id}/editar`}>EDITAR</Link>
+                                        <button onClick={() => handlerDeletarGerente(gerente)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
+                                            DELETAR
+                                        </button>
+                                        <button onClick={() => handlerAlterarStatusGerente(gerente)} className={`font-medium transition-colors text-left ${gerente.status === 'EXCLUIDO'
+                                                ? 'text-orange-600 hover:text-orange-800'
+                                                : 'text-green-600 hover:text-green-800'
+                                            }`}
+                                        >
+                                            {gerente.status}</button>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody className="divide-y divide-blue-100">
-                            {gerentes.map((gerente) => (
-                                <tr key={gerente.id} className="hover:bg-blue-50">
-                                    <td className="px-4 py-3 text-blue-900">
-                                        {gerente.id}
-                                    </td>
-                                    <td className="px-4 py-3 text-blue-900">
-                                        {gerente.nome}
-                                    </td>
-                                    <td className="px-4 py-3 text-blue-900">
-                                        {gerente.email}
-                                    </td>
-                                    <td className="px-4 py-3 text-blue-900">
-                                        {gerente.senha}
-                                    </td>
-
-                                    <td className="px-4 py-3 text-blue-900">
-                                        {gerente.status}
-                                    </td>
-                                    <td className="px-4 py-3 text-blue-900">
-                                        <div className="flex flex-col gap-1 items-start">
-                                            <Link href={`/gerentes/${gerente.id}/editar`}>EDITAR</Link>
-                                            <button onClick={() => handlerDeletarGerente(gerente)} className="text-red-600 hover:text-red-800 font-medium transition-colors text-left">
-                                                DELETAR
-                                            </button>
-                                            <button onClick={() => handlerAlterarStatusGerente(gerente)} className={`font-medium transition-colors text-left ${gerente.status === 'EXCLUIDO'
-                                                    ? 'text-orange-600 hover:text-orange-800'
-                                                    : 'text-green-600 hover:text-green-800'
-                                                }`}
-                                            >
-                                                {gerente.status}</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                            {gerentes.length === 0 && (
-                                <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text">
-                                        Nenhum gerente encontrado
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                        ))}
+                        {gerentes.length === 0 && (
+                            <tr>
+                                <td colSpan={6} className="px-6 py-12 text-center text">
+                                    Nenhum gerente encontrado
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
+        </div>
 
 
-        </div>)
+    </div>)
 }

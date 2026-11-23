@@ -6,6 +6,7 @@ public record UsuarioRequest(
                              String cpf,
                              String senha,
                              String telefone,
-                             EnumStatusUsuario status
+                             EnumStatusUsuario status,
+                             EnumTipoCliente tipoCliente
                             ) {
 }

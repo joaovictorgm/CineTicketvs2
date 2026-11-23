@@ -1,18 +1,20 @@
 export class Usuario{
-    static status: string;
-    constructor(
-       public id: number| null,
-       public nome:string,
-       public telefone:string,
-       public email: string,
-       public senha: string,
-       public status: string,
-       public role?:string,
+static status: string;
+constructor(
+    public id: number| null,
+    public nome:string,
+    public telefone:string,
+    public email: string,
+    public senha: string,
+    public status: string,
+    public role?:string,
+    public tipoCliente?:string,
+    public statusUsuario?:string,
 
 
-    ){}
+){}
 }
 
 export interface UsuarioFormProps{
-    usuarioExistente?:Usuario
+usuarioExistente?:Usuario
 }

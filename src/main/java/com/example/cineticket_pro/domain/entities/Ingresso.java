@@ -38,6 +38,10 @@ public class Ingresso {
     @JoinColumn(name = "filme_id", referencedColumnName = "id", nullable = false)
     private Filme filme;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)
+    private Usuario usuario;
+
 
 
     public Ingresso(IngressoRequest ingresso) {

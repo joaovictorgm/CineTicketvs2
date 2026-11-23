@@ -53,15 +53,14 @@ public class IngressoController {
 
     @PatchMapping("/{id}/status")
     @Operation(summary = "Método de atualização de status do ingresso", description = "Método responsável por atualizar apenas o status de um ingresso já emitido")
-    public ResponseEntity<Void> atualizarStatus(@PathVariable Long id) {
-        var atualizarIngresso = ingressoService.atualizarStatusTipo(EnumTipoIngresso.INTEIRA,id);
+    public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusIngressoRequest request) {
+        var atualizarIngresso = ingressoService.atualizarStatus(request.statusIngresso(), id);
 
-        if(atualizarIngresso){
+        if (atualizarIngresso) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
-        }
-
+    }
 
 
     @PutMapping("/{id}")

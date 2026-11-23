@@ -8,6 +8,7 @@ public record IngressoRequest(
         EnumTipoIngresso statusTipo,
         EnumStatusIngresso statusIngresso,
         String dataCompra,
-        Long sessaoId
+        Long sessaoId,
+        Long usuarioId
 ) {
 }

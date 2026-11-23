@@ -2,11 +2,13 @@ package com.example.cineticket_pro.application.DTOs;
 
 import com.example.cineticket_pro.domain.entities.Sessao;
 
-public record SessaoResponse(Long id,  String data, String sala, EnumTipoExibicao status, EnumStatusSessao statusSessao, String preco, int assentosDisponiveis) {
+public record SessaoResponse(Long id,String filme,Long filmeid,   String data, String sala, EnumTipoExibicao status, EnumStatusSessao statusSessao, String preco, int assentosDisponiveis) {
 
     public SessaoResponse(Sessao sessaoEntidade){
         this (
                 sessaoEntidade.getId(),
+                sessaoEntidade.getFilme().getTitulo(),
+                sessaoEntidade.getFilme().getId(),
                 sessaoEntidade.getData(),
                 sessaoEntidade.getSala(),
                 sessaoEntidade.getStatus(),

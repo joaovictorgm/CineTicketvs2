@@ -42,6 +42,8 @@ public class Usuario implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empresa_id", referencedColumnName = "id")
     public Empresa empresa;
+    @Enumerated(EnumType.STRING)
+    public EnumTipoCliente tipoCliente = EnumTipoCliente.COMUM;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tb_codigosessao",
@@ -51,9 +53,6 @@ public class Usuario implements UserDetails {
 
     private Set<Sessao> sessoes = new HashSet<>();
 
-    public void entrarsessao(Sessao sessao){
-        this.sessoes.add(sessao);
-    }
 
     public void setEmail(String email) {
         this.email = new Email(email).toString();
@@ -84,6 +83,7 @@ public class Usuario implements UserDetails {
         this.setTelefone(usuario.telefone());
         this.setStatus(usuario.status() != null ? usuario.status() : EnumStatusUsuario.ATIVO);
         this.setRole("ROLE_USER");
+        this.setTipoCliente(usuario.tipoCliente() != null ? usuario.tipoCliente() : EnumTipoCliente.COMUM);
     }
 
 

@@ -11,14 +11,7 @@ import java.util.Optional;
 @Repository
 public interface GerenteRepository extends JpaRepository<Gerente,Long> {
 
-    Optional<List<Gerente>> findByStatusNot(EnumStatusGerente statusGerente);
-
-    List<Gerente> getUsuarioByEmpresa_id(Long empresa);
-
-    Optional<Gerente> findByIdAndEmpresaId(Long id, Long empresaId);
-
     List<Gerente> findAllByEmpresaId(Long empresaId);
 
-    boolean existsGerenteByEmailAndSenha(String email, String senha);
     Optional<Gerente> findByEmail(String email);
 }

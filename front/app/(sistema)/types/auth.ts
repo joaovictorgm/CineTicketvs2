@@ -1,11 +1,11 @@
 import { Usuario } from "./usuario"
 
 export interface LoginResponse{
-    token:string
+token:string
 }
 
 export interface AuthState{
-    usuario: Usuario | null
-    token : string
-    
+usuario: Usuario | null
+token : string
+
 }
