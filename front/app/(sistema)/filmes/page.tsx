@@ -9,6 +9,9 @@ import { mensagemErro } from "@/app/services/erroApi";
 
 
 export default function Filmes() {
+    const usuario= useSelector((state:RootState)=> state.auth.usuario);
+    const gerente = usuario?:role =="ROLE_GERENTE";
+    const admin = usuario?:role == "ROLE_ADMIN";
 const [filmes, setFilme] = useState<Filme[]>([]);
 
 useEffect(() => {
