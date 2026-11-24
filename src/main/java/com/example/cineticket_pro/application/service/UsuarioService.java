@@ -14,7 +14,7 @@ import com.example.cineticket_pro.domain.valueobject.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -70,7 +70,7 @@ public class UsuarioService {
         return usuarioAutenticado.usuarioLogado();
     }
 
-    @Transactional
+
     public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) throws AccessDeniedException {
 
         var logado = usuarioAutenticado.usuarioLogado();
@@ -140,7 +140,7 @@ public class UsuarioService {
         return new UsuarioResponse(usuario);
     }
 
-    @Transactional
+
     public boolean atualizarStatus(EnumStatusUsuario status, Long id) {
         Usuario usuarioBanco = usuarioRepository
                 .findByIdAndEmpresaId(id, usuarioAutenticado.empresaId())
@@ -153,7 +153,7 @@ public class UsuarioService {
         return false;
     }
 
-    @Transactional
+
     public boolean entrarsessao(Long id, EntrarSessaoRequest entrarSessaoRequest) {
         var logado = usuarioAutenticado.usuarioLogado();
         boolean gerente = usuarioAutenticado.Gerente();
@@ -169,10 +169,10 @@ public class UsuarioService {
                 .findByIdAndFilmeEmpresaId(entrarSessaoRequest.sessao_id(), logado.empresa_id()).orElse(null);
 
         if (usuarioBanco != null && sessaoBanco != null) {
-            boolean jaEstaNaSessao = usuarioBanco.getSessoes().stream()
+            boolean estaNaSessao = usuarioBanco.getSessoes().stream()
                     .anyMatch(s -> s.getId().equals(sessaoBanco.getId()));
 
-            if (!jaEstaNaSessao) {
+            if (estaNaSessao) {
                 usuarioBanco.getSessoes().add(sessaoBanco);
                 usuarioRepository.save(usuarioBanco);
             }
@@ -185,13 +185,13 @@ public class UsuarioService {
         var logado = usuarioAutenticado.usuarioLogado();
 
         if (usuarioAutenticado.Gerente()) {
-            var g = gerenteRepository.findById(logado.id())
+            var gerente = gerenteRepository.findById(logado.id())
                     .orElseThrow(() -> new RuntimeException("Gerente não encontrado"));
-            return new PerfilResponse(g.getId(), g.getNome(), g.getEmail(), "ROLE_GERENTE");
+            return new PerfilResponse(gerente.getId(), gerente.getNome(), gerente.getEmail(), "ROLE_GERENTE");
         }
 
-        var u = usuarioRepository.findById(logado.id())
+        var usuario = usuarioRepository.findById(logado.id())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        return new PerfilResponse(u.getId(), u.getNome(), u.getEmail(), u.getRole());
+        return new PerfilResponse(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getRole());
     }
 }
