@@ -1,0 +1,88 @@
+Empresa A
+
+
+{
+  "nome": "Maria Gerente",
+  "email": "maria@cine.com",
+  "senha": "123456",
+  "statusg": "ATIVO",
+  "secretKey": "admin",
+  "razaoSocial": "Cinemark Brasil",
+  "cnpj": "00779721000141",
+  "nomeFantasia": "Cine Teste A"
+}
+
+{
+  "nome": "Ana Funcionaria",
+  "email": "ana@cine.com",
+  "cpf": "12345678901",
+  "senha": "123456",
+  "telefone": "48999990001",
+  "status": "ATIVO"
+}
+
+
+{
+  "nome": "Carlos Cliente",
+  "email": "carlos@cine.com",
+  "cpf": "98765432100",
+  "senha": "123456",
+  "telefone": "48999990002",
+  "status": "ATIVO",
+  "tipoCliente": "COMUM"
+}
+
+{
+  "nome": "Bia Estudante",
+  "email": "bia@cine.com",
+  "cpf": "55566677788",
+  "senha": "123456",
+  "telefone": "48999990003",
+  "status": "ATIVO",
+  "tipoCliente": "ESTUDANTE"
+}
+
+Empresa B
+
+
+{
+  "nome": "Paulo Gerente B",
+  "email": "paulo@ucicinemas.com",
+  "senha": "123456",
+  "statusg": "ATIVO",
+  "secretKey": "admin",
+  "razaoSocial": "United Cinemas International Brasil",
+  "cnpj": "01289530000164",
+  "nomeFantasia": "Cine Teste B"
+}
+
+
+{
+  "nome": "Bruno Funcionario",
+  "email": "bruno@ucicinemas.com",
+  "cpf": "22233344455",
+  "senha": "123456",
+  "telefone": "48999990004",
+  "status": "ATIVO"
+}
+
+{
+  "nome": "Diego Cliente",
+  "email": "diego@ucicinemas.com",
+  "cpf": "66677788899",
+  "senha": "123456",
+  "telefone": "48999990005",
+  "status": "ATIVO",
+  "tipoCliente": "COMUM"
+}
+
+{
+  "nome": "Elisa Estudante",
+  "email": "elisa@ucicinemas.com",
+  "cpf": "77788899900",
+  "senha": "123456",
+  "telefone": "48999990006",
+  "status": "ATIVO",
+  "tipoCliente": "ESTUDANTE"
+}
+

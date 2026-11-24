@@ -79,7 +79,7 @@ public class IngressoController {
     }
 
 
-    //arrumar o tipo de ingresso
+
     @DeleteMapping("/{id}/excluir")
     @Operation(summary = "Método de exclusão de ingresso", description = "Método responsável por cancelar (soft delete) um ingresso emitido")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
