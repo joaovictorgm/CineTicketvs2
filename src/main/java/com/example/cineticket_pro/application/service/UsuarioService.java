@@ -1,7 +1,9 @@
 package com.example.cineticket_pro.application.service;
 
-
 import com.example.cineticket_pro.application.DTOs.*;
+import com.example.cineticket_pro.application.port.SenhaPort;
+import com.example.cineticket_pro.application.port.UsuarioAutenticadoPort;
+import com.example.cineticket_pro.domain.entities.EnumStatusUsuario;
 import com.example.cineticket_pro.domain.entities.Sessao;
 import com.example.cineticket_pro.domain.entities.Usuario;
 import com.example.cineticket_pro.domain.repository.EmpresaRepository;
@@ -10,28 +12,23 @@ import com.example.cineticket_pro.domain.repository.SessaoRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
 import com.example.cineticket_pro.domain.valueobject.Email;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import com.example.cineticket_pro.domain.entities.EnumStatusUsuario;
-
-
-
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
-
-
 
 @Service
 public class UsuarioService {
-
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private SenhaPort senhaPort;
+
+    @Autowired
+    private UsuarioAutenticadoPort usuarioAutenticado;
 
     @Autowired
     private GerenteRepository gerenteRepository;
@@ -40,52 +37,47 @@ public class UsuarioService {
     private SessaoRepository sessaoRepository;
 
     @Autowired
-    TokenService tokenService;
+    private TokenService tokenService;
 
-    @Value("${spring.secretkey}")
-    private String secret;
     @Autowired
     private EmpresaRepository empresaRepository;
 
-
     public LoginResponse validarUsuarioAutenticadoeRetornaToken(LoginRequest request) {
+        String email = new Email(request.email()).toString();
+        var usuario = usuarioRepository.findByEmail(email).orElse(null);
 
-          String email = new Email(request.email()).toString();
-          var usuario = usuarioRepository.findByEmail(email).orElse(null);
-        if (usuario != null && passwordEncoder.matches(request.senha(),usuario.getSenha())) {
+        if (usuario != null
+                && usuario.getStatus() != EnumStatusUsuario.EXCLUIDO
+                && senhaPort.conferir(request.senha(), usuario.getSenha())) {
 
             var token = tokenService.gerarToken(request);
             return new LoginResponse(token);
         }
-
         return null;
     }
 
     public List<UsuarioResponse> listarTodosUsuariosTable() {
+        Long empresaId = usuarioAutenticado.empresaId();
 
-        var usuarioLogado = getUsuarioLogado();
-
-        if (usuarioLogado.empresa_id() == null) {
-            return usuarioRepository.findAll().stream().map(UsuarioResponse::new).toList();
+        if (empresaId == null) {
+            throw new AccessDeniedException("Usuário sem empresa associada");
         }
-        return usuarioRepository.getUsuarioByEmpresa_id(usuarioLogado.empresa_id()).stream().map(UsuarioResponse::new).toList();
+        return usuarioRepository.getUsuarioByEmpresa_id(empresaId)
+                .stream().map(UsuarioResponse::new).toList();
     }
-
-
-
 
     public UsuarioLogado getUsuarioLogado() {
-        return (UsuarioLogado) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
+        return usuarioAutenticado.usuarioLogado();
     }
 
+    @Transactional
     public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) throws AccessDeniedException {
 
-        var logado = getUsuarioLogado();
-        boolean gerente = logado.authorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_GERENTE"));
-        boolean admin   = logado.authorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        var logado = usuarioAutenticado.usuarioLogado();
+        boolean gerente = usuarioAutenticado.Gerente();
+        boolean admin = usuarioAutenticado.Admin();
 
-        //Novo Usuario
+        // Novo usuário
         if (id == 0L) {
             if (!gerente && !admin) {
                 throw new AccessDeniedException("Sem permissão para cadastrar usuário");
@@ -97,97 +89,102 @@ public class UsuarioService {
                 throw new IllegalArgumentException("Email já cadastrado");
             }
 
-
-
             Usuario usuarioBanco = new Usuario(usuario);
-            usuarioBanco.setEmpresa(empresaRepository.getReferenceById(logado.empresa_id()));  // empresa do token
-            usuarioBanco.setRole(gerente ? "ROLE_ADMIN" : "ROLE_USER");                        // gerente→ADMIN, admin→USER
-            usuarioBanco.setStatus(usuario.status() != null ? usuario.status() : EnumStatusUsuario.ATIVO);
-            usuarioBanco.setSenha(passwordEncoder.encode(usuario.senha()));
+            usuarioBanco.setEmpresa(empresaRepository.getReferenceById(logado.empresa_id())); // empresa do token
+            usuarioBanco.setRole(gerente ? "ROLE_ADMIN" : "ROLE_USER");                       // gerente→ADMIN, admin→USER
+            usuarioBanco.setSenha(senhaPort.codificar(usuario.senha()));
             usuarioRepository.save(usuarioBanco);
 
             return new UsuarioResponse(usuarioBanco);
+        }
 
-        } else {
-            //Usuario existente; só o dono, um ADMIN ou o GERENTE altera
-            if (!gerente && !admin && !logado.id().equals(id)) {
-                throw new AccessDeniedException("Voce só pode alterar o seu próprio cadastro");
+        // Usuário existente: só o dono, um ADMIN ou o GERENTE altera
+        if (!gerente && !admin && !logado.id().equals(id)) {
+            throw new AccessDeniedException("Você só pode alterar o seu próprio cadastro");
+        }
+
+        Usuario usuarioBanco = usuarioRepository.findByIdAndEmpresaId(id, logado.empresa_id()).orElse(null);
+        if (usuarioBanco != null) {
+            usuarioBanco.setNome(usuario.nome());
+
+            String novoEmail = new Email(usuario.email()).toString();
+            if (!novoEmail.equals(usuarioBanco.getEmail())) {
+                if (usuarioRepository.findByEmail(novoEmail).isPresent()
+                        || gerenteRepository.findByEmail(novoEmail).isPresent()) {
+                    throw new IllegalArgumentException("Email já cadastrado");
+                }
+                usuarioBanco.setEmail(novoEmail);
             }
 
-
-
-            Usuario usuarioBanco = usuarioRepository.findByIdAndEmpresaId(id, logado.empresa_id()).orElse(null);
-            if (usuarioBanco != null) {
-                usuarioBanco.setNome(usuario.nome());
-                usuarioBanco.setEmail(usuario.email());
-                if (usuario.senha() != null && !usuario.senha().isBlank()) {
-                    usuarioBanco.setSenha(passwordEncoder.encode(usuario.senha()));
-                }
-                if (usuario.tipoCliente() != null && (gerente || admin)) {
-                    usuarioBanco.setTipoCliente(usuario.tipoCliente());
-                }
-
-                usuarioRepository.save(usuarioBanco);
-                return new UsuarioResponse(usuarioBanco);
+            if (usuario.senha() != null && !usuario.senha().isBlank()) {
+                usuarioBanco.setSenha(senhaPort.codificar(usuario.senha()));
+            }
+            if (usuario.tipoCliente() != null && (gerente || admin)) {
+                usuarioBanco.setTipoCliente(usuario.tipoCliente());
             }
 
+            usuarioRepository.save(usuarioBanco);
+            return new UsuarioResponse(usuarioBanco);
         }
 
         return null;
     }
 
     public UsuarioResponse buscarPorId(Long id) {
-
-        var usuario = usuarioRepository.findByIdAndEmpresaId(id, getUsuarioLogado().empresa_id()).orElse(null);
+        var usuario = usuarioRepository
+                .findByIdAndEmpresaId(id, usuarioAutenticado.empresaId())
+                .orElse(null);
         if (usuario == null) {
             return null;
         }
-
         return new UsuarioResponse(usuario);
-
-
     }
 
+    @Transactional
     public boolean atualizarStatus(EnumStatusUsuario status, Long id) {
-
-        Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
+        Usuario usuarioBanco = usuarioRepository
+                .findByIdAndEmpresaId(id, usuarioAutenticado.empresaId())
+                .orElse(null);
         if (usuarioBanco != null) {
             usuarioBanco.setStatus(status);
             usuarioRepository.save(usuarioBanco);
             return true;
         }
         return false;
-
     }
 
+    @Transactional
     public boolean entrarsessao(Long id, EntrarSessaoRequest entrarSessaoRequest) {
-        Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
-        Sessao sessaoBanco = sessaoRepository.findById(entrarSessaoRequest.sessao_id()).orElse(null);
+        var logado = usuarioAutenticado.usuarioLogado();
+        boolean gerente = usuarioAutenticado.Gerente();
+        boolean admin = usuarioAutenticado.Admin();
+
+        if (!gerente && !admin && !logado.id().equals(id)) {
+            throw new AccessDeniedException("Você só pode entrar em uma sessão com o seu próprio usuário");
+        }
+
+        Usuario usuarioBanco = usuarioRepository
+                .findByIdAndEmpresaId(id, logado.empresa_id()).orElse(null);
+        Sessao sessaoBanco = sessaoRepository
+                .findByIdAndFilmeEmpresaId(entrarSessaoRequest.sessao_id(), logado.empresa_id()).orElse(null);
+
         if (usuarioBanco != null && sessaoBanco != null) {
+            boolean jaEstaNaSessao = usuarioBanco.getSessoes().stream()
+                    .anyMatch(s -> s.getId().equals(sessaoBanco.getId()));
 
-            var sessao = usuarioBanco.getSessoes().stream().anyMatch(u -> u.getId().equals(sessaoBanco.getId()));
-
-            if (sessao) {
-                return true;
-
-            } else {
+            if (!jaEstaNaSessao) {
                 usuarioBanco.getSessoes().add(sessaoBanco);
                 usuarioRepository.save(usuarioBanco);
-
-                return true;
             }
-
+            return true;
         }
         return false;
-
     }
 
     public PerfilResponse buscarUsuarioLogado() {
-        var logado = getUsuarioLogado();
-        boolean gerente = logado.authorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_GERENTE"));
+        var logado = usuarioAutenticado.usuarioLogado();
 
-        if (gerente) {
+        if (usuarioAutenticado.Gerente()) {
             var g = gerenteRepository.findById(logado.id())
                     .orElseThrow(() -> new RuntimeException("Gerente não encontrado"));
             return new PerfilResponse(g.getId(), g.getNome(), g.getEmail(), "ROLE_GERENTE");
@@ -197,5 +194,4 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         return new PerfilResponse(u.getId(), u.getNome(), u.getEmail(), u.getRole());
     }
-
 }

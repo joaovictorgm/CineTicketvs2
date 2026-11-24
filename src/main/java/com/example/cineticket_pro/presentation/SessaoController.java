@@ -77,17 +77,15 @@ public class SessaoController {
     }
 
     @PatchMapping("/{id}/tipo-exibicao")
-    @Operation(summary = "Atualização do tipo de exibição do filme",
-            description = "Atualiza apenas o tipo de exibição (2D, 3D) de um filme cadastrado")
+    @Operation(summary = "Atualização do tipo de exibição da sessão",
+            description = "Atualiza apenas o tipo de exibição (2D, 3D) de uma sessão cadastrada")
     public ResponseEntity<Void> atualizarTipoExibicao(@PathVariable Long id,
                                                       @RequestBody AtualizarTipoExibicaoRequest request) {
-        Sessao sessao = sessaoRepository.findById(id).orElse(null);
-        if (sessao == null) {
-            return ResponseEntity.notFound().build();
+        boolean atualizado = sessaoService.atualizarTipoSessao(request.tipoExibicao(), id);
+        if (atualizado) {
+            return ResponseEntity.ok().build();
         }
-        sessao.setStatus(request.tipoExibicao());
-        sessaoRepository.save(sessao);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.notFound().build();
     }
 
 

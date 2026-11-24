@@ -1,16 +1,14 @@
 package com.example.cineticket_pro.application.service;
 
-
 import com.example.cineticket_pro.application.DTOs.*;
-import com.example.cineticket_pro.application.port.EmpresaContextoPort;
+import com.example.cineticket_pro.application.port.UsuarioAutenticadoPort;
 import com.example.cineticket_pro.domain.entities.*;
 import com.example.cineticket_pro.domain.repository.IngressoRepository;
 import com.example.cineticket_pro.domain.repository.SessaoRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,7 +21,7 @@ public class IngressoService {
     private IngressoRepository ingressoRepository;
 
     @Autowired
-    private EmpresaContextoPort empresaContexto;
+    private UsuarioAutenticadoPort usuarioAutenticado; // substitui EmpresaContextoPort + SecurityContextHolder
 
     @Autowired
     private SessaoRepository sessaoRepository;
@@ -31,32 +29,34 @@ public class IngressoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public List<IngressoResponse> listarTodosIngressosTable(){
-        Long empresaId = empresaContexto.empresaId();
-        var listaUsuarios = cliente() ? ingressoRepository.findAllBySessaoFilmeEmpresaIdAndUsuarioId(empresaId, logado().id())
+    public List<IngressoResponse> listarTodosIngressosTable() {
+        Long empresaId = usuarioAutenticado.empresaId();
+        var ingressos = usuarioAutenticado.Cliente()
+                ? ingressoRepository.findAllBySessaoFilmeEmpresaIdAndUsuarioId(empresaId, usuarioAutenticado.usuarioLogado().id())
                 : ingressoRepository.findAllBySessaoFilmeEmpresaId(empresaId);
-        return listaUsuarios.stream().map(IngressoResponse::new).toList();
-
+        return ingressos.stream().map(IngressoResponse::new).toList();
     }
 
     @Transactional
     public IngressoResponse salvaringresso(IngressoRequest ingresso, Long id) {
+        Long empresaId = usuarioAutenticado.empresaId();
 
         if (id == 0L) {
-            Sessao sessaoBanco = sessaoRepository.findByIdAndFilmeEmpresaId(ingresso.sessaoId(), empresaContexto.empresaId()).orElseThrow(() -> new IllegalArgumentException("Sessão não encontrada"));
+            Sessao sessaoBanco = sessaoRepository.findByIdAndFilmeEmpresaId(ingresso.sessaoId(), empresaId)
+                    .orElseThrow(() -> new IllegalArgumentException("Sessão não encontrada"));
 
             if (sessaoBanco.getAssentosDisponiveis() <= 0) {
                 throw new IllegalArgumentException("Sessão lotada: não há assentos disponíveis");
             }
 
             Usuario usuario;
-            if (cliente()) {
+            if (usuarioAutenticado.Cliente()) {
                 usuario = usuarioRepository
-                        .findByIdAndEmpresaId(logado().id(), empresaContexto.empresaId())
+                        .findByIdAndEmpresaId(usuarioAutenticado.usuarioLogado().id(), empresaId)
                         .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
             } else {
                 usuario = usuarioRepository
-                        .findByIdAndEmpresaId(ingresso.usuarioId(), empresaContexto.empresaId())
+                        .findByIdAndEmpresaId(ingresso.usuarioId(), empresaId)
                         .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
             }
 
@@ -82,38 +82,38 @@ public class IngressoService {
             sessaoRepository.save(sessaoBanco);
 
             return new IngressoResponse(ingressoBanco);
-        } else {
+        }
 
-            Ingresso ingressoBanco = ingressoRepository.findByIdAndSessaoFilmeEmpresaId(id, empresaContexto.empresaId()).orElse(null);
-            if (ingressoBanco != null) {
-                ingressoBanco.setAssento(ingresso.assento());
-                ingressoBanco.setValorPago(ingresso.valorPago());
-                ingressoBanco.setDataCompra(ingresso.dataCompra());
-                if (ingresso.statusTipo() != null) {
-                    ingressoBanco.setStatusTipo(ingresso.statusTipo());
-                }
-                ingressoRepository.save(ingressoBanco);
-                return new IngressoResponse(ingressoBanco);
+        Ingresso ingressoBanco = ingressoRepository.findByIdAndSessaoFilmeEmpresaId(id, empresaId).orElse(null);
+        if (ingressoBanco != null) {
+            ingressoBanco.setAssento(ingresso.assento());
+            ingressoBanco.setValorPago(ingresso.valorPago());
+            ingressoBanco.setDataCompra(ingresso.dataCompra());
+            if (ingresso.statusTipo() != null) {
+                ingressoBanco.setStatusTipo(ingresso.statusTipo());
             }
-
+            ingressoRepository.save(ingressoBanco);
+            return new IngressoResponse(ingressoBanco);
         }
 
         return null;
     }
 
     public IngressoResponse buscarPorId(Long id) {
-
-        var ingresso = ingressoRepository.findByIdAndSessaoFilmeEmpresaId(id, empresaContexto.empresaId()).orElse(null);
+        var ingresso = ingressoRepository
+                .findByIdAndSessaoFilmeEmpresaId(id, usuarioAutenticado.empresaId())
+                .orElse(null);
         if (ingresso == null) {
             return null;
         }
-
         return new IngressoResponse(ingresso);
     }
 
+    @Transactional
     public boolean atualizarStatus(EnumStatusIngresso statusIngresso, Long id) {
-
-        Ingresso ingressoBanco = ingressoRepository.findByIdAndSessaoFilmeEmpresaId(id, empresaContexto.empresaId()).orElse(null);
+        Ingresso ingressoBanco = ingressoRepository
+                .findByIdAndSessaoFilmeEmpresaId(id, usuarioAutenticado.empresaId())
+                .orElse(null);
         if (ingressoBanco != null) {
             ingressoBanco.setStatusIngresso(statusIngresso);
             ingressoRepository.save(ingressoBanco);
@@ -122,23 +122,17 @@ public class IngressoService {
         return false;
     }
 
+    @Transactional
     public boolean atualizarStatusTipo(EnumTipoIngresso statusIngressoTipo, Long id) {
-
-        Ingresso ingressoBancoTipo = ingressoRepository.findByIdAndSessaoFilmeEmpresaId(id, empresaContexto.empresaId()).orElse(null);
-        if (ingressoBancoTipo != null) {
-            ingressoBancoTipo.setStatusTipo(statusIngressoTipo);
-            ingressoRepository.save(ingressoBancoTipo);
+        Ingresso ingressoBanco = ingressoRepository
+                .findByIdAndSessaoFilmeEmpresaId(id, usuarioAutenticado.empresaId())
+                .orElse(null);
+        if (ingressoBanco != null) {
+            ingressoBanco.setStatusTipo(statusIngressoTipo);
+            ingressoRepository.save(ingressoBanco);
             return true;
         }
         return false;
-    }
-
-    private UsuarioLogado logado() {
-        return (UsuarioLogado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
-    private boolean cliente() {
-        return logado().authorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"));
     }
 
     private BigDecimal lerPreco(String preco) {

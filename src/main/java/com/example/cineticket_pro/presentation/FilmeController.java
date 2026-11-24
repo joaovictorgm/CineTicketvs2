@@ -2,6 +2,7 @@ package com.example.cineticket_pro.presentation;
 
 import com.example.cineticket_pro.application.DTOs.FilmeRequest;
 import com.example.cineticket_pro.application.DTOs.FilmeResponse;
+import com.example.cineticket_pro.application.port.FilmeUseCases;
 import com.example.cineticket_pro.application.service.FilmeService;
 import com.example.cineticket_pro.domain.entities.EnumStatusFilme;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +21,7 @@ public class FilmeController {
 
 
     @Autowired
-    private FilmeService filmeService;
+    private FilmeUseCases filmeService;
 
     @GetMapping
     @Operation(summary = "Método de consulta de lista de filmes!", description = "Método responsavel a consulta de todos os filmes sem filtro!")

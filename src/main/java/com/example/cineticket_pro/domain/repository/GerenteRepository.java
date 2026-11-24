@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface GerenteRepository extends JpaRepository<Gerente,Long> {
 
     List<Gerente> findAllByEmpresaId(Long empresaId);
+    Optional<Gerente> findByIdAndEmpresaId(Long id, Long empresaId);
 
     Optional<Gerente> findByEmail(String email);
 }

@@ -42,7 +42,7 @@ public class Filme  {
         this.setDataEstreia(filme.dataEstreia());
     }
 
-    public void setClassificacoaEtaria(String classificacaoEtaria){
+    public void setClassificacaoEtaria(String classificacaoEtaria){
         this.classificacaoEtaria = new ClassificaoEtaria(classificacaoEtaria).toString();
     }
 }

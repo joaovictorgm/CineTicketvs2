@@ -1,36 +1,21 @@
 package com.example.cineticket_pro.application.service;
 
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.cineticket_pro.application.DTOs.LoginRequest;
 import com.example.cineticket_pro.application.DTOs.UsuarioLogado;
+import com.example.cineticket_pro.application.port.TokenPort;
 import com.example.cineticket_pro.domain.entities.Token;
 import com.example.cineticket_pro.domain.repository.GerenteRepository;
 import com.example.cineticket_pro.domain.repository.TokenRepository;
 import com.example.cineticket_pro.domain.repository.UsuarioRepository;
 import com.example.cineticket_pro.domain.valueobject.Email;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @Service
 public class TokenService {
 
-    @Value("${spring.secretkey}")
-    private String secret;
-
-    @Value("${spring.tempo_expiracao}")
-    private Long expiracao;
-
-    private String emissor = "TESTADOR";
+    @Autowired
+    private TokenPort tokenPort;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -42,56 +27,33 @@ public class TokenService {
     private TokenRepository tokenRepository;
 
     public String gerarToken(LoginRequest loginRequest) {
+        String email = new Email(loginRequest.email()).toString();
 
+        var usuario = usuarioRepository.findByEmail(email).orElse(null);
+        var gerente = gerenteRepository.findByEmail(email).orElse(null);
 
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            String email = new Email(loginRequest.email()).toString();
+        String token = tokenPort.gerar(email);
 
-            var usuario = usuarioRepository.findAll().stream().filter(u -> u.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
-            var gerente = gerenteRepository.findAll().stream().filter(g -> g.getEmail().equals(loginRequest.email())).findFirst().orElse(null);
-            String token = JWT.create()
-                    .withIssuer(emissor)
-                    .withSubject(loginRequest.email())
-                    .withExpiresAt(this.getDataExpiracao())
-                    .sign(algorithm);
         if (usuario != null) {
             tokenRepository.save(new Token(token, usuario));
         } else if (gerente != null) {
-
             tokenRepository.save(new Token(token, gerente));
         }
-
-            return token;
-
-
+        return token;
     }
 
-    public UsuarioLogado verificarToken(String token) throws JWTVerificationException {
-        Algorithm algorithm = Algorithm.HMAC256(secret);
+    public UsuarioLogado verificarToken(String token) {
+        tokenPort.verificar(token);
 
-        JWT.require(algorithm).withIssuer(emissor).build().verify(token);
-        var tokenBanco = tokenRepository.findTokenByToken(token).orElseThrow(() ->new IllegalArgumentException("Token inválido!"));
+        var tokenBanco = tokenRepository.findTokenByToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Token inválido!"));
 
-
-       if(tokenBanco.getUsuario()!= null){
-           return new UsuarioLogado(tokenBanco.getUsuario());
-       }
-       if(tokenBanco.getGerente()!=null){
-           return new UsuarioLogado(tokenBanco.getGerente());
-       }
-        throw new IllegalArgumentException("Token Invalido!");
-
+        if (tokenBanco.getUsuario() != null) {
+            return new UsuarioLogado(tokenBanco.getUsuario());
+        }
+        if (tokenBanco.getGerente() != null) {
+            return new UsuarioLogado(tokenBanco.getGerente());
+        }
+        throw new IllegalArgumentException("Token inválido!");
     }
-
-
-    private Instant getDataExpiracao(){
-        // pegar data atual
-        var dataAtual = LocalDateTime.now();
-        //adicionar ou diminuir tempo da data atual
-        var dataFutura = dataAtual.plusMinutes(expiracao);
-
-        //Converter em instant
-        return dataFutura.toInstant(ZoneOffset.of("-03:00"));
-    }
-
-    }
+}

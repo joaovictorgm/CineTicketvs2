@@ -22,6 +22,15 @@ public class SecurityConfiguration {
     @Autowired
     private JwtFilter jwtFilter;
 
+
+
+    @Bean
+    public FilterRegistrationBean<JwtFilter> jwtFilterRegistration(JwtFilter filter) {
+        FilterRegistrationBean<JwtFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.cors(Customizer.withDefaults())
@@ -58,15 +67,8 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-    }
 
-    @Bean
-    public FilterRegistrationBean<JwtFilter> jwtFilterRegistration(JwtFilter filter) {
-        FilterRegistrationBean<JwtFilter> registration = new FilterRegistrationBean<>(filter);
-        registration.setEnabled(false);
-        return registration;
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
